@@ -1,0 +1,29 @@
+[
+	{
+		"name": "User Control",
+		"path": null,
+		"component": null,
+		"prefit": [0],
+		"subContent": [
+			{
+				"name": "New User",
+				"path": "/addUser",
+				"component": "UserAdd",
+				"prefit": [0]
+			},
+			{
+				"name": "User List",
+				"path": "/userList",
+				"component": "UserList",
+				"prefit": [0]
+			}
+		]
+	},
+	{
+		"name": "Firmware",
+		"path": "/firmwareList",
+		"component": "FirmwareList",
+		"prefit": [0],
+		"subContent": null
+	}
+]

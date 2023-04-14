@@ -1,115 +1,244 @@
-<template>
-  <div class="login-body">
-    <div class="login-container">
-      <div class="head">
-        <img class="logo" src="https://s.yezgea02.com/1582958061265/mlogo.png" />
-        <div class="name">
-          <div class="title">新蜂商城</div>
-          <div class="tips">Vue3.0 后台管理系统</div>
-        </div>
-      </div>
-      <el-form label-position="top" :rules="state.rules" :model="state.ruleForm" ref="loginForm" class="login-form">
-        <el-form-item label="账号" prop="username">
-          <el-input type="text" v-model.trim="state.ruleForm.username" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model.trim="state.ruleForm.password" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <div style="color: #333">登录表示您已同意<a>《服务条款》</a></div>
-          <el-button style="width: 100%" type="primary" @click="submitForm">立即登录</el-button>
-          <el-checkbox v-model="state.checked" @change="!state.checked">下次自动登录</el-checkbox>
-        </el-form-item>
-      </el-form>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import axios from '@/utils/axios'
-import md5 from 'js-md5'
-import { reactive, ref } from 'vue'
-import { localSet } from '@/utils'
-const loginForm = ref(null)
+import adminList from '@/assets/db/admin.json';
+import { reactive, ref, inject, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useParameterStore } from '@/store/parameter.js';
+import { storeToRefs } from 'pinia';
+import { sessionSet } from '@/utils';
+import * as dayjs from 'dayjs';
+import fs from 'vite-plugin-fs/browser';
+import VueClientRecaptcha from 'vue-client-recaptcha';
+
+const inputValue = ref(null);
+const checkValue = ref(null);
+
+const checkValidCaptcha = (value) => (checkValue.value = value);
+const cryoptojs = inject('cryptojs');
+const loginForm = ref(null);
 const state = reactive({
-  ruleForm: {
-    username: '',
-    password: ''
-  },
-  checked: true,
-  rules: {
-    username: [
-      { required: 'true', message: '账户不能为空', trigger: 'blur' }
-    ],
-    password: [
-      { required: 'true', message: '密码不能为空', trigger: 'blur' }
-    ]
-  }
-})
+	ruleForm: {
+		username: '',
+		password: '',
+	},
+	checked: false,
+	rules: {
+		username: [
+			{
+				required: 'true',
+				message: "Account can't be empty",
+				trigger: 'blur',
+			},
+		],
+		password: [
+			{
+				required: 'true',
+				message: "Password can't be empty",
+				trigger: 'blur',
+			},
+		],
+	},
+});
+const login = useParameterStore();
+const { tokenKey } = storeToRefs(login);
+const { fixError } = login;
+const router = useRouter();
+
 const submitForm = async () => {
-  loginForm.value.validate((valid) => {
-    if (valid) {
-      axios.post('/adminUser/login', {
-        userName: state.ruleForm.username || '',
-        passwordMd5: md5(state.ruleForm.password)
-      }).then(res => {
-        localSet('token', res)
-        window.location.href = '/'
-      })
-    } else {
-      console.log('error submit!!')
-      return false;
-    }
-  })
-}
-const resetForm = () => {
-  loginForm.value.resetFields();
-}
+	if (!checkValue.value) {
+		fixError({
+			title: 'Error',
+			msg: 'The Verification code is wrong!',
+			isShow: true,
+		});
+		return;
+	}
+
+	loginForm.value.validate(async (valid) => {
+		if (valid) {
+			const target = adminList.findIndex(
+				(adm) =>
+					adm.account === state.ruleForm.username &&
+					adm.password === state.ruleForm.password
+			);
+			if (target !== -1) {
+				if (target.status) {
+					fixError({
+						title: 'Error',
+						msg: 'Your account has been suspended!',
+						isShow: true,
+					});
+
+					return;
+				}
+				adminList[target].token = cryoptojs.AES.encrypt(
+					JSON.stringify({
+						account: adminList[target].account,
+						password: adminList[target].password,
+					}),
+					tokenKey.value
+				).toString();
+				adminList[target].last_login_time = dayjs().format(
+					'YYYY-MM-DD HH:mm:ss'
+				);
+				login.loginAction(adminList[target]);
+				sessionSet('cinoT', adminList[target].token);
+				await fs.writeFile(
+					'./assets/db/admin.json',
+					JSON.stringify(adminList)
+				);
+				router.push('/');
+			} else {
+				fixError({
+					title: 'Error',
+					msg: 'Account or Password is not exist!',
+					isShow: true,
+				});
+			}
+		}
+	});
+};
 </script>
 
-<style scoped>
-  .login-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    background-color: #fff;
-  }
-  .login-container {
-    width: 420px;
-    height: 500px;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0px 21px 41px 0px rgba(0, 0, 0, 0.2);
-  }
-  .head {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 0 20px 0;
-  }
-  .head img {
-    width: 100px;
-    height: 100px;
-    margin-right: 20px;
-  }
-  .head .title {
-    font-size: 28px;
-    color: #1BAEAE;
-    font-weight: bold;
-  }
-  .head .tips {
-    font-size: 12px;
-    color: #999;
-  }
-  .login-form {
-    width: 70%;
-    margin: 0 auto;
-  }
-  .login-form >>> .el-form--label-top .el-form-item__label {
-    padding: 0;
-  }
-  .login-form >>> .el-form-item {
-    margin-bottom: 0;
-  }
+<template>
+	<div class="login-body">
+		<div class="login-container">
+			<div class="head">
+				<img
+					class="logo"
+					src="https://s.yezgea02.com/1582958061265/mlogo.png"
+				/>
+				<div class="name">
+					<div class="title">CINO</div>
+					<div class="tips">Partner Portal</div>
+					<!-- text-amber-400 -->
+				</div>
+			</div>
+			<el-form
+				label-position="top"
+				:rules="state.rules"
+				:model="state.ruleForm"
+				ref="loginForm"
+			>
+				<el-form-item
+					label="Account"
+					prop="username"
+					style="margin-bottom: 30px"
+					class="form-label"
+				>
+					<el-input
+						type="text"
+						v-model.trim="state.ruleForm.username"
+						autocomplete="off"
+					></el-input>
+				</el-form-item>
+				<el-form-item
+					label="Password"
+					prop="password"
+					style="margin-bottom: 30px"
+				>
+					<el-input
+						type="password"
+						v-model.trim="state.ruleForm.password"
+						autocomplete="off"
+						@keyup.enter.native="submitForm"
+					></el-input>
+				</el-form-item>
+				<div class="recaptcha">
+					<el-input
+						type="text"
+						v-model.trim="inputValue"
+						autocomplete="off"
+					></el-input>
+					<VueClientRecaptcha
+						:value="inputValue"
+						@isValid="checkValidCaptcha"
+					/>
+				</div>
+				<el-form-item>
+					<el-button
+						class="btn"
+						style="width: 100%"
+						type="primary"
+						@click="submitForm"
+						>Log in</el-button
+					>
+					<!-- <el-checkbox
+						v-model="state.checked"
+						@change="!state.checked"
+						>下次自动登录</el-checkbox
+					> -->
+				</el-form-item>
+			</el-form>
+		</div>
+	</div>
+</template>
+
+<style lang="scss" scoped>
+@import '../assets/scss/_color.scss';
+@import '../assets/scss/_style.scss';
+@import url('/node_modules/vue-client-recaptcha/dist/style.css');
+
+.login-body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	background-color: #fff;
+}
+.login-container {
+	width: 420px;
+	height: 500px;
+	background-color: #fff;
+	border-radius: 4px;
+	box-shadow: 0px 21px 41px 0px rgba(0, 0, 0, 0.2);
+}
+.head {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 40px 0 20px 0;
+	img {
+		width: 100px;
+		height: 100px;
+		margin-right: 20px;
+	}
+	.title {
+		font-size: 28px;
+		color: $main-style-color;
+		font-weight: bold;
+	}
+	.tips {
+		font-size: 12px;
+		color: $main-font-color;
+	}
+}
+
+.el-form {
+	width: 70%;
+	margin: 0 auto;
+	.el-form-item {
+		.el-form--label-top,
+		.el-form-item__label {
+			padding: 0;
+		}
+		.el-form-item {
+			margin-bottom: 0;
+		}
+	}
+}
+.el-form-item__label {
+	color: $main-font-color;
+}
+.recaptcha {
+	margin-bottom: 20px;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	.el-input {
+		width: 100px;
+	}
+	.vue_client_recaptcha {
+		width: 200px;
+	}
+}
 </style>
