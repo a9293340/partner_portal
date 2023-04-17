@@ -7,6 +7,7 @@ export const useParameterStore = defineStore('parameter', () => {
 	const comStore = useComponentStore();
 	const { checkEmail } = comStore;
 
+	const adminList = ref([]);
 	const loginAdmin = ref({});
 	const tokenKey = ref('C8763');
 	const showMenu = ref(false);
@@ -63,8 +64,11 @@ export const useParameterStore = defineStore('parameter', () => {
 	};
 
 	const loginAction = (obj) => (loginAdmin.value = obj);
+	const resetAdminList = (arr) => (adminList.value = arr);
 	const changeShowMenu = (bool) => (showMenu.value = bool);
 	const fixHeader = (str) => (nowHeader.value = str);
+	const isPassPrefit = (obj) =>
+		obj.findIndex((el) => el === loginAdmin.value.permissions) === -1;
 
 	return {
 		loginAdmin,
@@ -77,5 +81,8 @@ export const useParameterStore = defineStore('parameter', () => {
 		nowHeader,
 		fixHeader,
 		adminRules,
+		isPassPrefit,
+		adminList,
+		resetAdminList,
 	};
 });

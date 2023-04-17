@@ -52,7 +52,7 @@ const editAdmin = () => {
 							type="text"
 							style="width: 30em"
 							autocomplete="off"
-							v-model.trim="editTarget[ed.key]"
+							v-model="editTarget[ed.key]"
 							v-if="ed.option === 'input'"
 						></el-input>
 						<select v-model="editTarget[ed.key]" v-else>

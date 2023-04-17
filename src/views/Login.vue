@@ -1,5 +1,4 @@
 <script setup>
-import adminList from '@/assets/db/admin.json';
 import { reactive, ref, inject, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
@@ -8,6 +7,8 @@ import { sessionSet } from '@/utils';
 import * as dayjs from 'dayjs';
 import fs from 'vite-plugin-fs/browser';
 import VueClientRecaptcha from 'vue-client-recaptcha';
+import { useMakeImage } from '../assets/util';
+import productList from '@/assets/db/production_type.json';
 
 const inputValue = ref(null);
 const checkValue = ref(null);
@@ -39,12 +40,13 @@ const state = reactive({
 	},
 });
 const login = useParameterStore();
-const { tokenKey } = storeToRefs(login);
-const { fixError } = login;
+const { tokenKey, adminList } = storeToRefs(login);
+const adList = ref(JSON.parse(JSON.stringify(adminList.value)));
+const { fixError, resetAdminList } = login;
 const router = useRouter();
 
 const submitForm = async () => {
-	if (!checkValue.value) {
+	if (!(checkValue.value.toUpperCase() === inputValue.value.toUpperCase())) {
 		fixError({
 			title: 'Error',
 			msg: 'The Verification code is wrong!',
@@ -55,7 +57,7 @@ const submitForm = async () => {
 
 	loginForm.value.validate(async (valid) => {
 		if (valid) {
-			const target = adminList.findIndex(
+			const target = adList.value.findIndex(
 				(adm) =>
 					adm.account === state.ruleForm.username &&
 					adm.password === state.ruleForm.password
@@ -70,22 +72,23 @@ const submitForm = async () => {
 
 					return;
 				}
-				adminList[target].token = cryoptojs.AES.encrypt(
+				adList.value[target].token = cryoptojs.AES.encrypt(
 					JSON.stringify({
-						account: adminList[target].account,
-						password: adminList[target].password,
+						account: adList.value[target].account,
+						password: adList.value[target].password,
 					}),
 					tokenKey.value
 				).toString();
-				adminList[target].last_login_time = dayjs().format(
+				adList.value[target].last_login_time = dayjs().format(
 					'YYYY-MM-DD HH:mm:ss'
 				);
-				login.loginAction(adminList[target]);
-				sessionSet('cinoT', adminList[target].token);
+				login.loginAction(adList.value[target]);
+				sessionSet('cinoT', adList.value[target].token);
 				await fs.writeFile(
 					'./assets/db/admin.json',
-					JSON.stringify(adminList)
+					JSON.stringify(adList.value)
 				);
+				resetAdminList(adList.value);
 				router.push('/');
 			} else {
 				fixError({
@@ -103,10 +106,7 @@ const submitForm = async () => {
 	<div class="login-body">
 		<div class="login-container">
 			<div class="head">
-				<img
-					class="logo"
-					src="https://s.yezgea02.com/1582958061265/mlogo.png"
-				/>
+				<img class="logo" :src="useMakeImage(productList[0].photo)" />
 				<div class="name">
 					<div class="title">CINO</div>
 					<div class="tips">Partner Portal</div>
@@ -143,17 +143,19 @@ const submitForm = async () => {
 						@keyup.enter.native="submitForm"
 					></el-input>
 				</el-form-item>
-				<div class="recaptcha">
+				<div class="recaptcha mb-2">
 					<el-input
 						type="text"
 						v-model.trim="inputValue"
 						autocomplete="off"
+						@keyup.enter.native="submitForm"
 					></el-input>
 					<VueClientRecaptcha
 						:value="inputValue"
-						@isValid="checkValidCaptcha"
+						@getCode="checkValidCaptcha"
 					/>
 				</div>
+				<p class="text-red-600 m-0 mb-1">*case insensitive</p>
 				<el-form-item>
 					<el-button
 						class="btn"
@@ -230,7 +232,7 @@ const submitForm = async () => {
 	color: $main-font-color;
 }
 .recaptcha {
-	margin-bottom: 20px;
+	// margin-bottom: 20px;
 	width: 100%;
 	display: flex;
 	justify-content: space-between;

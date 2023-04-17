@@ -1,0 +1,32 @@
+[
+	{
+		"name": "Corded",
+		"photo": "moduleType/corded.png",
+		"prefit": [0, 1, 2, 3]
+	},
+	{
+		"name": "Cordless",
+		"photo": "moduleType/cordless.png",
+		"prefit": [0, 1, 2, 3]
+	},
+	{
+		"name": "Fixed Mount",
+		"photo": "moduleType/fixed_mount.png",
+		"prefit": [0, 1, 2]
+	},
+	{
+		"name": "Pocket",
+		"photo": "moduleType/pocket.png",
+		"prefit": [0, 1, 2]
+	},
+	{
+		"name": "OEM Product",
+		"photo": "moduleType/oem.png",
+		"prefit": [0, 1, 2]
+	},
+	{
+		"name": "On-counter",
+		"photo": "moduleType/on_counter.png",
+		"prefit": [0, 1, 2]
+	}
+]

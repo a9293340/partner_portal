@@ -1,12 +1,14 @@
 <script setup>
-import { reactive, ref } from 'vue';
-import adminList from '@/assets/db/admin.json';
+import { ref } from 'vue';
 import { useParameterStore } from '@/store/parameter';
 import { useComponentStore } from '@/store/component';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import fs from 'vite-plugin-fs/browser';
+import * as dayjs from 'dayjs';
 
-const { adminRules } = useParameterStore();
+const { adminRules, adminList } = storeToRefs(useParameterStore());
+const { resetAdminList } = useParameterStore();
 const { firstStringUpperCase, prefitList, typeList } = useComponentStore();
 const router = useRouter();
 
@@ -30,11 +32,16 @@ const inputData = ref(empty);
 const addAdmin = async () => {
 	formAction.value.validate(async (valid) => {
 		if (valid) {
+			inputData.value['create_date'] = dayjs().format(
+				'YYYY-MM-DD HH:mm:ss'
+			);
+			inputData.value['action_log'] = [];
 			adList.value.push(inputData.value);
 			await fs.writeFile(
 				'./assets/db/admin.json',
 				JSON.stringify(adList.value)
 			);
+			resetAdminList(adList.value);
 			inputData.value = empty;
 			router.push('/userList');
 		}
@@ -60,7 +67,7 @@ const addAdmin = async () => {
 					>
 						<el-input
 							type="text"
-							v-model.trim="inputData[itemKey]"
+							v-model="inputData[itemKey]"
 							autocomplete="off"
 						>
 						</el-input>

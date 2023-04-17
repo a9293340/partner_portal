@@ -1,4 +1,5 @@
 <script setup>
+import adminList from '@/assets/db/admin.json';
 import { reactive, inject, onBeforeMount, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
@@ -14,7 +15,8 @@ const login = useParameterStore();
 const comStore = useComponentStore();
 const { showMenu, loginAdmin, tokenKey, errorMsg } = storeToRefs(login);
 const { isShadow } = storeToRefs(comStore);
-const { changeShowMenu, fixError, fixHeader } = login;
+const { changeShowMenu, fixError, fixHeader, isPassPrefit, resetAdminList } =
+	login;
 
 const state = reactive({
 	showMenu: false,
@@ -41,7 +43,7 @@ router.afterEach((to, from) => {
 
 router.beforeEach((to, from, next) => {
 	// console.log(to, from);
-	// console.log(to.meta.prefit);
+	// console.log(loginAdmin.value.permissions);
 	if (to.path == '/login') next();
 	else {
 		const token = sessionGet('cinoT')
@@ -61,8 +63,7 @@ router.beforeEach((to, from, next) => {
 			errorHandle(0, '/login', next);
 			sessionRemove('cinoT');
 		} else {
-			if (to.meta.prefit < loginAdmin.value.permissions)
-				errorHandle(1, '/', next);
+			if (isPassPrefit(to.meta.prefit)) errorHandle(1, '/', next);
 			else {
 				fixHeader(to.name);
 				next();
@@ -74,21 +75,7 @@ router.beforeEach((to, from, next) => {
 
 onBeforeMount(() => {
 	mainTitle.value = routerData;
-	// mainTitle.value = [
-	// 	...new Set(routerData.map((el) => el.meta.mainTitle)),
-	// ].map((el) => ({
-	// 	name: el,
-	// 	path: routerData.find((s) => s.meta.mainTitle === el).path,
-	// 	prefit: routerData.find((s) => s.meta.mainTitle === el).meta.mainPrefit,
-	// 	subContent: routerData
-	// 		.filter((s) => s.meta.mainTitle === el)
-	// 		.map((s) => ({
-	// 			name: s.name,
-	// 			path: s.path,
-	// 			prefit: s.meta.prefit,
-	// 		})),
-	// }));
-	// console.log(mainTitle.value);
+	resetAdminList(adminList);
 });
 </script>
 

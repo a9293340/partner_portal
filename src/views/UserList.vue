@@ -1,6 +1,5 @@
 <script setup>
-import adminList from '@/assets/db/admin.json';
-import { ref } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { useComponentStore } from '@/store/component';
 import { useParameterStore } from '@/store/parameter';
 import { storeToRefs } from 'pinia';
@@ -8,16 +7,22 @@ import fs from 'vite-plugin-fs/browser';
 
 const comStore = useComponentStore();
 const login = useParameterStore();
-const adList = ref(JSON.parse(JSON.stringify(adminList)));
+const adList = ref();
 const { isOpenEditPop, prefitList, typeList } = storeToRefs(comStore);
-const { loginAdmin, adminRules } = storeToRefs(login);
+const { loginAdmin, adminRules, adminList } = storeToRefs(login);
 const { fixOpenEditPop, makeKeys } = comStore;
-const { loginAction } = login;
+const { loginAction, resetAdminList } = login;
 
 const editTarget = ref({});
 const editKeys = ref([]);
 const selectOption = ['permissions', 'status'];
-const notNeed = ['token', 'last_login_time', 'account'];
+const notNeed = [
+	'token',
+	'last_login_time',
+	'account',
+	'action_log',
+	'create_date',
+];
 const nowEditIndex = ref(null);
 
 const editAdmin = (row, idx) => {
@@ -39,7 +44,12 @@ const getEdmitData = async (data) => {
 
 const editDataBase = async () => {
 	await fs.writeFile('./assets/db/admin.json', JSON.stringify(adList.value));
+	resetAdminList(adList.value);
 };
+
+onBeforeMount(async () => {
+	adList.value = JSON.parse(JSON.stringify(adminList.value));
+});
 </script>
 
 <template>
@@ -47,7 +57,7 @@ const editDataBase = async () => {
 		<el-table :data="adList" style="width: auto">
 			<el-table-column prop="name" label="Name" width="150" />
 			<el-table-column prop="company" label="company" width="150" />
-			<el-table-column prop="email" label="Email" width="180" />
+			<el-table-column prop="email" label="Email" width="210" />
 			<el-table-column prop="account" label="Account" width="150" />
 			<el-table-column label="Permissions" width="150">
 				<template #default="scope">
@@ -68,7 +78,7 @@ const editDataBase = async () => {
 			<el-table-column
 				prop="last_login_time"
 				label="Last Login Time"
-				width="200"
+				width="180"
 			/>
 			<el-table-column align="right">
 				<template #default="scope">

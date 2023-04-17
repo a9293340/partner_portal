@@ -193,3 +193,15 @@
 	"_comment_prefit": "適用權限"
 }
 ```
+
+### 權限 (prefit)
+
+```json
+{
+	"_id": "string",
+	"name": "string",
+	"prefit": "string",
+
+	"_comment_prefit": "0 : 管理員 ;1: Support ;2: CINO partner ;3: SICK partner"
+}
+```

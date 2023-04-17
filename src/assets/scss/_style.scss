@@ -18,3 +18,10 @@
 	border-color: var(--el-border-color);
 	background-color: var(--el-input-bg-color, var(--el-fill-color-blank));
 }
+
+%flex-row-c {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}

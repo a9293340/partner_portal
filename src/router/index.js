@@ -13,14 +13,14 @@ const defaultRouter = [
 			import(
 				/* webpackChunkName: "introduce" */ '../views/Introduce.vue'
 			),
-		meta: { prefit: 1 },
+		meta: { prefit: [0, 1, 2, 3] },
 	},
 	{
 		path: '/login',
 		name: 'login',
 		component: () =>
 			import(/* webpackChunkName: "add" */ '../views/Login.vue'),
-		meta: { prefit: 3 },
+		meta: { prefit: [0, 1, 2, 3] },
 	},
 ];
 
@@ -39,6 +39,7 @@ const makeRouterData = (db) => {
 				})),
 			];
 		} else {
+			console.log(target.prefit);
 			arr.push({
 				path: target.path,
 				name: target.name,

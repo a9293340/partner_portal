@@ -1,0 +1,18 @@
+[
+	{
+		"name": "Super Administrator",
+		"prefit": 0
+	},
+	{
+		"name": "Support",
+		"prefit": 1
+	},
+	{
+		"name": "CINO Partner",
+		"prefit": 2
+	},
+	{
+		"name": "SICK Partner",
+		"prefit": 3
+	}
+]

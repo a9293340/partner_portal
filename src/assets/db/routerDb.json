@@ -20,10 +20,10 @@
 		]
 	},
 	{
-		"name": "Firmware",
-		"path": "/firmwareList",
-		"component": "FirmwareList",
-		"prefit": [0],
+		"name": "Production",
+		"path": "/productionList",
+		"component": "ProductionList",
+		"prefit": [0, 1, 2, 3],
 		"subContent": null
 	}
 ]

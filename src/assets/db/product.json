@@ -1,0 +1,20 @@
+[
+	{
+		"name": "A780",
+		"production_type_id": "Corded",
+		"photo": "product-img/A780.png",
+		"slogan": "",
+		"documents_id": [],
+		"firmware_id": [],
+		"prefit": [0, 1, 2]
+	},
+	{
+		"name": "IDM240",
+		"production_type_id": "Corded",
+		"photo": "product-img/IDM240.png",
+		"slogan": "",
+		"documents_id": [],
+		"firmware_id": [],
+		"prefit": [0, 1, 3]
+	}
+]
