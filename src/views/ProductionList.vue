@@ -1,10 +1,12 @@
 <script setup>
 import production_type from '@/assets/db/production_type.json';
-import product from '../assets/db/product.json';
+import product from '@/assets/db/product.json';
 import { useMakeImage } from '@/assets/util';
 import { onBeforeMount, reactive, ref } from 'vue';
 import { useParameterStore } from '@/store/parameter.js';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const login = useParameterStore();
 const { isPassPrefit } = login;
 
@@ -13,6 +15,7 @@ const usefulProducts = ref();
 const pTList = ref();
 const showProduct = ref();
 const nowPickTypeIndex = ref(0);
+const usefulProdctTypePoint = ref(0);
 const arrowImg = reactive({
 	right: useMakeImage('svg/arrow_small_right.svg'),
 	left: useMakeImage('svg/arrow_small_left_wbg.svg'),
@@ -20,26 +23,33 @@ const arrowImg = reactive({
 
 const pickpTList = (caculate) => {
 	if (
-		(nowPickTypeIndex.value + caculate < 0 ||
-			nowPickTypeIndex.value + caculate + 5 >
+		(usefulProdctTypePoint.value + caculate < 0 ||
+			usefulProdctTypePoint.value + caculate + 5 >
 				usefulProductType.value.length) &&
 		caculate
 	)
 		return;
-	nowPickTypeIndex.value = nowPickTypeIndex.value + caculate;
+	usefulProdctTypePoint.value = usefulProdctTypePoint.value + caculate;
 	pTList.value = usefulProductType.value.slice(
-		nowPickTypeIndex.value,
-		nowPickTypeIndex.value + 5
+		usefulProdctTypePoint.value,
+		usefulProdctTypePoint.value + 5
 	);
 	arrowImg.left = useMakeImage(
-		`svg/arrow_small_left${nowPickTypeIndex.value === 0 ? '_wbg' : ''}.svg`
+		`svg/arrow_small_left${
+			usefulProdctTypePoint.value === 0 ? '_wbg' : ''
+		}.svg`
 	);
 	arrowImg.right = useMakeImage(
 		`svg/arrow_small_right${
-			nowPickTypeIndex.value + 5 >= usefulProductType.value.length
+			usefulProdctTypePoint.value + 5 >= usefulProductType.value.length
 				? '_wbg'
 				: ''
 		}.svg`
+	);
+	nowPickTypeIndex.value = 0;
+	pickProductsGroup(
+		pTList.value[nowPickTypeIndex.value].name,
+		nowPickTypeIndex.value
 	);
 };
 
@@ -49,6 +59,11 @@ const pickProductsGroup = (name, i) => {
 	showProduct.value = usefulProducts.value.filter(
 		(el) => el.production_type_id === name
 	);
+};
+
+const goToProductPage = (id) => {
+	console.log(id);
+	router.push(`/Product/${id}`);
 };
 
 onBeforeMount(() => {
@@ -125,6 +140,7 @@ onBeforeMount(() => {
 					>
 						<div
 							class="flex-col justify-center items-center w-full h-full group"
+							@click="goToProductPage(pro.name)"
 						>
 							<img
 								:src="useMakeImage(pro.photo)"

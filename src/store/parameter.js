@@ -1,4 +1,3 @@
-// import { fa } from 'element-plus/es/locale';
 import { defineStore } from 'pinia';
 import { reactive, ref } from 'vue';
 import { useComponentStore } from './component';

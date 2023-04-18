@@ -1,5 +1,6 @@
 <script setup>
 import adminList from '@/assets/db/admin.json';
+import product from '@/assets/db/product.json';
 import { reactive, inject, onBeforeMount, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
@@ -43,7 +44,7 @@ router.afterEach((to, from) => {
 
 router.beforeEach((to, from, next) => {
 	// console.log(to, from);
-	// console.log(loginAdmin.value.permissions);
+	// console.log(to.params.id);
 	if (to.path == '/login') next();
 	else {
 		const token = sessionGet('cinoT')
@@ -63,7 +64,15 @@ router.beforeEach((to, from, next) => {
 			errorHandle(0, '/login', next);
 			sessionRemove('cinoT');
 		} else {
-			if (isPassPrefit(to.meta.prefit)) errorHandle(1, '/', next);
+			// Product Document... single page check
+			if (
+				to.params.id &&
+				isPassPrefit(
+					product.find((el) => el.name === to.params.id).prefit
+				)
+			)
+				errorHandle(1, '/', next);
+			else if (isPassPrefit(to.meta.prefit)) errorHandle(1, '/', next);
 			else {
 				fixHeader(to.name);
 				next();

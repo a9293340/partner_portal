@@ -8,10 +8,19 @@ const defaultRouter = [
 	},
 	{
 		path: '/introduce',
-		name: 'introduce',
+		name: 'Introduce',
 		component: () =>
 			import(
 				/* webpackChunkName: "introduce" */ '../views/Introduce.vue'
+			),
+		meta: { prefit: [0, 1, 2, 3] },
+	},
+	{
+		path: '/product/:id',
+		name: 'Product',
+		component: () =>
+			import(
+				/* webpackChunkName: "introduce" */ '../views/Product/_id.vue'
 			),
 		meta: { prefit: [0, 1, 2, 3] },
 	},
@@ -54,9 +63,14 @@ const makeRouterData = (db) => {
 	return arr;
 };
 
-const routerData2 = makeRouterData(routerData);
-
-const routes = [...defaultRouter, ...routerData2];
+const routes = [
+	...defaultRouter,
+	...makeRouterData(routerData),
+	{
+		path: '/:catchAll(.*)',
+		redirect: '/introduce',
+	},
+];
 
 const router = createRouter({
 	history: createWebHashHistory(), // hash模式：createWebHashHistory，history模式：createWebHistory
