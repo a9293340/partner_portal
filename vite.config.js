@@ -36,6 +36,14 @@ export default ({ mode }) =>
 		base: './',
 		server: {
 			hmr: true,
+			port: '5173',
+			proxy: {
+				'/api': {
+					target: 'http://localhost:3300',
+					changeOrigin: true,
+					rewrite: (path) => path.replace(/^\/api/, ''),
+				},
+			},
 		},
 		css: {
 			// preprocessorOptions: {

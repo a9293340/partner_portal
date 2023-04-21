@@ -9,26 +9,19 @@ const defaultRouter = [
 	{
 		path: '/introduce',
 		name: 'Introduce',
-		component: () =>
-			import(
-				/* webpackChunkName: "introduce" */ '../views/Introduce.vue'
-			),
+		component: () => import('../views/Introduce.vue'),
 		meta: { prefit: [0, 1, 2, 3] },
 	},
 	{
 		path: '/product/:id',
 		name: 'Product',
-		component: () =>
-			import(
-				/* webpackChunkName: "introduce" */ '../views/Product/_id.vue'
-			),
+		component: () => import('../views/Product/_id.vue'),
 		meta: { prefit: [0, 1, 2, 3] },
 	},
 	{
 		path: '/login',
 		name: 'login',
-		component: () =>
-			import(/* webpackChunkName: "add" */ '../views/Login.vue'),
+		component: () => import('../views/Login.vue'),
 		meta: { prefit: [0, 1, 2, 3] },
 	},
 ];

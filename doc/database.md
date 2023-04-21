@@ -68,10 +68,6 @@
 	"name": "string",
 	"product_id": "string",
 	"prefit": [0],
-	"revision_history": {
-		"name": "string",
-		"download_path": "string"
-	},
 	"version": [
 		{
 			"download_path": "string",
@@ -200,7 +196,7 @@
 {
 	"_id": "string",
 	"name": "string",
-	"prefit": "string",
+	"prefit": 0,
 
 	"_comment_prefit": "0 : 管理員 ;1: Support ;2: CINO partner ;3: SICK partner"
 }

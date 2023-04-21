@@ -1,1 +1,54 @@
-[{"name":"CinoSupperAdmin","company":"CINO2","permissions":0,"status":0,"account":"eric866","password":"eric866","email":"eric866@gmail.com","token":"U2FsdGVkX1+lrLo11Rzh7OCWIwHdsDAJ/hrQeBv4xDfHgf3gIsYJPOac5617WST+1NrXfWNqHgVGwlpKXSDlJw==","last_login_time":"2023-04-17 16:11:16","create_date":"2023-04-06","action_log":[]},{"name":"CinoNormalAdmin","company":"CINO","permissions":1,"status":0,"account":"eric877","password":"eric877","email":"eric877@gmail.com","token":"U2FsdGVkX18sN2lCGHgdIB6BXQwt5TV9HhbgaP5EDhVFd0Nopn4CKtbh5KV9W3NjuV4AnRnq/mnqYI+TphLDHA==","last_login_time":"2023-04-17 14:11:07","create_date":"2023-04-06","action_log":[]},{"name":"CINO Test","permissions":2,"company":"CINO","status":0,"account":"eric888","password":"eric888","email":"f102041332@gmail.com","token":"U2FsdGVkX1/Ochckd4A9T0DacnCJlUSMZRXsCtskvhzkamADRjVpDQJUXDs+FBXSXcUVZhWdtlCYHJeYMxEUdw==","last_login_time":"2023-04-18 15:22:51","create_date":"2023-04-17 15:26:18","action_log":[]},{"name":"SICK test","permissions":3,"company":"SICK","status":0,"account":"eric999","password":"eric999","email":"f102041332@gmail.com","token":"U2FsdGVkX18YD+ysBM4c/BnmKRxM16nLb4rjlXekWDExuX2aZUqHj6DvuS6Zz4rVUNXlQzklx9XKdU65fVOr7w==","last_login_time":"2023-04-18 17:33:22","create_date":"2023-04-17 15:35:03","action_log":[]}]
+[
+	{
+		"name": "CinoSupperAdmin",
+		"company": "CINO2",
+		"permissions": 0,
+		"status": 0,
+		"account": "eric866",
+		"password": "eric866",
+		"email": "eric866@gmail.com",
+		"token": "",
+		"last_login_time": "2023-04-19 13:26:15",
+		"create_date": "2023-04-06",
+		"action_log": []
+	},
+	{
+		"name": "CinoNormalAdmin",
+		"company": "CINO",
+		"permissions": 1,
+		"status": 0,
+		"account": "eric877",
+		"password": "eric877",
+		"email": "eric877@gmail.com",
+		"token": "",
+		"last_login_time": "2023-04-17 14:11:07",
+		"create_date": "2023-04-06",
+		"action_log": []
+	},
+	{
+		"name": "CINO Test",
+		"permissions": 2,
+		"company": "CINO",
+		"status": 0,
+		"account": "eric888",
+		"password": "eric888",
+		"email": "f102041332@gmail.com",
+		"token": "",
+		"last_login_time": "2023-04-19 13:29:08",
+		"create_date": "2023-04-17 15:26:18",
+		"action_log": []
+	},
+	{
+		"name": "SICK test",
+		"permissions": 3,
+		"company": "SICK",
+		"status": 0,
+		"account": "eric999",
+		"password": "eric999",
+		"email": "f102041332@gmail.com",
+		"token": "",
+		"last_login_time": "2023-04-19 13:28:41",
+		"create_date": "2023-04-17 15:35:03",
+		"action_log": []
+	}
+]
