@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>Admin</h1>
+  <button onclick="Login()">Login</button>
+  <button onclick="Logout()">Logout</button>
+  <button onclick="AdminList()">List</button>
+  <button onclick="AdminAdd()">Add</button>
+  <button onclick="AdminEdit()">Edit</button>
+  <h1>Prefit</h1>
+  <button onclick="PrefitList()">List</button>
+  <button onclick="PrefitAdd()">Add</button>
+  <button onclick="PrefitEdit()">Edit</button>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script>
+    let token;
+
+    function send(data, router) {
+      const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'cino9527').toString()
+      // console.log(obj)
+      axios
+        .post(`http://localhost:3300/api/${router}`, {
+          data: obj
+        })
+        .then(res => {
+          // console.log(res.data)
+          const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "cino9527").toString(CryptoJS.enc.Utf8))
+          console.log(ans)
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    }
+
+    function PrefitList() {
+      const data = {
+        tokenReq: 'eric866',
+        token,
+        limit: 3,
+        page: 0,
+        filter: {
+          prefit: 0
+        }
+      }
+      send(data, 'prefit/list')
+    }
+
+    function PrefitAdd() {
+      const data = {
+        tokenReq: 'eric866',
+        token,
+        prefit: 5,
+        name: 'Super Partner'
+      }
+      send(data, 'prefit/add')
+    }
+
+    function PrefitEdit() {
+      const data = {
+        tokenReq: 'eric866',
+        token,
+        _id: '6442577f624fbf2247050d7e',
+        prefit: 99
+      }
+      send(data, 'prefit/edit')
+    }
+
+    function AdminAdd() {
+      const data = {
+        tokenReq: 'eric866',
+        token,
+        permissions: 1,
+        name: "SICKTEST",
+        status: 0,
+        account: "eric111",
+        password: "eric111",
+        email: "test@gmail.com",
+      }
+      send(data, 'admin/add')
+    }
+
+    function AdminEdit() {
+      const edit = {
+        token,
+        tokenReq: "eric866",
+        _id: '64423030249f38f82619fc8b',
+        type: 0,
+        name: '搞笑測試',
+        status: 1
+      }
+      send(edit, 'admin/edit')
+
+    }
+
+    function AdminList() {
+      const data = {
+        tokenReq: 'eric866',
+        token,
+        limit: 3,
+        page: 0,
+        filter: {
+          status: 0
+        }
+      }
+      send(data, 'admin/list')
+    }
+
+    function Login() {
+      const data = {
+        account: 'eric866',
+        password: 'eric866'
+      }
+      const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'cino9527').toString()
+      // console.log(obj)
+      axios
+        .post('http://localhost:3300/api/admin/login', {
+          data: obj
+        })
+        .then(res => {
+          // console.log(res.data)
+          const ans = JSON.parse(CryptoJS.AES.decrypt(res.data, "cino9527").toString(CryptoJS.enc.Utf8))
+          // console.log(ans.data)
+          token = ans.data
+          console.log(token)
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    }
+
+    function Logout() {
+      const data = {
+        tokenReq: 'eric866',
+        token
+      }
+      console.log(data)
+      const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'cino9527').toString()
+      axios
+        .post('http://localhost:3300/api/admin/logout', {
+          data: obj
+        })
+        .then(res => {
+          const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "cino9527").toString(CryptoJS.enc.Utf8))
+          console.log(ans)
+          token = ans.token
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    }
+  </script>
+</body>
+
+</html>
