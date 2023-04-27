@@ -29,35 +29,35 @@ app.get('/', (req, res) => {
 // development
 app.use(
 	cors({
-		origin: ['http://localhost:5173'],
-		methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+		origin: '*',
+		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+		preflightContinue: false,
+		optionsSuccessStatus: 204,
 	})
 );
-app.all('*', function (req, res, next) {
-	res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-	res.header('Access-Control-Allow-Headers', 'Content-Type');
-	res.header(
-		'Access-Control-Allow-Methods',
-		'PUT, POST, GET, DELETE, OPTIONS'
-	);
-	next();
-});
+// app.all('*', function (req, res, next) {
+// 	res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+// 	res.header('Access-Control-Allow-Headers', 'Content-Type');
+// 	res.header(
+// 		'Access-Control-Allow-Methods',
+// 		'PUT, POST, GET, DELETE, OPTIONS'
+// 	);
+// 	next();
+// });
 
 // catch 404 and forward to error handleryar
 app.use(function (req, res, next) {
-	res.status(404).json(
-		encryptRes({
-			error_code: 10001,
-			data: {},
-		})
-	);
+	res.status(404).json({
+		error_code: 10001,
+		data: encryptRes({}),
+	});
 });
 
 // error handler
 app.use(function (err, req, res, next) {
 	console.log('Error Code :', err);
 	const error_code = Number.isInteger(err) ? err : 10003;
-	res.status(500).json({ error_code, data: {} });
+	res.status(500).json({ error_code, data: encryptRes({}) });
 });
 
 module.exports = app;

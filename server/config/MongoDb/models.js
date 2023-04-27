@@ -10,7 +10,13 @@ const admin = new mongoose.Schema({
 	password: { type: String },
 	email: { type: String },
 	action_log: { type: Array },
+	company: { type: String },
+});
+
+const admin_token = new mongoose.Schema({
 	token: { type: String },
+	tokenReq: { type: String },
+	time: { type: Date },
 });
 
 const router = new mongoose.Schema({
@@ -87,4 +93,5 @@ module.exports = {
 	documents,
 	document_type,
 	prefit,
+	admin_token,
 };

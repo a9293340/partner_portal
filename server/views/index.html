@@ -94,10 +94,10 @@
       const edit = {
         token,
         tokenReq: "eric866",
-        _id: '64423030249f38f82619fc8b',
+        _id: '644109335670c02b44d83271',
         type: 0,
-        name: '搞笑測試',
-        status: 1
+        name: 'CinoSup',
+        company: 'CINO'
       }
       send(edit, 'admin/edit')
 
@@ -129,9 +129,9 @@
         })
         .then(res => {
           // console.log(res.data)
-          const ans = JSON.parse(CryptoJS.AES.decrypt(res.data, "cino9527").toString(CryptoJS.enc.Utf8))
+          const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "cino9527").toString(CryptoJS.enc.Utf8))
           // console.log(ans.data)
-          token = ans.data
+          token = ans.token
           console.log(token)
         })
         .catch(e => {

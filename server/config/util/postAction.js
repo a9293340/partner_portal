@@ -66,7 +66,7 @@ const pEdit = async (res, next, modelName, use, _id) => {
 		let arr = await MongooseCRUD('Uo', modelName, { _id }, use);
 		// console.log(arr);
 		res.status(200).json({
-			error_code: !arr['matchedCount'] ? 10007 : 0,
+			error_code: !arr['modifiedCount'] ? 10007 : 0,
 			data: encryptRes({}),
 		});
 	} catch (error) {
