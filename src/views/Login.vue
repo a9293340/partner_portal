@@ -1,11 +1,9 @@
 <script setup>
-import { reactive, ref, inject, onMounted } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useParameterStore } from '@/store/parameter.js';
-import { storeToRefs } from 'pinia';
-import { sessionSet } from '@/utils';
-import * as dayjs from 'dayjs';
-import fs from 'vite-plugin-fs/browser';
+import { useParameterStore } from '@/store/parameter';
+import { useComponentStore } from '@/store/component';
+import { sessionSet, sessionGet, encode, decode } from '@/utils';
 import VueClientRecaptcha from 'vue-client-recaptcha';
 import { useMakeImage } from '../assets/util';
 import productList from '@/assets/db/production_type.json';
@@ -13,8 +11,9 @@ import productList from '@/assets/db/production_type.json';
 const inputValue = ref(null);
 const checkValue = ref(null);
 
+const { fixPrefitList } = useComponentStore();
+
 const checkValidCaptcha = (value) => (checkValue.value = value);
-const cryoptojs = inject('cryptojs');
 const loginForm = ref(null);
 const state = reactive({
 	ruleForm: {
@@ -40,12 +39,11 @@ const state = reactive({
 	},
 });
 const login = useParameterStore();
-const { tokenKey, adminList } = storeToRefs(login);
-const adList = ref(JSON.parse(JSON.stringify(adminList.value)));
-const { fixError, resetAdminList } = login;
+const { fixError } = login;
 const router = useRouter();
 
 const submitForm = async () => {
+	if (!checkValue.value) return;
 	if (!(checkValue.value.toUpperCase() === inputValue.value.toUpperCase())) {
 		fixError({
 			title: 'Error',
@@ -57,45 +55,64 @@ const submitForm = async () => {
 
 	loginForm.value.validate(async (valid) => {
 		if (valid) {
-			const target = adList.value.findIndex(
-				(adm) =>
-					adm.account === state.ruleForm.username &&
-					adm.password === state.ruleForm.password
-			);
-			if (target !== -1) {
-				if (target.status) {
-					fixError({
-						title: 'Error',
-						msg: 'Your account has been suspended!',
-						isShow: true,
-					});
-
-					return;
-				}
-				adList.value[target].token = cryoptojs.AES.encrypt(
-					JSON.stringify({
-						account: adList.value[target].account,
-						password: adList.value[target].password,
+			let token = '';
+			try {
+				const resp = await axios.post('/api/admin/login', {
+					data: encode({
+						account: state.ruleForm.username,
+						password: state.ruleForm.password,
 					}),
-					tokenKey.value
-				).toString();
-				adList.value[target].last_login_time = dayjs().format(
-					'YYYY-MM-DD HH:mm:ss'
-				);
-				login.loginAction(adList.value[target]);
-				sessionSet('cinoT', adList.value[target].token);
-				await fs.writeFile(
-					'./assets/db/admin.json',
-					JSON.stringify(adList.value)
-				);
-				resetAdminList(adList.value);
-				router.push('/');
-			} else {
+				});
+				token = decode(resp.data.data).token;
+				sessionSet('cinoT', token);
+				// console.log(token);
+			} catch (error) {
 				fixError({
 					title: 'Error',
-					msg: 'Account or Password is not exist!',
+					msg: error.response.data.error_code,
 					isShow: true,
 				});
+			}
+
+			try {
+				const adminDetail = await axios.post('/api/admin/list', {
+					data: encode({
+						tokenReq: state.ruleForm.username,
+						token: sessionGet('cinoT'),
+						limit: 1,
+						page: 0,
+						filter: {
+							account: state.ruleForm.username,
+						},
+					}),
+				});
+				const prefit = await axios.post('/api/prefit/list', {
+					data: encode({
+						tokenReq: state.ruleForm.username,
+						token: sessionGet('cinoT'),
+						limit: 100,
+						page: 0,
+						filter: {},
+					}),
+				});
+				fixPrefitList(
+					decode(prefit.data.data).list.map((el) => ({
+						val: el.prefit,
+						opt: el.name,
+					}))
+				);
+				login.loginAction(decode(adminDetail.data.data).list[0]);
+				// // console.log(adminDetail);
+				router.push('/');
+			} catch (error) {
+				console.log(error);
+				const errCode = error.response.data.error_code;
+				fixError({
+					title: 'Error',
+					msg: errCode,
+					isShow: true,
+				});
+				if (errCode === 10005) router.push('/login');
 			}
 		}
 	});

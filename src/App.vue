@@ -1,22 +1,19 @@
 <script setup>
-import adminList from '@/assets/db/admin.json';
 import product from '@/assets/db/product.json';
-import { reactive, inject, onBeforeMount, ref } from 'vue';
+import { reactive, onBeforeMount, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
 import { useComponentStore } from '@/store/component.js';
 import { storeToRefs } from 'pinia';
-import { sessionGet, sessionRemove } from '@/utils';
+import { sessionRemove, sessionGet, encode } from '@/utils';
 import routerData from '@/assets/db/routerDb.json';
-
-const cryoptojs = inject('cryptojs');
 
 const router = useRouter();
 const login = useParameterStore();
 const comStore = useComponentStore();
-const { showMenu, loginAdmin, tokenKey, errorMsg } = storeToRefs(login);
+const { showMenu, loginAdmin, errorMsg } = storeToRefs(login);
 const { isShadow } = storeToRefs(comStore);
-const { changeShowMenu, fixError, fixHeader, isPassPrefit, resetAdminList } =
+const { changeShowMenu, fixError, fixHeader, isPassPrefit, loginAction } =
 	login;
 
 const state = reactive({
@@ -42,41 +39,37 @@ router.afterEach((to, from) => {
 	// console.log(showMenu.value);
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 	// console.log(to, from);
 	// console.log(to.params.id);
-	if (to.path == '/login') next();
-	else {
-		const token = sessionGet('cinoT')
-			? JSON.parse(
-					cryoptojs.AES.decrypt(
-						sessionGet('cinoT'),
-						tokenKey.value
-					).toString(cryoptojs.enc.Utf8)
-			  )
-			: false;
-		// console.log(token);
-		if (!token) errorHandle(0, '/login', next);
-		else if (
-			token.account !== loginAdmin.value.account ||
-			token.password !== loginAdmin.value.password
-		) {
-			errorHandle(0, '/login', next);
-			sessionRemove('cinoT');
-		} else {
-			// Product Document... single page check
-			if (
-				to.params.id &&
-				isPassPrefit(
-					product.find((el) => el.name === to.params.id).prefit
-				)
-			)
-				errorHandle(1, '/', next);
-			else if (isPassPrefit(to.meta.prefit)) errorHandle(1, '/', next);
-			else {
-				fixHeader(to.name);
-				next();
+	if (to.path == '/login') {
+		if (loginAdmin.value.account) {
+			try {
+				const logout = await axios.post('/api/admin/logout', {
+					data: encode({
+						tokenReq: loginAdmin.value.account,
+						token: sessionGet('cinoT'),
+					}),
+				});
+				sessionRemove('cinoT');
+				loginAction({});
+			} catch (error) {
+				console.log(error);
 			}
+		}
+		next();
+	} else {
+		if (!loginAdmin.value.account) errorHandle(0, '/login', next);
+		// Product Document... single page check
+		else if (
+			to.params.id &&
+			isPassPrefit(product.find((el) => el.name === to.params.id).prefit)
+		)
+			errorHandle(1, '/', next);
+		else if (isPassPrefit(to.meta.prefit)) errorHandle(1, '/', next);
+		else {
+			fixHeader(to.name);
+			next();
 		}
 	}
 	state.currentPath = to.path;
@@ -84,7 +77,7 @@ router.beforeEach((to, from, next) => {
 
 onBeforeMount(() => {
 	mainTitle.value = routerData;
-	resetAdminList(adminList);
+	// resetAdminList(adminList);
 });
 </script>
 
@@ -195,7 +188,7 @@ body,
 }
 .shadow {
 	position: fixed;
-	z-index: 5000;
+	z-index: 1499;
 	width: 100%;
 	height: 100%;
 	top: 0;

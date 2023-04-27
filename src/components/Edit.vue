@@ -19,10 +19,9 @@ const formData = ref(null);
 
 const editAdmin = () => {
 	formData.value.validate(async (valid) => {
-		console.log(valid);
+		// console.log(valid);
 		if (valid) {
 			emit('data', editTarget.value);
-			fixOpenEditPop(false);
 		} else
 			fixError({
 				title: 'Error',
@@ -53,9 +52,23 @@ const editAdmin = () => {
 							style="width: 30em"
 							autocomplete="off"
 							v-model="editTarget[ed.key]"
+							:disabled="ed.title === '_id'"
 							v-if="ed.option === 'input'"
 						></el-input>
-						<select v-model="editTarget[ed.key]" v-else>
+						<el-select
+							v-else
+							placeholder="Select"
+							v-model="editTarget[ed.key]"
+						>
+							<el-option
+								v-for="item in ed.isSelect"
+								:key="item.opt"
+								:label="item.opt"
+								:value="item.val"
+							/>
+						</el-select>
+
+						<!-- <select v-model="editTarget[ed.key]" v-else>
 							<option
 								v-for="item in ed.isSelect"
 								:key="item.opt"
@@ -63,7 +76,7 @@ const editAdmin = () => {
 							>
 								{{ item.opt }}
 							</option>
-						</select>
+						</select> -->
 					</el-form-item>
 				</div>
 			</el-form>
@@ -102,7 +115,7 @@ const editAdmin = () => {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	z-index: 10000;
+	z-index: 1500;
 	padding: 20px;
 	header {
 		width: 100%;
@@ -123,5 +136,8 @@ const editAdmin = () => {
 		display: flex;
 		justify-content: flex-end;
 	}
+}
+.el-popper {
+	z-index: 1000000;
 }
 </style>

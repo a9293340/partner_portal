@@ -3,13 +3,16 @@ import { ref, onBeforeMount } from 'vue';
 import { useComponentStore } from '@/store/component';
 import { useParameterStore } from '@/store/parameter';
 import { storeToRefs } from 'pinia';
-import fs from 'vite-plugin-fs/browser';
+import { encode, decode, sessionGet } from '@/utils';
 
 const comStore = useComponentStore();
 const login = useParameterStore();
 const adList = ref();
-const { isOpenEditPop, prefitList, typeList } = storeToRefs(comStore);
-const { loginAdmin, adminRules, adminList } = storeToRefs(login);
+const totalData = ref();
+const nowPage = ref();
+const { isOpenEditPop, prefitList, typeList, page_limit } =
+	storeToRefs(comStore);
+const { loginAdmin, adminRules } = storeToRefs(login);
 const { fixOpenEditPop, makeKeys } = comStore;
 const { loginAction, resetAdminList } = login;
 
@@ -36,19 +39,57 @@ const editAdmin = (row, idx) => {
 	fixOpenEditPop(true);
 };
 
-const getEdmitData = async (data) => {
-	adList.value[nowEditIndex.value] = data;
-	if (data.account === loginAdmin.value.account) loginAction(data);
-	await editDataBase();
+const getEditData = async (data) => {
+	// console.log(data);
+	try {
+		await axios.post('/api/admin/edit', {
+			data: encode({
+				tokenReq: loginAdmin.value.account,
+				token: sessionGet('cinoT'),
+				...data,
+			}),
+		});
+		await getDataByPage(nowPage.value);
+		if (data.account === loginAdmin.value.account) loginAction(data);
+	} catch (error) {
+		console.log(error);
+	}
+	fixOpenEditPop(false);
 };
 
-const editDataBase = async () => {
-	await fs.writeFile('./assets/db/admin.json', JSON.stringify(adList.value));
-	resetAdminList(adList.value);
+const pageChange = async (page) => {
+	console.log(page);
+	await getDataByPage(page - 1);
+};
+
+const getDataByPage = async (page) => {
+	nowPage.value = page;
+	// console.log(page_limit.value);
+	const res = decode(
+		(
+			await axios.post('/api/admin/list', {
+				data: encode({
+					tokenReq: loginAdmin.value.account,
+					token: sessionGet('cinoT'),
+					limit: page_limit.value,
+					page,
+					filter: {},
+				}),
+			})
+		).data.data
+	);
+	// console.log(res.total);
+	totalData.value = res.total;
+	adList.value = res.list;
 };
 
 onBeforeMount(async () => {
-	adList.value = JSON.parse(JSON.stringify(adminList.value));
+	// console.log(prefitList.value);
+	try {
+		await getDataByPage(0);
+	} catch (error) {
+		adList.value = [];
+	}
 });
 </script>
 
@@ -59,7 +100,7 @@ onBeforeMount(async () => {
 			<el-table-column prop="company" label="company" width="150" />
 			<el-table-column prop="email" label="Email" width="210" />
 			<el-table-column prop="account" label="Account" width="150" />
-			<el-table-column label="Permissions" width="150">
+			<el-table-column label="Permissions" width="170">
 				<template #default="scope">
 					<span>{{
 						prefitList.find(
@@ -91,13 +132,21 @@ onBeforeMount(async () => {
 				</template>
 			</el-table-column>
 		</el-table>
+		<el-pagination
+			background
+			layout="prev, pager, next"
+			:total="totalData"
+			:page-count="Math.ceil(totalData / page_limit)"
+			:page-size="page_limit"
+			@current-change="pageChange"
+		/>
 		<Edit
 			v-if="isOpenEditPop"
 			:title="'Edit Admin'"
 			:rules="adminRules"
 			:keys="editKeys"
 			:foo="JSON.stringify(editTarget)"
-			@data="getEdmitData"
+			@data="getEditData"
 		/>
 	</div>
 </template>
@@ -108,5 +157,8 @@ onBeforeMount(async () => {
 .user-list {
 	padding: 30px;
 	position: relative;
+}
+.el-pagination {
+	justify-content: center;
 }
 </style>

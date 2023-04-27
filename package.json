@@ -1,19 +1,20 @@
 {
-	"name": "admin00",
+	"name": "cino-partner-portal",
 	"version": "0.0.0",
 	"scripts": {
 		"dev": "vite --mode development",
 		"build:beta": "vite build --mode beta",
 		"build:release": "vite build --mode release",
 		"serve": "vite preview",
+		"run-server": "cd ./server && nodemon ./bin/www",
 		"css": "tailwind build tailwind.css -o ./src/index.css"
 	},
 	"dependencies": {
 		"@element-plus/icons-vue": "^2.0.9",
 		"autoprefixer": "^10.4.14",
-		"axios": "0.21.1",
+		"crypto-js": "^4.1.1",
 		"dayjs": "^1.11.7",
-		"element-plus": "^2.2.17",
+		"element-plus": "^2.3.4",
 		"js-md5": "^0.7.3",
 		"pinia": "^2.0.33",
 		"postcss": "^8.4.21",
@@ -26,6 +27,7 @@
 		"vue-client-recaptcha": "^1.1.1",
 		"vue-cryptojs": "^2.3.1",
 		"vue-router": "^4.1.5",
+		"vuejs-paginate": "^2.1.0",
 		"wangeditor": "^4.6.15"
 	},
 	"devDependencies": {

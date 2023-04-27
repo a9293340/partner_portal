@@ -5,6 +5,8 @@ export const useComponentStore = defineStore('component', () => {
 	const isOpenEditPop = ref(false);
 	const isShadow = ref(false);
 
+	const page_limit = ref(20);
+
 	const prefitList = ref([
 		{ val: 0, opt: 'Super admin' },
 		{ val: 1, opt: 'Support' },
@@ -15,6 +17,10 @@ export const useComponentStore = defineStore('component', () => {
 		{ val: 0, opt: 'On' },
 		{ val: 1, opt: 'Off' },
 	]);
+
+	const fixPrefitList = (pre) => {
+		prefitList.value = pre;
+	};
 
 	const fixOpenEditPop = (bool) => {
 		isOpenEditPop.value = bool;
@@ -64,5 +70,7 @@ export const useComponentStore = defineStore('component', () => {
 		firstStringUpperCase,
 		prefitList,
 		typeList,
+		fixPrefitList,
+		page_limit,
 	};
 });

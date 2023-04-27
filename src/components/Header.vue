@@ -40,9 +40,10 @@
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { sessionRemove } from '@/utils';
+import { sessionGet } from '@/utils';
 import { useParameterStore } from '@/store/parameter.js';
 import fs from 'vite-plugin-fs/browser';
+import { encode } from '../utils';
 
 const login = useParameterStore();
 const { loginAdmin, nowHeader } = storeToRefs(login);
@@ -57,14 +58,6 @@ const state = reactive({
 
 // 退出登录
 const logout = async () => {
-	const admin = JSON.parse(await fs.readFile('./assets/db/admin.json'));
-	const idx = admin.findIndex(
-		(el) => el.account === loginAdmin.value.account
-	);
-	admin[idx].token = '';
-	await fs.writeFile('./assets/db/admin.json', JSON.stringify(admin));
-	sessionRemove('cinoT');
-	loginAction({});
 	router.push('/login');
 };
 

@@ -55,6 +55,21 @@ export const useParameterStore = defineStore('parameter', () => {
 	});
 
 	const fixError = (obj) => {
+		if (obj.msg && Number.isInteger(obj.msg))
+			switch (obj.msg) {
+				case 11002 || 11001:
+					obj.msg = 'Account or Password is not exist!';
+					break;
+				case 10008:
+					obj.msg = 'Your account has been suspended!';
+					break;
+				case 10005:
+					obj.msg = 'Login TimeOut!';
+					break;
+				default:
+					obj.msg = 'Format Error!';
+					break;
+			}
 		errorMsg.value = obj;
 		if (obj.isShow)
 			setTimeout(() => {

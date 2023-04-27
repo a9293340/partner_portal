@@ -25,7 +25,7 @@ export default ({ mode }) =>
 			ElementPlus(),
 		],
 		optimizeDeps: {
-			include: ['dayjs'],
+			include: ['dayjs', 'element-plus'],
 		},
 		resolve: {
 			alias: {
@@ -36,12 +36,11 @@ export default ({ mode }) =>
 		base: './',
 		server: {
 			hmr: true,
-			port: '5173',
 			proxy: {
 				'/api': {
 					target: 'http://localhost:3300',
 					changeOrigin: true,
-					rewrite: (path) => path.replace(/^\/api/, ''),
+					rewrite: (path) => path,
 				},
 			},
 		},
