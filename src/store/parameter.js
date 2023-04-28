@@ -52,6 +52,34 @@ export const useParameterStore = defineStore('parameter', () => {
 				trigger: 'blur',
 			},
 		],
+		slogan: [
+			{
+				required: 'true',
+				message: "Account can't be empty",
+				trigger: 'blur',
+			},
+		],
+		production_type_id: [
+			{
+				required: 'true',
+				message: "company can't be empty",
+				trigger: 'change',
+			},
+		],
+		documents_id: [
+			{
+				required: 'true',
+				message: "company can't be empty",
+				trigger: 'change',
+			},
+		],
+		firmware_id: [
+			{
+				required: 'true',
+				message: "company can't be empty",
+				trigger: 'change',
+			},
+		],
 	});
 
 	const fixError = (obj) => {
@@ -65,6 +93,9 @@ export const useParameterStore = defineStore('parameter', () => {
 					break;
 				case 10005:
 					obj.msg = 'Login TimeOut!';
+					break;
+				case 11003:
+					obj.msg = 'Account Existed!';
 					break;
 				default:
 					obj.msg = 'Format Error!';

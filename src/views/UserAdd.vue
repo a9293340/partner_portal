@@ -4,18 +4,21 @@ import { useParameterStore } from '@/store/parameter';
 import { useComponentStore } from '@/store/component';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import fs from 'vite-plugin-fs/browser';
 import * as dayjs from 'dayjs';
+import { encode, sessionGet } from '@/utils';
+import AddTemplate from '../components/AddTemplate.vue';
 
-const { adminRules, adminList } = storeToRefs(useParameterStore());
-const { resetAdminList } = useParameterStore();
-const { firstStringUpperCase, prefitList, typeList } = useComponentStore();
+const { loginAdmin } = storeToRefs(useParameterStore());
+const { fixError } = useParameterStore();
+const { fixLoading, prefitList, statusList } = useComponentStore();
 const router = useRouter();
 
-const formAction = ref(null);
-const adList = ref(JSON.parse(JSON.stringify(adminList)));
 const showInput = ['name', 'company', 'account', 'password', 'email'];
 const showSelect = ['permissions', 'status'];
+const selectItems = {
+	permissions: prefitList,
+	status: statusList,
+};
 const empty = {
 	name: '',
 	permissions: 1,
@@ -24,80 +27,46 @@ const empty = {
 	account: '',
 	password: '',
 	email: '',
-	token: '',
 	last_login_time: '',
 };
 const inputData = ref(empty);
-
-const addAdmin = async () => {
-	formAction.value.validate(async (valid) => {
-		if (valid) {
-			inputData.value['create_date'] = dayjs().format(
-				'YYYY-MM-DD HH:mm:ss'
-			);
-			inputData.value['action_log'] = [];
-			adList.value.push(inputData.value);
-			await fs.writeFile(
-				'./assets/db/admin.json',
-				JSON.stringify(adList.value)
-			);
-			resetAdminList(adList.value);
-			inputData.value = empty;
-			router.push('/userList');
-		}
-	});
+const addAdmin = async (data) => {
+	inputData.value = data;
+	fixLoading(true);
+	inputData.value['create_date'] = dayjs().format('YYYY-MM-DD HH:mm:ss');
+	inputData.value['action_log'] = [];
+	try {
+		await axios.post('/api/admin/add', {
+			data: encode({
+				tokenReq: loginAdmin.value.account,
+				token: sessionGet('cinoT'),
+				...inputData.value,
+			}),
+		});
+	} catch (error) {
+		console.log(error);
+		if (error.response)
+			fixError({
+				title: 'Error',
+				msg: error.response.data.error_code,
+				isShow: true,
+			});
+	}
+	inputData.value = empty;
+	router.push('/userList');
+	fixLoading(false);
 };
 </script>
 
 <template>
 	<div class="user-add">
-		<main>
-			<el-form
-				label-position="left"
-				ref="formAction"
-				:rules="adminRules"
-				:model="inputData"
-			>
-				<div v-for="itemKey in showInput" :key="itemKey">
-					<el-form-item
-						:label="firstStringUpperCase(itemKey)"
-						style="margin-bottom: 30px; width: 40em"
-						class="form-label"
-						:prop="itemKey"
-					>
-						<el-input
-							type="text"
-							v-model="inputData[itemKey]"
-							autocomplete="off"
-						>
-						</el-input>
-					</el-form-item>
-				</div>
-				<div v-for="itemKey in showSelect" :key="itemKey">
-					<el-form-item
-						:label="firstStringUpperCase(itemKey)"
-						style="margin-bottom: 30px; width: 40em"
-						class="form-label"
-						:prop="itemKey"
-					>
-						<select v-model="inputData[itemKey]">
-							<option
-								v-for="item in itemKey === 'status'
-									? typeList
-									: prefitList"
-								:key="item.opt"
-								:value="item.val"
-							>
-								{{ item.opt }}
-							</option>
-						</select>
-					</el-form-item>
-				</div>
-			</el-form>
-		</main>
-		<footer>
-			<el-button class="btn" @click="addAdmin">Add</el-button>
-		</footer>
+		<AddTemplate
+			:input-data="inputData"
+			:show-input="showInput"
+			:show-select="showSelect"
+			:select-items="selectItems"
+			@data="addAdmin"
+		/>
 	</div>
 </template>
 
@@ -109,27 +78,5 @@ const addAdmin = async () => {
 	position: relative;
 	box-sizing: border-box;
 	height: 100%;
-	main {
-		overflow: auto;
-		width: 100%;
-		height: 90%;
-		.el-form-item__label {
-			font-size: 20px;
-			width: 150px;
-		}
-		select {
-			@extend %select;
-			width: 50em;
-		}
-	}
-	footer {
-		width: 100%;
-		height: 10%;
-		display: flex;
-		justify-content: flex-end;
-		.btn {
-			width: 15%;
-		}
-	}
 }
 </style>

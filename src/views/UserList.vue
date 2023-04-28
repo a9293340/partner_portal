@@ -3,44 +3,37 @@ import { ref, onBeforeMount } from 'vue';
 import { useComponentStore } from '@/store/component';
 import { useParameterStore } from '@/store/parameter';
 import { storeToRefs } from 'pinia';
-import { encode, decode, sessionGet } from '@/utils';
+import { encode, decode, sessionGet, axiosList } from '@/utils';
 
 const comStore = useComponentStore();
 const login = useParameterStore();
 const adList = ref();
 const totalData = ref();
 const nowPage = ref();
-const { isOpenEditPop, prefitList, typeList, page_limit } =
+const { isOpenEditPop, prefitList, statusList, page_limit } =
 	storeToRefs(comStore);
-const { loginAdmin, adminRules } = storeToRefs(login);
-const { fixOpenEditPop, makeKeys } = comStore;
-const { loginAction, resetAdminList } = login;
+const { loginAdmin } = storeToRefs(login);
+const { fixOpenEditPop, fixLoading } = comStore;
+const { loginAction, fixError } = login;
 
 const editTarget = ref({});
-const editKeys = ref([]);
-const selectOption = ['permissions', 'status'];
-const notNeed = [
-	'token',
-	'last_login_time',
-	'account',
-	'action_log',
-	'create_date',
-];
 const nowEditIndex = ref(null);
+
+const showInput = ['name', 'company', 'account', 'password', 'email'];
+const showSelect = ['permissions', 'status'];
+const selectItems = {
+	permissions: prefitList,
+	status: statusList,
+};
 
 const editAdmin = (row, idx) => {
 	editTarget.value = row;
 	nowEditIndex.value = idx;
-	editKeys.value = makeKeys(row, notNeed, selectOption, {
-		permissions: prefitList.value,
-		status: typeList.value,
-	});
-	// console.log(editKeys.value);
 	fixOpenEditPop(true);
 };
 
 const getEditData = async (data) => {
-	// console.log(data);
+	fixLoading(true);
 	try {
 		await axios.post('/api/admin/edit', {
 			data: encode({
@@ -49,11 +42,18 @@ const getEditData = async (data) => {
 				...data,
 			}),
 		});
-		await getDataByPage(nowPage.value);
+		await getDataByPage(nowPage.value, false);
 		if (data.account === loginAdmin.value.account) loginAction(data);
 	} catch (error) {
-		console.log(error);
+		// console.log(error);
+		if (error.response)
+			fixError({
+				title: 'Error',
+				msg: error.response.data.error_code,
+				isShow: true,
+			});
 	}
+	fixLoading(false);
 	fixOpenEditPop(false);
 };
 
@@ -62,29 +62,39 @@ const pageChange = async (page) => {
 	await getDataByPage(page - 1);
 };
 
-const getDataByPage = async (page) => {
+const getDataByPage = async (page, jud = true) => {
 	nowPage.value = page;
+	if (jud) fixLoading(true);
 	// console.log(page_limit.value);
-	const res = decode(
-		(
-			await axios.post('/api/admin/list', {
-				data: encode({
-					tokenReq: loginAdmin.value.account,
-					token: sessionGet('cinoT'),
-					limit: page_limit.value,
-					page,
-					filter: {},
-				}),
-			})
-		).data.data
-	);
-	// console.log(res.total);
-	totalData.value = res.total;
-	adList.value = res.list;
+	try {
+		const res = decode(
+			axiosList(
+				await axios.post('/api/admin/list', {
+					data: encode({
+						tokenReq: loginAdmin.value.account,
+						token: sessionGet('cinoT'),
+						limit: page_limit.value,
+						page,
+						filter: {},
+					}),
+				})
+			)
+		);
+		// console.log(res.total);
+		totalData.value = res.total;
+		adList.value = res.list;
+	} catch (error) {
+		if (error.response)
+			fixError({
+				title: 'Error',
+				msg: error.response.data.error_code,
+				isShow: true,
+			});
+	}
+	if (jud) fixLoading(false);
 };
 
 onBeforeMount(async () => {
-	// console.log(prefitList.value);
 	try {
 		await getDataByPage(0);
 	} catch (error) {
@@ -112,7 +122,7 @@ onBeforeMount(async () => {
 			<el-table-column label="Status" width="90">
 				<template #default="scope">
 					<span>{{
-						typeList.find((el) => el.val === scope.row.status).opt
+						statusList.find((el) => el.val === scope.row.status).opt
 					}}</span>
 				</template>
 			</el-table-column>
@@ -143,10 +153,12 @@ onBeforeMount(async () => {
 		<Edit
 			v-if="isOpenEditPop"
 			:title="'Edit Admin'"
-			:rules="adminRules"
-			:keys="editKeys"
-			:foo="JSON.stringify(editTarget)"
+			:input-data="editTarget"
+			:show-input="showInput"
+			:show-select="showSelect"
+			:select-items="selectItems"
 			@data="getEditData"
+			@abort="fixOpenEditPop(false)"
 		/>
 	</div>
 </template>

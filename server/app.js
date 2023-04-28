@@ -4,7 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-const { adminRouter, prefitRouter } = require('./routes');
+const { adminRouter, prefitRouter, RouteRouter } = require('./routes');
 const { encryptRes } = require('./config/util/encryptNToken');
 
 const app = express();
@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/admin', adminRouter);
 app.use('/api/prefit', prefitRouter);
+app.use('/api/route', RouteRouter);
 
 app.get('/', (req, res) => {
 	res.sendfile('./views/index.html');

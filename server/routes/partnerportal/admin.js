@@ -76,10 +76,11 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
 			create_date: new Date(),
 			last_login_time: '',
 			action_log: [],
+			company: user.company,
 		};
 		try {
 			const hasAccount = await MongooseCRUD('R', 'admin', {
-				$or: [{ account: user.account }, { email: user.email }],
+				account: user.account,
 			});
 			console.log(hasAccount);
 			if (hasAccount.length) next(11003);

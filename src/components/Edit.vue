@@ -1,104 +1,67 @@
 <script setup>
-import { useComponentStore } from '@/store/component';
-import { useParameterStore } from '@/store/parameter';
-import { ref } from 'vue';
-const comStore = useComponentStore();
-const login = useParameterStore();
-const { fixOpenEditPop } = comStore;
-const { fixError } = login;
+import AddTemplate from './AddTemplate.vue';
 
-const emit = defineEmits(['data']);
+const emit = defineEmits(['data', 'abort']);
 const props = defineProps({
-	foo: String,
-	title: String,
-	rules: Object,
-	keys: Array,
+	title: {
+		type: String,
+		default: 'EMPTY',
+	},
+	inputData: {
+		type: Object,
+		default: () => ({}),
+	},
+	showInput: {
+		type: Array,
+		default: () => [],
+	},
+	showSelect: {
+		type: Array,
+		default: () => [],
+	},
+	showMultiSelct: {
+		type: Array,
+		default: () => [],
+	},
+	showSpecial: {
+		type: Array,
+		default: () => [],
+	},
+	selectItems: {
+		type: Object,
+		default: () => ({}),
+	},
 });
-const editTarget = ref(JSON.parse(props.foo));
-const formData = ref(null);
+// const editTarget = ref(JSON.parse(props.foo));
+// const formData = ref(null);
 
-const editAdmin = () => {
-	formData.value.validate(async (valid) => {
-		// console.log(valid);
-		if (valid) {
-			emit('data', editTarget.value);
-		} else
-			fixError({
-				title: 'Error',
-				msg: 'Some data cannot be empty!',
-				isShow: true,
-			});
-	});
+const editAdmin = (data) => {
+	emit('data', data);
+};
+
+const abort = (bool) => {
+	emit('abort', bool);
 };
 </script>
 
 <template>
 	<div class="edit-pop">
-		<header>
-			<h2>{{ props.title }}</h2>
+		<header class="flex justify-start items-center">
+			<h1
+				class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900"
+			>
+				{{ props.title }}
+			</h1>
 		</header>
-		<main>
-			<el-form
-				label-position="left"
-				label-width="150px"
-				:rules="props.rules"
-				:model="editTarget"
-				ref="formData"
-			>
-				<div v-for="ed in props.keys" :key="ed">
-					<el-form-item :label="`${ed.title}`" :prop="`${ed.key}`">
-						<el-input
-							type="text"
-							style="width: 30em"
-							autocomplete="off"
-							v-model="editTarget[ed.key]"
-							:disabled="ed.title === '_id'"
-							v-if="ed.option === 'input'"
-						></el-input>
-						<el-select
-							v-else
-							placeholder="Select"
-							v-model="editTarget[ed.key]"
-						>
-							<el-option
-								v-for="item in ed.isSelect"
-								:key="item.opt"
-								:label="item.opt"
-								:value="item.val"
-							/>
-						</el-select>
-
-						<!-- <select v-model="editTarget[ed.key]" v-else>
-							<option
-								v-for="item in ed.isSelect"
-								:key="item.opt"
-								:value="item.val"
-							>
-								{{ item.opt }}
-							</option>
-						</select> -->
-					</el-form-item>
-				</div>
-			</el-form>
-		</main>
-		<footer>
-			<el-button
-				@click="editAdmin"
-				class="btn"
-				style="width: 15%"
-				type="primary"
-			>
-				Edit
-			</el-button>
-			<el-button
-				@click="fixOpenEditPop(false)"
-				class="btn"
-				style="width: 15%"
-				type="primary"
-			>
-				Abort
-			</el-button>
-		</footer>
+		<AddTemplate
+			:input-data="props.inputData"
+			:show-input="props.showInput"
+			:show-select="props.showSelect"
+			:select-items="props.selectItems"
+			:is-edit="true"
+			@data="editAdmin"
+			@abort="abort"
+		/>
 	</div>
 </template>
 
@@ -119,22 +82,24 @@ const editAdmin = () => {
 	padding: 20px;
 	header {
 		width: 100%;
-		height: 15%;
+		height: 10%;
 		color: $main-font-color;
 	}
 	main {
 		width: 100%;
-		height: 70%;
+		height: 80%;
 		overflow: auto;
 		select {
 			@extend %select;
 		}
 	}
 	footer {
+		// margin-top: 50px;
 		width: 100%;
-		height: 15%;
+		height: 10%;
 		display: flex;
 		justify-content: flex-end;
+		align-items: center;
 	}
 }
 .el-popper {

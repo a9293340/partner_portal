@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter';
 import { useComponentStore } from '@/store/component';
-import { sessionSet, sessionGet, encode, decode } from '@/utils';
+import { sessionSet, sessionGet, encode, decode, axiosList } from '@/utils';
 import VueClientRecaptcha from 'vue-client-recaptcha';
 import { useMakeImage } from '../assets/util';
 import productList from '@/assets/db/production_type.json';
@@ -11,7 +11,7 @@ import productList from '@/assets/db/production_type.json';
 const inputValue = ref(null);
 const checkValue = ref(null);
 
-const { fixPrefitList } = useComponentStore();
+const { fixPrefitList, fixLoading } = useComponentStore();
 
 const checkValidCaptcha = (value) => (checkValue.value = value);
 const loginForm = ref(null);
@@ -55,6 +55,7 @@ const submitForm = async () => {
 
 	loginForm.value.validate(async (valid) => {
 		if (valid) {
+			fixLoading(true);
 			let token = '';
 			try {
 				const resp = await axios.post('/api/admin/login', {
@@ -63,15 +64,17 @@ const submitForm = async () => {
 						password: state.ruleForm.password,
 					}),
 				});
-				token = decode(resp.data.data).token;
+				token = decode(axiosList(resp)).token;
 				sessionSet('cinoT', token);
 				// console.log(token);
 			} catch (error) {
-				fixError({
-					title: 'Error',
-					msg: error.response.data.error_code,
-					isShow: true,
-				});
+				if (error.response)
+					fixError({
+						title: 'Error',
+						msg: error.response.data.error_code,
+						isShow: true,
+					});
+				fixLoading(false);
 			}
 
 			try {
@@ -96,22 +99,25 @@ const submitForm = async () => {
 					}),
 				});
 				fixPrefitList(
-					decode(prefit.data.data).list.map((el) => ({
+					decode(axiosList(prefit)).list.map((el) => ({
 						val: el.prefit,
 						opt: el.name,
 					}))
 				);
-				login.loginAction(decode(adminDetail.data.data).list[0]);
+				login.loginAction(decode(axiosList(adminDetail)).list[0]);
 				// // console.log(adminDetail);
 				router.push('/');
+				fixLoading(false);
 			} catch (error) {
 				console.log(error);
 				const errCode = error.response.data.error_code;
-				fixError({
-					title: 'Error',
-					msg: errCode,
-					isShow: true,
-				});
+				if (error.response)
+					fixError({
+						title: 'Error',
+						msg: errCode,
+						isShow: true,
+					});
+				fixLoading(false);
 				if (errCode === 10005) router.push('/login');
 			}
 		}

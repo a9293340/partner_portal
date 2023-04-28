@@ -6,7 +6,7 @@
 		"build:beta": "vite build --mode beta",
 		"build:release": "vite build --mode release",
 		"serve": "vite preview",
-		"run-server": "cd ./server && nodemon ./bin/www",
+		"run-server": "nodemon ./server/bin/www",
 		"css": "tailwind build tailwind.css -o ./src/index.css"
 	},
 	"dependencies": {
@@ -16,6 +16,7 @@
 		"dayjs": "^1.11.7",
 		"element-plus": "^2.3.4",
 		"js-md5": "^0.7.3",
+		"nodemon": "^2.0.22",
 		"pinia": "^2.0.33",
 		"postcss": "^8.4.21",
 		"tailwindcss": "^3.3.1",

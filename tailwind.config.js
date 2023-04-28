@@ -8,6 +8,10 @@ module.exports = {
 				112: '24rem',
 				128: '32rem',
 			},
+			zIndex: {
+				100000: 100000,
+				80000: 80000,
+			},
 			colors: {
 				'congo-brown': {
 					50: '#f9f4f3',

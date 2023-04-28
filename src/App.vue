@@ -5,14 +5,14 @@ import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
 import { useComponentStore } from '@/store/component.js';
 import { storeToRefs } from 'pinia';
-import { sessionRemove, sessionGet, encode } from '@/utils';
+import { sessionRemove, sessionGet, encode, getRoute } from '@/utils';
 import routerData from '@/assets/db/routerDb.json';
 
 const router = useRouter();
 const login = useParameterStore();
 const comStore = useComponentStore();
 const { showMenu, loginAdmin, errorMsg } = storeToRefs(login);
-const { isShadow } = storeToRefs(comStore);
+const { isShadow, isZShadow, isLoading } = storeToRefs(comStore);
 const { changeShowMenu, fixError, fixHeader, isPassPrefit, loginAction } =
 	login;
 
@@ -45,7 +45,7 @@ router.beforeEach(async (to, from, next) => {
 	if (to.path == '/login') {
 		if (loginAdmin.value.account) {
 			try {
-				const logout = await axios.post('/api/admin/logout', {
+				await axios.post('/api/admin/logout', {
 					data: encode({
 						tokenReq: loginAdmin.value.account,
 						token: sessionGet('cinoT'),
@@ -75,8 +75,8 @@ router.beforeEach(async (to, from, next) => {
 	state.currentPath = to.path;
 });
 
-onBeforeMount(() => {
-	mainTitle.value = routerData;
+onBeforeMount(async () => {
+	mainTitle.value = await getRoute();
 	// resetAdminList(adminList);
 });
 </script>
@@ -107,6 +107,7 @@ onBeforeMount(() => {
 					text-color="#dbdbdb"
 					:default-openeds="state.defaultOpen"
 					:router="true"
+					:default-active="this.$route.path"
 				>
 					<el-sub-menu
 						v-for="(title, ti) in mainTitle"
@@ -164,7 +165,18 @@ onBeforeMount(() => {
 		<el-container v-else class="container">
 			<router-view />
 		</el-container>
-		<div class="shadow" v-if="isShadow"></div>
+		<div
+			:class="[
+				'shadow',
+				{
+					'up-loading': isZShadow,
+				},
+			]"
+			v-if="isShadow"
+		></div>
+		<div class="loading" v-if="isLoading">
+			<img src="./assets/img/gif/loading.gif" alt="" />
+		</div>
 	</div>
 </template>
 
@@ -179,7 +191,9 @@ body,
 	margin: 0;
 	height: 100%;
 }
-
+.loading {
+	@apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-100000;
+}
 .layout {
 	min-height: 100vh;
 	background-color: #ffffff;
@@ -195,13 +209,16 @@ body,
 	left: 0;
 	background: rgba($color: #000000, $alpha: 0.3);
 }
+.up-loading {
+	@apply z-80000;
+}
 .container {
 	width: 100%;
 	margin: 0;
 	height: 100vh;
 }
 .aside {
-	width: 200px !important;
+	width: 250px !important;
 	background-color: $main-style-color;
 }
 .head {

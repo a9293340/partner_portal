@@ -4,6 +4,8 @@ import { ref } from 'vue';
 export const useComponentStore = defineStore('component', () => {
 	const isOpenEditPop = ref(false);
 	const isShadow = ref(false);
+	const isLoading = ref(false);
+	const isZShadow = ref(false);
 
 	const page_limit = ref(20);
 
@@ -13,7 +15,7 @@ export const useComponentStore = defineStore('component', () => {
 		{ val: 2, opt: 'Partner(CINO)' },
 		{ val: 3, opt: 'Partner(SICK)' },
 	]);
-	const typeList = ref([
+	const statusList = ref([
 		{ val: 0, opt: 'On' },
 		{ val: 1, opt: 'Off' },
 	]);
@@ -26,9 +28,6 @@ export const useComponentStore = defineStore('component', () => {
 		isOpenEditPop.value = bool;
 		isShadow.value = bool;
 	};
-
-	const firstStringUpperCase = (str) =>
-		str.replace(/^./, str[0].toUpperCase());
 
 	const makeKeys = (row, notNeed, selectOption, options) => {
 		let obj = Object.keys(row)
@@ -61,16 +60,24 @@ export const useComponentStore = defineStore('component', () => {
 		else callback();
 	};
 
+	const fixLoading = (bool) => {
+		isShadow.value = bool;
+		isLoading.value = bool;
+		isZShadow.value = bool;
+	};
+
 	return {
 		isOpenEditPop,
 		fixOpenEditPop,
 		isShadow,
 		makeKeys,
 		checkEmail,
-		firstStringUpperCase,
 		prefitList,
-		typeList,
+		statusList,
 		fixPrefitList,
 		page_limit,
+		fixLoading,
+		isLoading,
+		isZShadow,
 	};
 });

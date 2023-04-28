@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import routerData from '../assets/db/routerDb.json';
+import { getRoute } from '@/utils';
+
+const newRoute = await getRoute();
 
 const defaultRouter = [
 	{
@@ -41,7 +43,7 @@ const makeRouterData = (db) => {
 				})),
 			];
 		} else {
-			console.log(target.prefit);
+			// console.log(target.prefit);
 			arr.push({
 				path: target.path,
 				name: target.name,
@@ -51,14 +53,14 @@ const makeRouterData = (db) => {
 		}
 	}
 
-	console.log(arr);
+	// console.log(arr);
 
 	return arr;
 };
 
 const routes = [
 	...defaultRouter,
-	...makeRouterData(routerData),
+	...makeRouterData(newRoute),
 	{
 		path: '/:catchAll(.*)',
 		redirect: '/introduce',

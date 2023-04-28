@@ -6,7 +6,7 @@
 		"prefit": [0],
 		"subContent": [
 			{
-				"name": "New User",
+				"name": "Add User Data",
 				"path": "/addUser",
 				"component": "UserAdd",
 				"prefit": [0]
@@ -25,5 +25,25 @@
 		"component": "ProductionList",
 		"prefit": [0, 1, 2, 3],
 		"subContent": null
+	},
+	{
+		"name": "Data Processing Center",
+		"path": "/dataProcessingCenter",
+		"component": "DataProcessingCenter",
+		"prefit": [0, 1],
+		"subContent": [
+			{
+				"name": "Add Product Data",
+				"path": "/addProduct",
+				"component": "ProductAdd",
+				"prefit": [0]
+			},
+			{
+				"name": "Product List",
+				"path": "/productList",
+				"component": "ProductList",
+				"prefit": [0]
+			}
+		]
 	}
 ]

@@ -34,3 +34,21 @@ export const decode = (txt) =>
 	JSON.parse(
 		CryptoJS.AES.decrypt(txt, 'cino9527').toString(CryptoJS.enc.Utf8)
 	);
+
+export const axiosList = (axo) => axo.data.data;
+
+export const firstStringUpperCase = (str) =>
+	str.replace('_id', '').replace(/^./, str[0].toUpperCase());
+
+export const getRoute = async () =>
+	decode(
+		axiosList(
+			await axios.post('/api/route/list', {
+				data: encode({
+					limit: 100,
+					page: 0,
+					filter: {},
+				}),
+			})
+		)
+	).list;
