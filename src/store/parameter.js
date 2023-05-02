@@ -1,11 +1,7 @@
 import { defineStore } from 'pinia';
 import { reactive, ref } from 'vue';
-import { useComponentStore } from './component';
 
 export const useParameterStore = defineStore('parameter', () => {
-	const comStore = useComponentStore();
-	const { checkEmail } = comStore;
-
 	const adminList = ref([]);
 	const loginAdmin = ref({});
 	const tokenKey = ref('C8763');
@@ -16,6 +12,16 @@ export const useParameterStore = defineStore('parameter', () => {
 		isShow: false,
 	});
 	const nowHeader = ref('');
+
+	const checkEmail = (rule, value, callback) => {
+		let emailRegxp =
+			/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+		if (!value) return callback(new Error("Email can't be empty"));
+		else if (!emailRegxp.test(value))
+			callback(new Error('Email format is wrong'));
+		else callback();
+	};
+
 	const adminRules = reactive({
 		email: [
 			{
@@ -74,6 +80,13 @@ export const useParameterStore = defineStore('parameter', () => {
 			},
 		],
 		firmware_id: [
+			{
+				required: 'true',
+				message: "company can't be empty",
+				trigger: 'change',
+			},
+		],
+		prefit: [
 			{
 				required: 'true',
 				message: "company can't be empty",

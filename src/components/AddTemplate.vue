@@ -1,8 +1,9 @@
 <script setup>
 import { useParameterStore } from '@/store/parameter';
 import { storeToRefs } from 'pinia';
-import { firstStringUpperCase } from '@/utils';
+import { firstStringUpperCase, getBase64 } from '@/utils';
 import { onBeforeMount, ref } from 'vue';
+import { genFileId } from 'element-plus';
 
 const emit = defineEmits(['data', 'abort']);
 const props = defineProps({
@@ -23,8 +24,8 @@ const props = defineProps({
 		default: () => [],
 	},
 	showSpecial: {
-		type: Array,
-		default: () => [],
+		type: String,
+		default: '',
 	},
 	selectItems: {
 		type: Object,
@@ -39,12 +40,30 @@ const { adminRules } = storeToRefs(useParameterStore());
 const { fixError } = useParameterStore();
 const formAction = ref(null);
 const usefulInputData = ref();
+const upload = ref();
 
 const abort = () => {
 	emit('abort', true);
 };
 
+const getBase = async (files) => {
+	usefulInputData.value[props.showSpecial] = await getBase64(files.raw);
+};
+const removeImg = () => (usefulInputData.value[props.showSpecial] = '');
+
 const sendData = () => {
+	if (
+		props.showSpecial &&
+		!usefulInputData.value[props.showSpecial] &&
+		!props.isEdit
+	) {
+		fixError({
+			title: 'Error',
+			msg: 'Need to upload Image!',
+			isShow: true,
+		});
+		return;
+	}
 	formAction.value.validate(async (valid) => {
 		// console.log(valid);
 		if (valid) {
@@ -58,9 +77,15 @@ const sendData = () => {
 	});
 };
 
+const handleExceed = async (files) => {
+	upload.value.clearFiles();
+	const file = files[0];
+	file.uid = genFileId();
+	upload.value.handleStart(file);
+};
+
 onBeforeMount(() => {
 	usefulInputData.value = props.inputData;
-	console.log(usefulInputData.value);
 });
 </script>
 
@@ -94,17 +119,68 @@ onBeforeMount(() => {
 					class="form-label"
 					:prop="itemKey"
 				>
-					<select v-model="usefulInputData[itemKey]">
-						<option
-							v-for="item in selectItems[itemKey]"
-							:key="item.opt"
+					<el-select
+						v-model="usefulInputData[itemKey]"
+						placeholder="Select"
+					>
+						<el-option
+							v-for="item in props.selectItems[itemKey]"
+							:key="item.val"
 							:value="item.val"
-						>
-							{{ item.opt }}
-						</option>
-					</select>
+							:label="item.opt"
+						></el-option>
+					</el-select>
 				</el-form-item>
 			</div>
+			<div v-for="itemKey in props.showMultiSelct" :key="itemKey">
+				<el-form-item
+					:label="firstStringUpperCase(itemKey)"
+					style="margin-bottom: 30px; width: 40em"
+					class="form-label"
+					:prop="itemKey"
+				>
+					<el-select
+						v-model="usefulInputData[itemKey]"
+						placeholder="Select"
+						multiple
+					>
+						<el-option
+							v-for="item in props.selectItems[itemKey]"
+							:key="item.val"
+							:value="item.val"
+							:label="item.opt"
+						></el-option>
+					</el-select>
+				</el-form-item>
+			</div>
+			<el-form-item
+				v-if="props.showSpecial"
+				:label="firstStringUpperCase(props.showSpecial)"
+				style="margin-bottom: 30px; width: 40em"
+				class="form-label"
+				:prop="props.showSpecial"
+			>
+				<el-upload
+					ref="upload"
+					class="upload-demo"
+					:limit="1"
+					:on-exceed="handleExceed"
+					:auto-upload="false"
+					accept="image/jpg,image/jpeg,image/png,image/svg"
+					:on-remove="removeImg"
+					:on-change="getBase"
+					list-type="picture"
+				>
+					<template #trigger>
+						<el-button type="primary">select file</el-button>
+					</template>
+					<template #tip>
+						<div class="el-upload__tip text-red">
+							limit 1 file, new file will cover the old file
+						</div>
+					</template>
+				</el-upload>
+			</el-form-item>
 		</el-form>
 	</main>
 	<footer>
@@ -126,7 +202,7 @@ main {
 	height: 90%;
 	.el-form-item__label {
 		font-size: 20px;
-		width: 150px;
+		width: 240px;
 	}
 	select {
 		@extend %select;

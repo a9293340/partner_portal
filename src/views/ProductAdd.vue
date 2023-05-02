@@ -7,6 +7,10 @@ const { loginAdmin } = storeToRefs(useParameterStore());
 import { encode, sessionGet } from '@/utils';
 import AddTemplate from '../components/AddTemplate.vue';
 
+const { fixLoading } = useComponentStore();
+
+const { productTypeList, prefitList } = storeToRefs(useComponentStore());
+
 const empty = {
 	name: '',
 	production_type_id: '',
@@ -14,19 +18,38 @@ const empty = {
 	slogan: '',
 	documents_id: [],
 	firmware_id: [],
-	prefit: [],
+	prefit: [0],
 };
 const showInput = ['name', 'slogan'];
 const showSelect = ['production_type_id'];
-const showMultiSelct = ['firmware_id', 'documents_id', 'prefit'];
-const showSpecial = ['photo'];
+const showMultiSelct = ['prefit'];
+const showSpecial = 'photo';
+const selectItems = ref({
+	production_type_id: productTypeList.value,
+	prefit: prefitList.value,
+});
 const inputData = ref(empty);
 
-onBeforeMount(() => {});
+const getUsefulData = (data) => {
+	console.log(data);
+};
+
+onBeforeMount(async () => {
+	selectItems.value.production_type_id = productTypeList.value;
+	selectItems.value.prefit = prefitList.value;
+});
 </script>
 <template>
 	<div class="product-add">
-		<AddTemplate :input-data="inputData" :show-input="showInput" />
+		<AddTemplate
+			:input-data="inputData"
+			:show-input="showInput"
+			:show-select="showSelect"
+			:select-items="selectItems"
+			:show-multi-selct="showMultiSelct"
+			:show-special="showSpecial"
+			@data="getUsefulData"
+		/>
 	</div>
 </template>
 

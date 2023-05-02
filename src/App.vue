@@ -6,7 +6,6 @@ import { useParameterStore } from '@/store/parameter.js';
 import { useComponentStore } from '@/store/component.js';
 import { storeToRefs } from 'pinia';
 import { sessionRemove, sessionGet, encode, getRoute } from '@/utils';
-import routerData from '@/assets/db/routerDb.json';
 
 const router = useRouter();
 const login = useParameterStore();
@@ -34,9 +33,8 @@ const errorHandle = (tag = 0, path, next) => {
 	next({ path });
 };
 
-router.afterEach((to, from) => {
+router.afterEach((to) => {
 	changeShowMenu(!(to.path === '/login'));
-	// console.log(showMenu.value);
 });
 
 router.beforeEach(async (to, from, next) => {

@@ -21,10 +21,10 @@ const nowEditIndex = ref(null);
 
 const showInput = ['name', 'company', 'account', 'password', 'email'];
 const showSelect = ['permissions', 'status'];
-const selectItems = {
-	permissions: prefitList,
-	status: statusList,
-};
+const selectItems = ref({
+	permissions: prefitList.value,
+	status: statusList.value,
+});
 
 const editAdmin = (row, idx) => {
 	editTarget.value = row;
@@ -96,6 +96,7 @@ const getDataByPage = async (page, jud = true) => {
 
 onBeforeMount(async () => {
 	try {
+		selectItems.value.permissions = prefitList.value;
 		await getDataByPage(0);
 	} catch (error) {
 		adList.value = [];

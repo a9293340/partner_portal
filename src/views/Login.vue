@@ -11,7 +11,7 @@ import productList from '@/assets/db/production_type.json';
 const inputValue = ref(null);
 const checkValue = ref(null);
 
-const { fixPrefitList, fixLoading } = useComponentStore();
+const { fixPrefitList, fixLoading, fixProductTypeList } = useComponentStore();
 
 const checkValidCaptcha = (value) => (checkValue.value = value);
 const loginForm = ref(null);
@@ -42,6 +42,11 @@ const login = useParameterStore();
 const { fixError } = login;
 const router = useRouter();
 
+const getSelectOptions = async (user) => {
+	await fixProductTypeList(user);
+	await fixPrefitList(user);
+};
+
 const submitForm = async () => {
 	if (!checkValue.value) return;
 	if (!(checkValue.value.toUpperCase() === inputValue.value.toUpperCase())) {
@@ -66,7 +71,6 @@ const submitForm = async () => {
 				});
 				token = decode(axiosList(resp)).token;
 				sessionSet('cinoT', token);
-				// console.log(token);
 			} catch (error) {
 				if (error.response)
 					fixError({
@@ -89,23 +93,8 @@ const submitForm = async () => {
 						},
 					}),
 				});
-				const prefit = await axios.post('/api/prefit/list', {
-					data: encode({
-						tokenReq: state.ruleForm.username,
-						token: sessionGet('cinoT'),
-						limit: 100,
-						page: 0,
-						filter: {},
-					}),
-				});
-				fixPrefitList(
-					decode(axiosList(prefit)).list.map((el) => ({
-						val: el.prefit,
-						opt: el.name,
-					}))
-				);
+				await getSelectOptions(state.ruleForm.username);
 				login.loginAction(decode(axiosList(adminDetail)).list[0]);
-				// // console.log(adminDetail);
 				router.push('/');
 				fixLoading(false);
 			} catch (error) {

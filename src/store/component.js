@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { sessionGet, encode, decode, axiosList } from '@/utils';
 
 export const useComponentStore = defineStore('component', () => {
 	const isOpenEditPop = ref(false);
@@ -20,44 +21,51 @@ export const useComponentStore = defineStore('component', () => {
 		{ val: 1, opt: 'Off' },
 	]);
 
-	const fixPrefitList = (pre) => {
-		prefitList.value = pre;
+	const productTypeList = ref([]);
+
+	const fixPrefitList = async (tokenReq) => {
+		try {
+			const prefit = await axios.post('/api/prefit/list', {
+				data: encode({
+					tokenReq,
+					token: sessionGet('cinoT'),
+					limit: 100,
+					page: 0,
+					filter: {},
+				}),
+			});
+			prefitList.value = decode(axiosList(prefit)).list.map((el) => ({
+				val: el.prefit,
+				opt: el.name,
+			}));
+		} catch (error) {}
+	};
+
+	const fixProductTypeList = async (tokenReq) => {
+		try {
+			const prodctType = await axios.post('/api/productionType/list', {
+				data: encode({
+					tokenReq,
+					token: sessionGet('cinoT'),
+					limit: 100,
+					page: 0,
+					filter: {},
+				}),
+			});
+			productTypeList.value = decode(axiosList(prodctType)).list.map(
+				(el) => ({
+					val: el._id,
+					opt: el.name,
+				})
+			);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const fixOpenEditPop = (bool) => {
 		isOpenEditPop.value = bool;
 		isShadow.value = bool;
-	};
-
-	const makeKeys = (row, notNeed, selectOption, options) => {
-		let obj = Object.keys(row)
-			.filter((el) => !notNeed.find((s) => s === el))
-			.map((el) => ({
-				title: firstStringUpperCase(el),
-				key: el,
-				option: selectOption.find((s) => s === el) ? 'select' : 'input',
-				isSelect: !selectOption.find((s) => s === el)
-					? []
-					: options[el],
-			}));
-		obj.sort((x, y) => {
-			let a = x.title.toLowerCase();
-			let b = y.title.toLowerCase();
-			if (a > b) return 1;
-			if (a < b) return -1;
-			else return 0;
-		});
-
-		return obj;
-	};
-
-	const checkEmail = (rule, value, callback) => {
-		let emailRegxp =
-			/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
-		if (!value) return callback(new Error("Email can't be empty"));
-		else if (!emailRegxp.test(value))
-			callback(new Error('Email format is wrong'));
-		else callback();
 	};
 
 	const fixLoading = (bool) => {
@@ -70,8 +78,6 @@ export const useComponentStore = defineStore('component', () => {
 		isOpenEditPop,
 		fixOpenEditPop,
 		isShadow,
-		makeKeys,
-		checkEmail,
 		prefitList,
 		statusList,
 		fixPrefitList,
@@ -79,5 +85,7 @@ export const useComponentStore = defineStore('component', () => {
 		fixLoading,
 		isLoading,
 		isZShadow,
+		fixProductTypeList,
+		productTypeList,
 	};
 });

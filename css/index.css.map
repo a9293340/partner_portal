@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AACA,iCAAiC;AACjC,QAAQ,CAAR;;;;;;CAAQ",
+    "sources": [
+        "../src/styles/element/index.scss"
+    ],
+    "names": [],
+    "file": "index.css"
+}

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { useParameterStore } from '@/store/parameter';
 import { useComponentStore } from '@/store/component';
 import { useRouter } from 'vue-router';
@@ -10,15 +10,16 @@ import AddTemplate from '../components/AddTemplate.vue';
 
 const { loginAdmin } = storeToRefs(useParameterStore());
 const { fixError } = useParameterStore();
-const { fixLoading, prefitList, statusList } = useComponentStore();
+const { fixLoading } = useComponentStore();
+const { prefitList, statusList } = storeToRefs(useComponentStore());
 const router = useRouter();
 
 const showInput = ['name', 'company', 'account', 'password', 'email'];
 const showSelect = ['permissions', 'status'];
-const selectItems = {
-	permissions: prefitList,
-	status: statusList,
-};
+const selectItems = ref({
+	permissions: prefitList.value,
+	status: statusList.value,
+});
 const empty = {
 	name: '',
 	permissions: 1,
@@ -56,6 +57,10 @@ const addAdmin = async (data) => {
 	router.push('/userList');
 	fixLoading(false);
 };
+
+onBeforeMount(async () => {
+	selectItems.value.permissions = prefitList.value;
+});
 </script>
 
 <template>
