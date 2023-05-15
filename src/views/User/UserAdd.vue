@@ -5,12 +5,13 @@ import { useComponentStore } from '@/store/component';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import * as dayjs from 'dayjs';
-import { encode, sessionGet } from '@/utils';
-import AddTemplate from '../components/AddTemplate.vue';
+import { encode, sessionGet, depCopy } from '@/utils';
+import { postAdd } from '@/utils/api';
+import AddTemplate from '@/components/AddTemplate.vue';
 
 const { loginAdmin } = storeToRefs(useParameterStore());
 const { fixError } = useParameterStore();
-const { fixLoading } = useComponentStore();
+const { fixLoading, getCreatorList } = useComponentStore();
 const { prefitList, statusList } = storeToRefs(useComponentStore());
 const router = useRouter();
 
@@ -30,20 +31,24 @@ const empty = {
 	email: '',
 	last_login_time: '',
 };
-const inputData = ref(empty);
+const inputData = ref(depCopy(empty));
 const addAdmin = async (data) => {
 	inputData.value = data;
 	fixLoading(true);
 	inputData.value['create_date'] = dayjs().format('YYYY-MM-DD HH:mm:ss');
 	inputData.value['action_log'] = [];
 	try {
-		await axios.post('/api/admin/add', {
-			data: encode({
+		await postAdd(
+			'admin',
+			encode({
 				tokenReq: loginAdmin.value.account,
 				token: sessionGet('cinoT'),
 				...inputData.value,
-			}),
-		});
+			})
+		);
+		await getCreatorList();
+		inputData.value = empty;
+		router.push('/userList');
 	} catch (error) {
 		console.log(error);
 		if (error.response)
@@ -53,8 +58,6 @@ const addAdmin = async (data) => {
 				isShow: true,
 			});
 	}
-	inputData.value = empty;
-	router.push('/userList');
 	fixLoading(false);
 };
 
@@ -76,8 +79,8 @@ onBeforeMount(async () => {
 </template>
 
 <style lang="scss">
-@import '../assets/scss/_color.scss';
-@import '../assets/scss/_style.scss';
+@import '../../assets/scss/_color.scss';
+@import '../../assets/scss/_style.scss';
 .user-add {
 	padding: 30px;
 	position: relative;

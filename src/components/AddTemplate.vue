@@ -1,8 +1,8 @@
 <script setup>
 import { useParameterStore } from '@/store/parameter';
 import { storeToRefs } from 'pinia';
-import { firstStringUpperCase, getBase64 } from '@/utils';
-import { onBeforeMount, ref } from 'vue';
+import { firstStringUpperCase, getBase64, depCopy } from '@/utils';
+import { ref, watch } from 'vue';
 import { genFileId } from 'element-plus';
 
 const emit = defineEmits(['data', 'abort']);
@@ -35,12 +35,24 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	showVersion: {
+		type: Array,
+		default: null,
+	},
 });
+const versionTemplate = {
+	version: '',
+	create_date: '',
+	creator: '',
+	download_path: '',
+};
 const { adminRules } = storeToRefs(useParameterStore());
 const { fixError } = useParameterStore();
 const formAction = ref(null);
-const usefulInputData = ref();
+const usefulInputData = ref(depCopy(props.inputData));
 const upload = ref();
+const versionCheck = ref([]);
+const versionInputKeys = ref(['version', 'download_path']);
 
 const abort = () => {
 	emit('abort', true);
@@ -60,6 +72,13 @@ const sendData = () => {
 		fixError({
 			title: 'Error',
 			msg: 'Need to upload Image!',
+			isShow: true,
+		});
+		return;
+	} else if (versionCheck.value.filter((x) => x).length) {
+		fixError({
+			title: 'Error',
+			msg: `Version detail Can't be empty!`,
 			isShow: true,
 		});
 		return;
@@ -84,8 +103,26 @@ const handleExceed = async (files) => {
 	upload.value.handleStart(file);
 };
 
-onBeforeMount(() => {
-	usefulInputData.value = props.inputData;
+const addNewVersion = () => {
+	usefulInputData.value[props.showVersion].push(depCopy(versionTemplate));
+	versionCheck.value.push(true);
+};
+
+const removeVersion = (v) => {
+	usefulInputData.value[props.showVersion].splice(v, 1);
+	versionCheck.value.splice(v, 1);
+};
+
+const checkVersionEmpty = (v) =>
+	Object.values(usefulInputData.value[props.showVersion][v]).filter(
+		(ver) => ver === ''
+	).length;
+
+watch(usefulInputData.value, () => {
+	if (!props.showVersion) return;
+	usefulInputData.value[props.showVersion].forEach((ver, v) => {
+		versionCheck.value[v] = checkVersionEmpty(v);
+	});
 });
 </script>
 
@@ -97,6 +134,7 @@ onBeforeMount(() => {
 			:model="usefulInputData"
 			:rules="adminRules"
 		>
+			<!-- Input -->
 			<div v-for="itemKey in props.showInput" :key="itemKey">
 				<el-form-item
 					:label="firstStringUpperCase(itemKey)"
@@ -112,6 +150,7 @@ onBeforeMount(() => {
 					</el-input>
 				</el-form-item>
 			</div>
+			<!-- Select -->
 			<div v-for="itemKey in props.showSelect" :key="itemKey">
 				<el-form-item
 					:label="firstStringUpperCase(itemKey)"
@@ -132,6 +171,7 @@ onBeforeMount(() => {
 					</el-select>
 				</el-form-item>
 			</div>
+			<!-- Multi Select -->
 			<div v-for="itemKey in props.showMultiSelct" :key="itemKey">
 				<el-form-item
 					:label="firstStringUpperCase(itemKey)"
@@ -153,6 +193,7 @@ onBeforeMount(() => {
 					</el-select>
 				</el-form-item>
 			</div>
+			<!-- Image -->
 			<el-form-item
 				v-if="props.showSpecial"
 				:label="firstStringUpperCase(props.showSpecial)"
@@ -181,6 +222,76 @@ onBeforeMount(() => {
 					</template>
 				</el-upload>
 			</el-form-item>
+			<!-- Version -->
+			<el-form-item
+				v-if="props.showVersion"
+				label="Version :"
+				style="margin-bottom: 30px; width: 40em"
+				class="form-label"
+				:prop="props.showVersion"
+			>
+				<el-button @click="addNewVersion">+</el-button>
+			</el-form-item>
+			<div
+				class="flex items-center"
+				v-for="(ver, v) in usefulInputData[props.showVersion]"
+			>
+				<el-button type="danger" @click="removeVersion(v)">
+					-
+				</el-button>
+				<div
+					:class="[
+						'version-box',
+						{
+							'version-box-error': versionCheck[v],
+						},
+					]"
+				>
+					<el-form-item
+						v-for="key in versionInputKeys"
+						:key="key"
+						:label="firstStringUpperCase(key.replace('_', ' '))"
+						style="margin-bottom: 30px; width: 40em"
+						class="form-label"
+					>
+						<el-input
+							type="text"
+							v-model="ver[key]"
+							style="width: 300px"
+							autocomplete="off"
+						>
+						</el-input>
+					</el-form-item>
+					<el-form-item
+						label="Creator :"
+						style="margin-bottom: 30px; width: 40em"
+						class="form-label"
+						:props="ver"
+					>
+						<el-select v-model="ver.creator" placeholder="Select">
+							<el-option
+								v-for="item in props.selectItems['creator']"
+								:key="item.val"
+								:value="item.val"
+								:label="item.opt"
+							></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item
+						label="Create Date :"
+						style="margin-bottom: 30px; width: 40em"
+						class="form-label"
+						:props="ver"
+					>
+						<el-date-picker
+							v-model="ver.create_date"
+							type="date"
+							placeholder="Pick a day"
+							size="default"
+						/>
+					</el-form-item>
+				</div>
+			</div>
 		</el-form>
 	</main>
 	<footer>
@@ -204,9 +315,11 @@ main {
 		font-size: 20px;
 		width: 240px;
 	}
-	select {
-		@extend %select;
-		width: 50em;
+	.version-box {
+		@apply w-144 h-64 border-2 rounded-lg flex flex-col p-3 ml-8 mb-10;
+	}
+	.version-box-error {
+		@apply border-red-500;
 	}
 }
 footer {

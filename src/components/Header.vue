@@ -40,14 +40,10 @@
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { sessionGet } from '@/utils';
 import { useParameterStore } from '@/store/parameter.js';
-import fs from 'vite-plugin-fs/browser';
-import { encode } from '../utils';
 
 const login = useParameterStore();
 const { loginAdmin, nowHeader } = storeToRefs(login);
-const { loginAction } = login;
 
 const router = useRouter();
 const state = reactive({

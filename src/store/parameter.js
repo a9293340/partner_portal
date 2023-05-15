@@ -4,6 +4,7 @@ import { reactive, ref } from 'vue';
 export const useParameterStore = defineStore('parameter', () => {
 	const adminList = ref([]);
 	const loginAdmin = ref({});
+	const products = ref([]);
 	const tokenKey = ref('C8763');
 	const showMenu = ref(false);
 	const errorMsg = ref({
@@ -79,6 +80,13 @@ export const useParameterStore = defineStore('parameter', () => {
 				trigger: 'change',
 			},
 		],
+		document_type_id: [
+			{
+				required: 'true',
+				message: "company can't be empty",
+				trigger: 'change',
+			},
+		],
 		firmware_id: [
 			{
 				required: 'true',
@@ -110,8 +118,11 @@ export const useParameterStore = defineStore('parameter', () => {
 				case 11003:
 					obj.msg = 'Account Existed!';
 					break;
+				case 10012:
+					obj.msg = 'Data has Exsited!';
+					break;
 				default:
-					obj.msg = 'Format Error!';
+					obj.msg = 'Error!';
 					break;
 			}
 		errorMsg.value = obj;
@@ -122,6 +133,7 @@ export const useParameterStore = defineStore('parameter', () => {
 	};
 
 	const loginAction = (obj) => (loginAdmin.value = obj);
+	const productAction = (arr) => (products.value = arr);
 	const resetAdminList = (arr) => (adminList.value = arr);
 	const changeShowMenu = (bool) => (showMenu.value = bool);
 	const fixHeader = (str) => (nowHeader.value = str);
@@ -142,5 +154,7 @@ export const useParameterStore = defineStore('parameter', () => {
 		isPassPrefit,
 		adminList,
 		resetAdminList,
+		products,
+		productAction,
 	};
 });

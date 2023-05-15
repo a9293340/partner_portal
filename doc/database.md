@@ -42,7 +42,7 @@
 	"name": "string",
 	"path": "string",
 	"component": "string",
-	"perfit": [0],
+	"prefit": [0],
 	"subContent": [
 		{
 			"name": "string",

@@ -1,21 +1,24 @@
 <script setup>
-import production_type from '@/assets/db/production_type.json';
-import product from '@/assets/db/product.json';
 import { useMakeImage } from '@/assets/util';
 import { onBeforeMount, reactive, ref } from 'vue';
 import { useParameterStore } from '@/store/parameter.js';
+import { useComponentStore } from '@/store/component';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
 const login = useParameterStore();
 const { isPassPrefit } = login;
+const { products } = storeToRefs(login);
+const { fixLoading } = useComponentStore();
+const { productTypeList } = storeToRefs(useComponentStore());
 
 const usefulProductType = ref();
 const usefulProducts = ref();
 const pTList = ref();
 const showProduct = ref();
 const nowPickTypeIndex = ref(0);
-const usefulProdctTypePoint = ref(0);
+const usefulproductTypePoint = ref(0);
 const arrowImg = reactive({
 	right: useMakeImage('svg/arrow_small_right.svg'),
 	left: useMakeImage('svg/arrow_small_left_wbg.svg'),
@@ -23,32 +26,32 @@ const arrowImg = reactive({
 
 const pickpTList = (caculate) => {
 	if (
-		(usefulProdctTypePoint.value + caculate < 0 ||
-			usefulProdctTypePoint.value + caculate + 5 >
+		(usefulproductTypePoint.value + caculate < 0 ||
+			usefulproductTypePoint.value + caculate + 5 >
 				usefulProductType.value.length) &&
 		caculate
 	)
 		return;
-	usefulProdctTypePoint.value = usefulProdctTypePoint.value + caculate;
+	usefulproductTypePoint.value = usefulproductTypePoint.value + caculate;
 	pTList.value = usefulProductType.value.slice(
-		usefulProdctTypePoint.value,
-		usefulProdctTypePoint.value + 5
+		usefulproductTypePoint.value,
+		usefulproductTypePoint.value + 5
 	);
 	arrowImg.left = useMakeImage(
 		`svg/arrow_small_left${
-			usefulProdctTypePoint.value === 0 ? '_wbg' : ''
+			usefulproductTypePoint.value === 0 ? '_wbg' : ''
 		}.svg`
 	);
 	arrowImg.right = useMakeImage(
 		`svg/arrow_small_right${
-			usefulProdctTypePoint.value + 5 >= usefulProductType.value.length
+			usefulproductTypePoint.value + 5 >= usefulProductType.value.length
 				? '_wbg'
 				: ''
 		}.svg`
 	);
 	nowPickTypeIndex.value = 0;
 	pickProductsGroup(
-		pTList.value[nowPickTypeIndex.value].name,
+		pTList.value[nowPickTypeIndex.value]._id,
 		nowPickTypeIndex.value
 	);
 };
@@ -66,14 +69,19 @@ const goToProductPage = (id) => {
 	router.push(`/Product/${id}`);
 };
 
-onBeforeMount(() => {
-	usefulProductType.value = production_type.filter(
+onBeforeMount(async () => {
+	fixLoading(true);
+	usefulProducts.value = products.value.filter(
 		(el) => !isPassPrefit(el.prefit)
 	);
-	usefulProducts.value = product.filter((el) => !isPassPrefit(el.prefit));
+	usefulProductType.value = productTypeList.value.filter((el) =>
+		usefulProducts.value.find((x) => x.production_type_id === el.val)
+	);
+
 	pickpTList(0);
-	pickProductsGroup('Corded', 0);
-	console.log(showProduct.value);
+	pickProductsGroup(usefulProductType.value[0]._id, 0);
+	// console.log(showProduct.value);
+	fixLoading(false);
 });
 </script>
 
@@ -101,7 +109,7 @@ onBeforeMount(() => {
 						class="img-box"
 						v-for="(productType, p) in pTList"
 						:key="productType.name"
-						@click="pickProductsGroup(productType.name, p)"
+						@click="pickProductsGroup(productType._id, p)"
 					>
 						<img
 							class="product-type-img"
@@ -143,7 +151,7 @@ onBeforeMount(() => {
 							@click="goToProductPage(pro.name)"
 						>
 							<img
-								:src="useMakeImage(pro.photo)"
+								:src="pro.photo"
 								class="w-full h-auto bg-white group-hover:bg-slate-200 rounded ease-linear duration-300"
 								alt=""
 							/>

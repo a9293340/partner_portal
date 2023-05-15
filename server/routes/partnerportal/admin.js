@@ -20,11 +20,7 @@ router.post('/login', limiter, async (req, res, next) => {
 			async (arr, err) => {
 				if (err || arr.length > 1) next(err || 10004);
 				else if (!arr.length) next(11001);
-				else if (
-					!(user.password === arr[0]['password']) ||
-					arr[0].status
-				)
-					next(11002);
+				else if (!(user.password === arr[0]['password'])) next(11002);
 				else if (arr[0].status) next(10008);
 				else {
 					await MongooseCRUD(
@@ -58,6 +54,7 @@ router.post('/logout', limiter, checkToken, async (req, res, next) => {
 
 router.post('/list', limiter, checkToken, (req, res, next) => {
 	const { page, limit, filter } = decryptRes(req.body.data);
+	console.log(filter);
 	pList(res, next, 'admin', filter, false, { limit, page });
 });
 

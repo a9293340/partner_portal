@@ -43,6 +43,18 @@
 				"path": "/productList",
 				"component": "ProductList",
 				"prefit": [0]
+			},
+			{
+				"name": "Document List",
+				"path": "/documentList",
+				"component": "DocumentList",
+				"prefit": [0]
+			},
+			{
+				"name": "Add Document Data",
+				"path": "/addDocument",
+				"component": "DocumentAdd",
+				"prefit": [0]
 			}
 		]
 	}

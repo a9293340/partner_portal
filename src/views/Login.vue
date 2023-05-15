@@ -3,7 +3,8 @@ import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter';
 import { useComponentStore } from '@/store/component';
-import { sessionSet, sessionGet, encode, decode, axiosList } from '@/utils';
+import { sessionSet, sessionGet, encode } from '@/utils';
+import { login, postList } from '@/utils/api';
 import VueClientRecaptcha from 'vue-client-recaptcha';
 import { useMakeImage } from '../assets/util';
 import productList from '@/assets/db/production_type.json';
@@ -11,7 +12,7 @@ import productList from '@/assets/db/production_type.json';
 const inputValue = ref(null);
 const checkValue = ref(null);
 
-const { fixPrefitList, fixLoading, fixProductTypeList } = useComponentStore();
+const { fixLoading, getSelectOptions } = useComponentStore();
 
 const checkValidCaptcha = (value) => (checkValue.value = value);
 const loginForm = ref(null);
@@ -38,14 +39,9 @@ const state = reactive({
 		],
 	},
 });
-const login = useParameterStore();
-const { fixError } = login;
+const loginStore = useParameterStore();
+const { fixError } = loginStore;
 const router = useRouter();
-
-const getSelectOptions = async (user) => {
-	await fixProductTypeList(user);
-	await fixPrefitList(user);
-};
 
 const submitForm = async () => {
 	if (!checkValue.value) return;
@@ -63,13 +59,13 @@ const submitForm = async () => {
 			fixLoading(true);
 			let token = '';
 			try {
-				const resp = await axios.post('/api/admin/login', {
-					data: encode({
+				const resp = await login(
+					encode({
 						account: state.ruleForm.username,
 						password: state.ruleForm.password,
-					}),
-				});
-				token = decode(axiosList(resp)).token;
+					})
+				);
+				token = resp.token;
 				sessionSet('cinoT', token);
 			} catch (error) {
 				if (error.response)
@@ -82,8 +78,9 @@ const submitForm = async () => {
 			}
 
 			try {
-				const adminDetail = await axios.post('/api/admin/list', {
-					data: encode({
+				const adminDetail = await postList(
+					'admin',
+					encode({
 						tokenReq: state.ruleForm.username,
 						token: sessionGet('cinoT'),
 						limit: 1,
@@ -91,10 +88,10 @@ const submitForm = async () => {
 						filter: {
 							account: state.ruleForm.username,
 						},
-					}),
-				});
-				await getSelectOptions(state.ruleForm.username);
-				login.loginAction(decode(axiosList(adminDetail)).list[0]);
+					})
+				);
+				loginStore.loginAction(adminDetail.list[0]);
+				await getSelectOptions(adminDetail.list[0].permissions);
 				router.push('/');
 				fixLoading(false);
 			} catch (error) {

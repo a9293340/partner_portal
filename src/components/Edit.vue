@@ -1,4 +1,5 @@
 <script setup>
+import { onBeforeMount } from 'vue';
 import AddTemplate from './AddTemplate.vue';
 
 const emit = defineEmits(['data', 'abort']);
@@ -24,12 +25,16 @@ const props = defineProps({
 		default: () => [],
 	},
 	showSpecial: {
-		type: Array,
-		default: () => [],
+		type: String,
+		default: '',
 	},
 	selectItems: {
 		type: Object,
 		default: () => ({}),
+	},
+	showVersion: {
+		type: Array,
+		default: null,
 	},
 });
 // const editTarget = ref(JSON.parse(props.foo));
@@ -57,7 +62,10 @@ const abort = (bool) => {
 			:input-data="props.inputData"
 			:show-input="props.showInput"
 			:show-select="props.showSelect"
+			:show-multi-selct="props.showMultiSelct"
+			:show-special="props.showSpecial"
 			:select-items="props.selectItems"
+			:show-version="props.showVersion"
 			:is-edit="true"
 			@data="editAdmin"
 			@abort="abort"
@@ -70,8 +78,8 @@ const abort = (bool) => {
 @import '../assets/scss/_style.scss';
 .edit-pop {
 	position: fixed;
-	width: 800px;
-	height: 600px;
+	width: 1080px;
+	height: 720px;
 	background-color: #fff;
 	border-radius: 8px;
 	box-shadow: 10px 10px 10px rgba($color: $main-font-color, $alpha: 0.3);

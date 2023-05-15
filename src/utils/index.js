@@ -1,3 +1,5 @@
+import { ElMessage, ElMessageBox } from 'element-plus';
+
 export function localGet(key) {
 	const value = window.localStorage.getItem(key);
 	try {
@@ -59,4 +61,26 @@ export const getBase64 = (file) =>
 		reader.readAsDataURL(file);
 		reader.onload = () => resolve(reader.result);
 		reader.onerror = reject;
+	});
+
+export const sortBy = (arr) =>
+	arr.sort((a, b) => new Date(b.create_date) - new Date(a.create_date));
+
+export const depCopy = (obj) => JSON.parse(JSON.stringify(obj));
+
+export const comfirmBox = async () =>
+	ElMessageBox.confirm(
+		'Proxy will permanently delete the file. Continue?',
+		'Warning',
+		{
+			confirmButtonText: 'OK',
+			cancelButtonText: 'Cancel',
+			type: 'warning',
+		}
+	);
+
+export const popMsg = async (str) =>
+	ElMessage({
+		type: 'success',
+		message: str,
 	});

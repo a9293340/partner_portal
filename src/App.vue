@@ -1,16 +1,16 @@
 <script setup>
-import product from '@/assets/db/product.json';
 import { reactive, onBeforeMount, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
 import { useComponentStore } from '@/store/component.js';
 import { storeToRefs } from 'pinia';
-import { sessionRemove, sessionGet, encode, getRoute } from '@/utils';
+import { sessionRemove, getRoute, encode, sessionGet } from '@/utils';
+import { logout } from '@/utils/api';
 
 const router = useRouter();
 const login = useParameterStore();
 const comStore = useComponentStore();
-const { showMenu, loginAdmin, errorMsg } = storeToRefs(login);
+const { showMenu, loginAdmin, errorMsg, products } = storeToRefs(login);
 const { isShadow, isZShadow, isLoading } = storeToRefs(comStore);
 const { changeShowMenu, fixError, fixHeader, isPassPrefit, loginAction } =
 	login;
@@ -43,12 +43,12 @@ router.beforeEach(async (to, from, next) => {
 	if (to.path == '/login') {
 		if (loginAdmin.value.account) {
 			try {
-				await axios.post('/api/admin/logout', {
-					data: encode({
+				await logout(
+					encode({
 						tokenReq: loginAdmin.value.account,
 						token: sessionGet('cinoT'),
-					}),
-				});
+					})
+				);
 				sessionRemove('cinoT');
 				loginAction({});
 			} catch (error) {
@@ -61,7 +61,9 @@ router.beforeEach(async (to, from, next) => {
 		// Product Document... single page check
 		else if (
 			to.params.id &&
-			isPassPrefit(product.find((el) => el.name === to.params.id).prefit)
+			isPassPrefit(
+				products.value.find((el) => el.name === to.params.id).prefit
+			)
 		)
 			errorHandle(1, '/', next);
 		else if (isPassPrefit(to.meta.prefit)) errorHandle(1, '/', next);
@@ -75,7 +77,6 @@ router.beforeEach(async (to, from, next) => {
 
 onBeforeMount(async () => {
 	mainTitle.value = await getRoute();
-	// resetAdminList(adminList);
 });
 </script>
 
@@ -152,7 +153,7 @@ onBeforeMount(async () => {
 					</el-menu-item>
 				</el-menu>
 			</el-aside>
-			<el-container class="content">
+			<el-container class="content p-10">
 				<Header />
 				<div class="main">
 					<router-view />

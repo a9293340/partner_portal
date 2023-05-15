@@ -27,7 +27,7 @@ const defaultRouter = [
 		meta: { prefit: [0, 1, 2, 3] },
 	},
 ];
-
+let modules = import.meta.glob('../**/*.vue');
 const makeRouterData = (db) => {
 	let arr = [];
 	for (let i = 0; i < db.length; i++) {
@@ -38,7 +38,7 @@ const makeRouterData = (db) => {
 				...target.subContent.map((el) => ({
 					path: el.path,
 					name: el.name,
-					component: () => import(`../views/${el.component}.vue`),
+					component: modules[`../views/${el.component}.vue`],
 					meta: { prefit: el.prefit },
 				})),
 			];

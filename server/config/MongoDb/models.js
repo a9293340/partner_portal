@@ -23,21 +23,21 @@ const router = new mongoose.Schema({
 	name: { type: String },
 	path: { type: String },
 	component: { type: String },
-	perfit: { type: Array },
+	prefit: { type: Array },
 	subContent: { type: Array },
 });
 
 const firmware = new mongoose.Schema({
 	name: { type: String },
 	product_id: { type: String },
-	perfit: { type: Array },
+	prefit: { type: Array },
 	version: { type: Array },
 });
 
 const product = new mongoose.Schema({
 	name: { type: String },
 	production_type_id: { type: String },
-	perfit: { type: Array },
+	prefit: { type: Array },
 	firmware_id: { type: Array },
 	documents_id: { type: Array },
 	slogan: { type: String },
@@ -47,13 +47,12 @@ const product = new mongoose.Schema({
 const production_type = new mongoose.Schema({
 	name: { type: String },
 	photo: { type: String },
-	perfit: { type: Array },
 });
 
 const software = new mongoose.Schema({
 	name: { type: String },
 	software_type_id: { type: String },
-	perfit: { type: Array },
+	prefit: { type: Array },
 	documents_id: { type: Array },
 	photo: { type: String },
 });
@@ -61,20 +60,18 @@ const software = new mongoose.Schema({
 const software_type = new mongoose.Schema({
 	name: { type: String },
 	photo: { type: String },
-	perfit: { type: Array },
 });
 
-const documents = new mongoose.Schema({
+const document = new mongoose.Schema({
 	name: { type: String },
 	document_type_id: { type: String },
-	perfit: { type: Array },
+	prefit: { type: Array },
 	version: { type: Array },
 });
 
 const document_type = new mongoose.Schema({
 	name: { type: String },
 	photo: { type: String },
-	perfit: { type: Array },
 });
 
 const prefit = new mongoose.Schema({
@@ -90,7 +87,7 @@ module.exports = {
 	production_type,
 	software,
 	software_type,
-	documents,
+	document,
 	document_type,
 	prefit,
 	admin_token,

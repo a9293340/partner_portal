@@ -9,6 +9,10 @@ const {
 	prefitRouter,
 	RouteRouter,
 	ProductionTypeRouter,
+	DocumentRouter,
+	FirmwareRouter,
+	ProductRouter,
+	DocumentTypeRouter,
 } = require('./routes');
 const { encryptRes } = require('./config/util/encryptNToken');
 
@@ -28,6 +32,10 @@ app.use('/api/admin', adminRouter);
 app.use('/api/prefit', prefitRouter);
 app.use('/api/route', RouteRouter);
 app.use('/api/productionType', ProductionTypeRouter);
+app.use('/api/document', DocumentRouter);
+app.use('/api/firmware', FirmwareRouter);
+app.use('/api/product', ProductRouter);
+app.use('/api/documentType', DocumentTypeRouter);
 
 app.get('/', (req, res) => {
 	res.sendfile('./views/index.html');
@@ -42,6 +50,7 @@ app.use(
 		optionsSuccessStatus: 204,
 	})
 );
+
 // app.all('*', function (req, res, next) {
 // 	res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
 // 	res.header('Access-Control-Allow-Headers', 'Content-Type');
