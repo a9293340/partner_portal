@@ -1,16 +1,12 @@
 <script setup>
 import { ref } from 'vue';
-import { useParameterStore } from '@/store/parameter';
 import { useComponentStore } from '@/store/component';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-const { loginAdmin } = storeToRefs(useParameterStore());
-import { encode, sessionGet, depCopy } from '@/utils';
-import { postAdd } from '@/utils/api';
+import { depCopy } from '@/utils';
 import AddTemplate from '@/components/AddTemplate.vue';
 
-const { fixLoading, fixDocumentList } = useComponentStore();
-const { fixError } = useParameterStore();
+const { fixDocumentList, addItem } = useComponentStore();
 
 const { documentTypeList, prefitList, creatorList } = storeToRefs(
 	useComponentStore()
@@ -37,30 +33,11 @@ const selectItems = ref({
 const inputData = ref(depCopy(empty));
 
 const getUsefulData = async (data) => {
-	fixLoading(true);
-	try {
-		await postAdd(
-			'document',
-			encode({
-				tokenReq: loginAdmin.value.account,
-				token: sessionGet('cinoT'),
-				...data,
-			})
-		);
+	await addItem(data, 'document', async () => {
 		await fixDocumentList();
 		inputData.value = empty;
 		router.push('/documentList');
-	} catch (error) {
-		// console.log(error);
-		if (error.response)
-			fixError({
-				title: 'Error',
-				msg: error.response.data.error_code,
-				isShow: true,
-			});
-	}
-	// router.push('/userList');
-	fixLoading(false);
+	});
 };
 </script>
 
@@ -81,4 +58,10 @@ const getUsefulData = async (data) => {
 <style lang="scss">
 @import '../../assets/scss/_color.scss';
 @import '../../assets/scss/_style.scss';
+.product-add {
+	padding: 30px;
+	position: relative;
+	box-sizing: border-box;
+	height: 100%;
+}
 </style>

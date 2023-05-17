@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { getRoute } from '@/utils';
+import { depCopy } from '@/utils';
+import { router } from '../utils/router';
 
-const newRoute = await getRoute();
+const newRoute = depCopy(router);
 
 const defaultRouter = [
 	{
@@ -67,9 +68,9 @@ const routes = [
 	},
 ];
 
-const router = createRouter({
+const routers = createRouter({
 	history: createWebHashHistory(), // hash模式：createWebHashHistory，history模式：createWebHistory
 	routes: routes,
 });
 
-export default router;
+export default routers;

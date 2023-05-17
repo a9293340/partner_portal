@@ -1,62 +1,49 @@
 <script setup>
-import { onBeforeMount, ref } from 'vue';
+import { ref } from 'vue';
 import { useComponentStore } from '@/store/component';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { depCopy } from '@/utils';
 import AddTemplate from '@/components/AddTemplate.vue';
 
-const { getProductList, addItem } = useComponentStore();
+const { addItem, fixFirmwareList } = useComponentStore();
 
-const { productTypeList, prefitList, documentList, firmwareList } = storeToRefs(
-	useComponentStore()
-);
+const { prefitList, creatorList } = storeToRefs(useComponentStore());
 
 const router = useRouter();
 
 const empty = {
 	name: '',
-	production_type_id: '',
-	photo: '',
-	slogan: '',
-	documents_id: [],
-	firmware_id: [],
+	version: [],
 	prefit: [0],
 };
-const showInput = ['name', 'slogan'];
-const showSelect = ['production_type_id'];
-const showMultiSelct = ['prefit', 'documents_id', 'firmware_id'];
-const showSpecial = 'photo';
+
+const showInput = ['name'];
+const showVersion = ['version'];
+const showMultiSelct = ['prefit'];
 const selectItems = ref({
-	production_type_id: productTypeList.value,
 	prefit: prefitList.value,
-	documents_id: documentList.value,
-	firmware_id: firmwareList.value,
+	creator: creatorList.value,
 });
 const inputData = ref(depCopy(empty));
 
 const getUsefulData = async (data) => {
-	await addItem(data, 'product', async () => {
-		await getProductList();
+	await addItem(data, 'firmware', async () => {
+		await fixFirmwareList();
 		inputData.value = empty;
-		router.push('/productList');
+		router.push('/firmwareList');
 	});
 };
-
-onBeforeMount(async () => {
-	selectItems.value.production_type_id = productTypeList.value;
-	selectItems.value.prefit = prefitList.value;
-});
 </script>
+
 <template>
 	<div class="product-add">
 		<AddTemplate
 			:input-data="inputData"
 			:show-input="showInput"
-			:show-select="showSelect"
 			:select-items="selectItems"
 			:show-multi-selct="showMultiSelct"
-			:show-special="showSpecial"
+			:show-version="showVersion"
 			@data="getUsefulData"
 		/>
 	</div>

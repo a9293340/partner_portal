@@ -59,6 +59,7 @@ const pickpTList = (caculate) => {
 // 後續需改成production type ID
 const pickProductsGroup = (name, i) => {
 	nowPickTypeIndex.value = i;
+	console.log(nowPickTypeIndex.value);
 	showProduct.value = usefulProducts.value.filter(
 		(el) => el.production_type_id === name
 	);
@@ -108,19 +109,20 @@ onBeforeMount(async () => {
 					<div
 						class="img-box"
 						v-for="(productType, p) in pTList"
-						:key="productType.name"
+						:key="productType.opt"
 						@click="pickProductsGroup(productType._id, p)"
 					>
 						<img
 							class="product-type-img"
 							:src="useMakeImage(productType.photo)"
-							:alt="productType.name"
+							:alt="productType.opt"
+							:title="productType.opt"
 						/>
 						<span
 							:class="{
 								'text-sky-500': nowPickTypeIndex === p,
 							}"
-							>{{ productType.name }}</span
+							>{{ productType.opt }}</span
 						>
 					</div>
 				</div>

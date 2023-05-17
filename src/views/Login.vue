@@ -6,8 +6,6 @@ import { useComponentStore } from '@/store/component';
 import { sessionSet, sessionGet, encode } from '@/utils';
 import { login, postList } from '@/utils/api';
 import VueClientRecaptcha from 'vue-client-recaptcha';
-import { useMakeImage } from '../assets/util';
-import productList from '@/assets/db/production_type.json';
 
 const inputValue = ref(null);
 const checkValue = ref(null);
@@ -115,7 +113,7 @@ const submitForm = async () => {
 	<div class="login-body">
 		<div class="login-container">
 			<div class="head">
-				<img class="logo" :src="useMakeImage(productList[0].photo)" />
+				<img class="logo" src="../assets/img/product-img/A560.png" />
 				<div class="name">
 					<div class="title">CINO</div>
 					<div class="tips">Partner Portal</div>

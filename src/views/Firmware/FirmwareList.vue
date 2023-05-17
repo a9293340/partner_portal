@@ -7,62 +7,36 @@ import EditTable from '../../components/EditTable.vue';
 const adList = ref();
 const totalData = ref();
 const nowPage = ref();
-const {
-	isOpenEditPop,
-	productTypeList,
-	prefitList,
-	documentList,
-	firmwareList,
-} = storeToRefs(useComponentStore());
+const { isOpenEditPop, prefitList, creatorList } = storeToRefs(
+	useComponentStore()
+);
 const {
 	fixOpenEditPop,
-	removeItem,
 	getDataByPage,
-	getProductList,
+	fixFirmwareList,
 	getEditData,
+	removeItem,
 } = useComponentStore();
 
 const editTarget = ref({});
 
-const showInput = ['name', 'slogan'];
-const showSelect = ['production_type_id'];
-const showMultiSelct = ['prefit', 'documents_id', 'firmware_id'];
-const showSpecial = 'photo';
+const showInput = ['name'];
+const showVersion = ['version'];
+const showMultiSelct = ['prefit'];
 const selectItems = ref({
-	production_type_id: productTypeList.value,
 	prefit: prefitList.value,
-	documents_id: documentList.value,
-	firmware_id: firmwareList.value,
+	creator: creatorList.value,
 });
 
 const normalKey = [
 	{
 		key: 'name',
-		width: 150,
-	},
-	{
-		key: 'slogan',
-		width: 400,
-	},
-];
-
-const specialList = [
-	{
-		key: 'production_type_id',
-		width: 180,
-		list: productTypeList.value,
-	},
-];
-
-const hasImage = [
-	{
-		key: 'photo',
-		width: 180,
+		width: 450,
 	},
 ];
 
 const getEditItem = async (data) =>
-	await getEditData(data, 'product', reloadData);
+	await getEditData(data, 'firmware', reloadData);
 
 const editAdmin = (row) => {
 	editTarget.value = row;
@@ -70,18 +44,19 @@ const editAdmin = (row) => {
 };
 
 const reloadData = async () => {
-	adList.value = (await getDataByPage(nowPage.value, 'product', false)).list;
-	await getProductList();
+	adList.value = (await getDataByPage(nowPage.value, 'firmware', false)).list;
+	await fixFirmwareList();
 };
 
-const removeAdmin = async (row) => await removeItem(row, 'product', reloadData);
+const removeAdmin = async (row) =>
+	await removeItem(row, 'firmware', reloadData);
 
 const pageChange = async (page) =>
 	(adList.value = (await getDataByPage(page - 1, 'document')).list);
 
 onMounted(async () => {
 	try {
-		const res = await getDataByPage(0, 'product');
+		const res = await getDataByPage(0, 'firmware');
 		nowPage.value = 0;
 		totalData.value = res.total;
 		adList.value = res.list;
@@ -92,13 +67,12 @@ onMounted(async () => {
 </script>
 
 <template>
-	<div class="product-list">
+	<div class="firmware-list">
 		<EditTable
 			:normal-keys="normalKey"
+			:has-version="true"
 			:target-list="adList"
 			:total-data="totalData"
-			:special-list="specialList"
-			:has-image="hasImage"
 			@data="removeAdmin"
 			@page="pageChange"
 			@row="editAdmin"
@@ -108,10 +82,9 @@ onMounted(async () => {
 			:title="'Edit Product'"
 			:input-data="editTarget"
 			:show-input="showInput"
-			:show-select="showSelect"
 			:select-items="selectItems"
 			:show-multi-selct="showMultiSelct"
-			:show-special="showSpecial"
+			:show-version="showVersion"
 			@data="getEditItem"
 			@abort="fixOpenEditPop(false)"
 		/>
@@ -121,7 +94,7 @@ onMounted(async () => {
 <style lang="scss">
 @import '../../assets/scss/_color.scss';
 @import '../../assets/scss/_style.scss';
-.product-list {
+.firmware-list {
 	padding: 30px;
 	position: relative;
 }

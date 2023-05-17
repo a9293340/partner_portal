@@ -1,21 +1,21 @@
 <script setup>
-import { ref, onMounted, version } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useComponentStore } from '@/store/component';
-import { useParameterStore } from '@/store/parameter';
 import { storeToRefs } from 'pinia';
-import { encode, sessionGet, comfirmBox, popMsg } from '@/utils';
-import { postEdit, postDelete } from '@/utils/api';
-import * as dayjs from 'dayjs';
+import EditTable from '../../components/EditTable.vue';
 
 const adList = ref();
-const totalData = ref();
+const totalData = ref(0);
 const nowPage = ref();
-const { isOpenEditPop, documentTypeList, prefitList, creatorList, page_limit } =
+const { isOpenEditPop, documentTypeList, prefitList, creatorList } =
 	storeToRefs(useComponentStore());
-const { loginAdmin } = storeToRefs(useParameterStore());
-const { fixOpenEditPop, fixLoading, getDataByPage, fixDocumentList } =
-	useComponentStore();
-const { fixError } = useParameterStore();
+const {
+	fixOpenEditPop,
+	getDataByPage,
+	fixDocumentList,
+	getEditData,
+	removeItem,
+} = useComponentStore();
 
 const editTarget = ref({});
 
@@ -29,31 +29,23 @@ const selectItems = ref({
 	creator: creatorList.value,
 });
 
-const getEditData = async (data) => {
-	fixLoading(true);
-	try {
-		await postEdit(
-			'document',
-			encode({
-				tokenReq: loginAdmin.value.account,
-				token: sessionGet('cinoT'),
-				...data,
-			})
-		);
-		await reloadData();
-		await popMsg('Edit completed');
-	} catch (error) {
-		// console.log(error);
-		if (error.response)
-			fixError({
-				title: 'Error',
-				msg: error.response.data.error_code,
-				isShow: true,
-			});
-	}
-	fixLoading(false);
-	fixOpenEditPop(false);
-};
+const normalKey = [
+	{
+		key: 'name',
+		width: 450,
+	},
+];
+
+const specialList = [
+	{
+		key: 'document_type_id',
+		width: 200,
+		list: documentTypeList.value,
+	},
+];
+
+const getEditItem = async (data) =>
+	await getEditData(data, 'document', reloadData);
 
 const editAdmin = (row) => {
 	editTarget.value = row;
@@ -65,35 +57,11 @@ const reloadData = async () => {
 	await fixDocumentList();
 };
 
-const removeAdmin = async (row) => {
-	try {
-		await comfirmBox();
-		fixLoading(true);
-		try {
-			await postDelete(
-				'document',
-				encode({
-					tokenReq: loginAdmin.value.account,
-					token: sessionGet('cinoT'),
-					_id: row._id,
-				})
-			);
-			await reloadData();
-			await popMsg('Delete completed');
-		} catch (error) {
-			// console.log(error);
-			if (error.response)
-				fixError({
-					title: 'Error',
-					msg: error.response.data.error_code,
-					isShow: true,
-				});
-		}
-		fixLoading(false);
-	} catch (error) {}
-};
+const removeAdmin = async (row) =>
+	await removeItem(row, 'document', reloadData);
 
-const pageChange = async (page) => await getDataByPage(page - 1);
+const pageChange = async (page) =>
+	(adList.value = (await getDataByPage(page - 1, 'document')).list);
 
 onMounted(async () => {
 	try {
@@ -109,53 +77,15 @@ onMounted(async () => {
 
 <template>
 	<div class="document-list">
-		<el-table :data="adList" style="width: 1080px">
-			<el-table-column prop="name" label="name" width="450" />
-			<el-table-column
-				prop="version"
-				label="Version(version/creator/date)"
-				width="400"
-			>
-				<template class="flex flex-row" #default="scope">
-					<div class="flex" v-for="ver in scope.row.version">
-						<span>{{ ver.version }}/</span>
-						<span class="mr-3">{{
-							creatorList.find((x) => x.val === ver.creator).opt
-						}}</span>
-						<span class="mr-3">
-							({{ dayjs(ver.create_date).format('YYYY-MM-DD') }})
-						</span>
-					</div>
-				</template>
-			</el-table-column>
-			<el-table-column>
-				<template #default="scope">
-					<el-button
-						link
-						type="primary"
-						@click.prevent="editAdmin(scope.row)"
-						>Edit</el-button
-					>
-				</template>
-			</el-table-column>
-			<el-table-column>
-				<template #default="scope">
-					<el-button
-						link
-						type="primary"
-						@click.prevent="removeAdmin(scope.row)"
-						>Remove</el-button
-					>
-				</template>
-			</el-table-column>
-		</el-table>
-		<el-pagination
-			background
-			layout="prev, pager, next"
-			:total="totalData"
-			:page-count="Math.ceil(totalData / page_limit)"
-			:page-size="page_limit"
-			@current-change="pageChange"
+		<EditTable
+			:normal-keys="normalKey"
+			:has-version="true"
+			:target-list="adList"
+			:total-data="totalData"
+			:special-list="specialList"
+			@data="removeAdmin"
+			@page="pageChange"
+			@row="editAdmin"
 		/>
 		<Edit
 			v-if="isOpenEditPop"
@@ -166,7 +96,7 @@ onMounted(async () => {
 			:select-items="selectItems"
 			:show-multi-selct="showMultiSelct"
 			:show-version="showVersion"
-			@data="getEditData"
+			@data="getEditItem"
 			@abort="fixOpenEditPop(false)"
 		/>
 	</div>

@@ -1,17 +1,13 @@
 <script setup>
 import { onBeforeMount, ref } from 'vue';
-import { useParameterStore } from '@/store/parameter';
 import { useComponentStore } from '@/store/component';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import * as dayjs from 'dayjs';
-import { encode, sessionGet, depCopy } from '@/utils';
-import { postAdd } from '@/utils/api';
+import { depCopy } from '@/utils';
 import AddTemplate from '@/components/AddTemplate.vue';
 
-const { loginAdmin } = storeToRefs(useParameterStore());
-const { fixError } = useParameterStore();
-const { fixLoading, getCreatorList } = useComponentStore();
+const { getCreatorList, addItem } = useComponentStore();
 const { prefitList, statusList } = storeToRefs(useComponentStore());
 const router = useRouter();
 
@@ -34,31 +30,13 @@ const empty = {
 const inputData = ref(depCopy(empty));
 const addAdmin = async (data) => {
 	inputData.value = data;
-	fixLoading(true);
 	inputData.value['create_date'] = dayjs().format('YYYY-MM-DD HH:mm:ss');
 	inputData.value['action_log'] = [];
-	try {
-		await postAdd(
-			'admin',
-			encode({
-				tokenReq: loginAdmin.value.account,
-				token: sessionGet('cinoT'),
-				...inputData.value,
-			})
-		);
+	await addItem(inputData.value, 'admin', async () => {
 		await getCreatorList();
 		inputData.value = empty;
 		router.push('/userList');
-	} catch (error) {
-		console.log(error);
-		if (error.response)
-			fixError({
-				title: 'Error',
-				msg: error.response.data.error_code,
-				isShow: true,
-			});
-	}
-	fixLoading(false);
+	});
 };
 
 onBeforeMount(async () => {

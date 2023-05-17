@@ -1,8 +1,8 @@
 import { defineStore, storeToRefs } from 'pinia';
 import { ref } from 'vue';
-import { sessionGet, encode } from '@/utils';
+import { sessionGet, encode, changeItem, comfirmBox } from '@/utils';
 import { useParameterStore } from './parameter';
-import { postList } from '../utils/api';
+import { postList, postAdd } from '../utils/api';
 
 export const useComponentStore = defineStore('component', () => {
 	const { loginAdmin } = storeToRefs(useParameterStore());
@@ -15,26 +15,19 @@ export const useComponentStore = defineStore('component', () => {
 
 	const page_limit = ref(20);
 
-	const prefitList = ref([
-		{ val: 0, opt: 'Super admin' },
-		{ val: 1, opt: 'Support' },
-		{ val: 2, opt: 'Partner(CINO)' },
-		{ val: 3, opt: 'Partner(SICK)' },
-	]);
+	// List Store
+	const prefitList = ref([]);
 	const statusList = ref([
 		{ val: 0, opt: 'On' },
 		{ val: 1, opt: 'Off' },
 	]);
 	const documentList = ref([]);
-
 	const firmwareList = ref([]);
-
 	const documentTypeList = ref([]);
-
 	const productTypeList = ref([]);
-
 	const creatorList = ref([]);
 
+	// Fix List
 	const fixDocumentTypeList = async () => {
 		try {
 			const documentType = encode({
@@ -72,35 +65,6 @@ export const useComponentStore = defineStore('component', () => {
 		} catch (error) {}
 	};
 
-	const getDataByPage = async (page, route, jud = true) => {
-		if (jud) fixLoading(true);
-		let res = {
-			total: 0,
-			list: [],
-		};
-		try {
-			res = await postList(
-				route,
-				encode({
-					tokenReq: loginAdmin.value.account,
-					token: sessionGet('cinoT'),
-					limit: page_limit.value,
-					page,
-					filter: {},
-				})
-			);
-		} catch (error) {
-			if (error.response)
-				fixError({
-					title: 'Error',
-					msg: error.response.data.error_code,
-					isShow: true,
-				});
-		}
-		if (jud) fixLoading(false);
-
-		return res;
-	};
 	const fixDocumentList = async () => {
 		try {
 			const document = await postList(
@@ -177,7 +141,6 @@ export const useComponentStore = defineStore('component', () => {
 			console.log(error);
 		}
 	};
-
 	const getCreatorList = async () => {
 		try {
 			const creator = await postList(
@@ -202,6 +165,36 @@ export const useComponentStore = defineStore('component', () => {
 		}
 	};
 
+	// Component Action
+	const getDataByPage = async (page, route, jud = true) => {
+		if (jud) fixLoading(true);
+		let res = {
+			total: 0,
+			list: [],
+		};
+		try {
+			res = await postList(
+				route,
+				encode({
+					tokenReq: loginAdmin.value.account,
+					token: sessionGet('cinoT'),
+					limit: page_limit.value,
+					page,
+					filter: {},
+				})
+			);
+		} catch (error) {
+			if (error.response)
+				fixError({
+					title: 'Error',
+					msg: error.response.data.error_code,
+					isShow: true,
+				});
+		}
+		if (jud) fixLoading(false);
+
+		return res;
+	};
 	const getSelectOptions = async (type) => {
 		// console.log(type);
 		if (type <= 1) {
@@ -215,6 +208,79 @@ export const useComponentStore = defineStore('component', () => {
 		await getProductList();
 	};
 
+	const getEditData = async (data, path, getData) => {
+		fixLoading(true);
+		changeItem(
+			'E',
+			encode({
+				tokenReq: loginAdmin.value.account,
+				token: sessionGet('cinoT'),
+				...data,
+			}),
+			path
+		).then(async (res) => {
+			if (res)
+				fixError({
+					title: 'Error',
+					msg: res.response.data.error_code,
+					isShow: true,
+				});
+			else await getData();
+
+			fixLoading(false);
+			fixOpenEditPop(false);
+		});
+	};
+
+	const removeItem = async (row, path, cb) => {
+		await comfirmBox();
+		fixLoading(true);
+		changeItem(
+			'D',
+			encode({
+				tokenReq: loginAdmin.value.account,
+				token: sessionGet('cinoT'),
+				_id: row._id,
+			}),
+			path
+		).then(async (res) => {
+			if (res)
+				fixError({
+					title: 'Error',
+					msg: res.response.data.error_code,
+					isShow: true,
+				});
+			else await cb();
+			fixLoading(false);
+		});
+	};
+
+	const addItem = async (data, path, cb) => {
+		fixLoading(true);
+		try {
+			await postAdd(
+				path,
+				encode({
+					tokenReq: loginAdmin.value.account,
+					token: sessionGet('cinoT'),
+					...data,
+				})
+			);
+			await cb();
+		} catch (error) {
+			console.log(error);
+			if (error.response)
+				fixError({
+					title: 'Error',
+					msg: error.response.data.error_code,
+					isShow: true,
+				});
+		}
+		// router.push('/userList');
+		fixLoading(false);
+	};
+
+	// trigger control
 	const fixOpenEditPop = (bool) => {
 		isOpenEditPop.value = bool;
 		isShadow.value = bool;
@@ -250,5 +316,8 @@ export const useComponentStore = defineStore('component', () => {
 		documentTypeList,
 		creatorList,
 		getCreatorList,
+		getEditData,
+		removeItem,
+		addItem,
 	};
 });

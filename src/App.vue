@@ -4,7 +4,8 @@ import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
 import { useComponentStore } from '@/store/component.js';
 import { storeToRefs } from 'pinia';
-import { sessionRemove, getRoute, encode, sessionGet } from '@/utils';
+import { sessionRemove, encode, sessionGet } from '@/utils';
+import { router as RouterData } from './utils/router';
 import { logout } from '@/utils/api';
 
 const router = useRouter();
@@ -58,7 +59,7 @@ router.beforeEach(async (to, from, next) => {
 		next();
 	} else {
 		if (!loginAdmin.value.account) errorHandle(0, '/login', next);
-		// Product Document... single page check
+		// Product... single page check
 		else if (
 			to.params.id &&
 			isPassPrefit(
@@ -76,7 +77,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 onBeforeMount(async () => {
-	mainTitle.value = await getRoute();
+	mainTitle.value = RouterData;
 });
 </script>
 
