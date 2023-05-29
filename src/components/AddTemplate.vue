@@ -45,6 +45,7 @@ const versionTemplate = {
 	create_date: '',
 	creator: '',
 	download_path: '',
+	status: 0,
 };
 const { adminRules } = storeToRefs(useParameterStore());
 const { fixError } = useParameterStore();
@@ -143,7 +144,7 @@ watch(usefulInputData.value, () => {
 					:prop="itemKey"
 				>
 					<el-input
-						type="text"
+						:type="itemKey === 'prefit' ? 'Number' : 'text'"
 						v-model="usefulInputData[itemKey]"
 						autocomplete="off"
 					>
@@ -290,6 +291,21 @@ watch(usefulInputData.value, () => {
 							size="default"
 						/>
 					</el-form-item>
+					<el-form-item
+						label="Status :"
+						style="margin-bottom: 30px; width: 40em"
+						class="form-label"
+						:props="ver"
+					>
+						<el-select v-model="ver.status" placeholder="Select">
+							<el-option
+								v-for="item in props.selectItems['status']"
+								:key="item.val"
+								:value="item.val"
+								:label="item.opt"
+							></el-option>
+						</el-select>
+					</el-form-item>
 				</div>
 			</div>
 		</el-form>
@@ -310,13 +326,13 @@ watch(usefulInputData.value, () => {
 main {
 	overflow: auto;
 	width: 100%;
-	height: 90%;
+	height: 80%;
 	.el-form-item__label {
 		font-size: 20px;
 		width: 240px;
 	}
 	.version-box {
-		@apply w-144 h-64 border-2 rounded-lg flex flex-col p-3 ml-8 mb-10;
+		@apply w-144 h-80 border-2 rounded-lg flex flex-col p-3 ml-8 mb-10;
 	}
 	.version-box-error {
 		@apply border-red-500;

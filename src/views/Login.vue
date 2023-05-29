@@ -10,7 +10,7 @@ import VueClientRecaptcha from 'vue-client-recaptcha';
 const inputValue = ref(null);
 const checkValue = ref(null);
 
-const { fixLoading, getSelectOptions } = useComponentStore();
+const { fixLoading, getProductList } = useComponentStore();
 
 const checkValidCaptcha = (value) => (checkValue.value = value);
 const loginForm = ref(null);
@@ -89,7 +89,7 @@ const submitForm = async () => {
 					})
 				);
 				loginStore.loginAction(adminDetail.list[0]);
-				await getSelectOptions(adminDetail.list[0].permissions);
+				await getProductList();
 				router.push('/');
 				fixLoading(false);
 			} catch (error) {

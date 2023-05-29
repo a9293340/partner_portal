@@ -41,7 +41,10 @@ export const decode = (txt) =>
 export const axiosList = (axo) => axo.data.data;
 
 export const firstStringUpperCase = (str) =>
-	str.replace('_id', '').replace(/^./, str[0].toUpperCase());
+	str
+		.replace('_id', '')
+		.replace(/^./, str[0].toUpperCase())
+		.replace('_', ' ');
 
 export const getRoute = async () =>
 	decode(
@@ -86,16 +89,17 @@ export const popMsg = async (str) =>
 		message: str,
 	});
 
-export const changeItem = async (target, data, path) => {
+export const changeItem = async (target, data, path, jud = true) => {
 	let err = null;
 	try {
 		try {
 			target === 'D'
 				? await postDelete(path, data)
 				: await postEdit(path, data);
-			await popMsg(
-				target === 'D' ? 'Delete completed' : 'Edit completed'
-			);
+			if (jud)
+				await popMsg(
+					target === 'D' ? 'Delete completed' : 'Edit completed'
+				);
 		} catch (error) {
 			if (error.response) err = error;
 		}

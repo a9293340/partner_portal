@@ -1,7 +1,4 @@
 <script setup>
-import { onBeforeMount } from 'vue';
-import AddTemplate from './AddTemplate.vue';
-
 const emit = defineEmits(['data', 'abort']);
 const props = defineProps({
 	title: {
@@ -37,8 +34,6 @@ const props = defineProps({
 		default: null,
 	},
 });
-// const editTarget = ref(JSON.parse(props.foo));
-// const formData = ref(null);
 
 const editAdmin = (data) => {
 	emit('data', data);
@@ -50,7 +45,7 @@ const abort = (bool) => {
 </script>
 
 <template>
-	<div class="edit-pop">
+	<div class="add-pop">
 		<header class="flex justify-start items-center">
 			<h1
 				class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900"
@@ -73,10 +68,10 @@ const abort = (bool) => {
 	</div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../assets/scss/_color.scss';
 @import '../assets/scss/_style.scss';
-.edit-pop {
+.add-pop {
 	position: fixed;
 	width: 1080px;
 	height: 720px;

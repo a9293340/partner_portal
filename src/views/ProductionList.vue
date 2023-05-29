@@ -10,11 +10,11 @@ const router = useRouter();
 const login = useParameterStore();
 const { isPassPrefit } = login;
 const { products } = storeToRefs(login);
-const { fixLoading } = useComponentStore();
+const { fixLoading, whichSelectOptionsShouldBeGet } = useComponentStore();
 const { productTypeList } = storeToRefs(useComponentStore());
 
 const usefulProductType = ref();
-const usefulProducts = ref();
+const usefulProducts = ref([]);
 const pTList = ref();
 const showProduct = ref();
 const nowPickTypeIndex = ref(0);
@@ -59,22 +59,24 @@ const pickpTList = (caculate) => {
 // 後續需改成production type ID
 const pickProductsGroup = (name, i) => {
 	nowPickTypeIndex.value = i;
-	console.log(nowPickTypeIndex.value);
+	// console.log(nowPickTypeIndex.value);
 	showProduct.value = usefulProducts.value.filter(
 		(el) => el.production_type_id === name
 	);
 };
 
 const goToProductPage = (id) => {
-	console.log(id);
-	router.push(`/Product/${id}`);
+	// console.log(id);
+	router.push(`/production/${id}`);
 };
 
 onBeforeMount(async () => {
 	fixLoading(true);
+	await whichSelectOptionsShouldBeGet(98);
 	usefulProducts.value = products.value.filter(
 		(el) => !isPassPrefit(el.prefit)
 	);
+	if (!usefulProducts.value.length) return;
 	usefulProductType.value = productTypeList.value.filter((el) =>
 		usefulProducts.value.find((x) => x.production_type_id === el.val)
 	);
@@ -91,7 +93,7 @@ onBeforeMount(async () => {
 		<!-- search -->
 		<div class="search-zone"></div>
 		<!-- Image Pick -->
-		<div class="select-zone">
+		<div class="select-zone" v-if="usefulProducts.length">
 			<div class="type-zone">
 				<img
 					:src="arrowImg.left"
@@ -114,7 +116,7 @@ onBeforeMount(async () => {
 					>
 						<img
 							class="product-type-img"
-							:src="useMakeImage(productType.photo)"
+							:src="productType.photo"
 							:alt="productType.opt"
 							:title="productType.opt"
 						/>
@@ -158,7 +160,7 @@ onBeforeMount(async () => {
 								alt=""
 							/>
 							<div
-								class="text-l group-hover:text-xl w-full ease-linear duration-100 text-center"
+								class="text-l w-full ease-linear duration-100 text-center"
 							>
 								{{ pro.name }}
 							</div>
@@ -170,7 +172,7 @@ onBeforeMount(async () => {
 	</div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../assets/scss/_color.scss';
 @import '../assets/scss/_style.scss';
 .production-list {

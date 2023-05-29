@@ -17,6 +17,7 @@ const admin_token = new mongoose.Schema({
 	token: { type: String },
 	tokenReq: { type: String },
 	time: { type: Date },
+	status: { type: Number },
 });
 
 const router = new mongoose.Schema({
@@ -25,6 +26,7 @@ const router = new mongoose.Schema({
 	component: { type: String },
 	prefit: { type: Array },
 	subContent: { type: Array },
+	status: { type: Number },
 });
 
 const firmware = new mongoose.Schema({
@@ -32,6 +34,7 @@ const firmware = new mongoose.Schema({
 	product_id: { type: String },
 	prefit: { type: Array },
 	version: { type: Array },
+	status: { type: Number },
 });
 
 const product = new mongoose.Schema({
@@ -42,11 +45,13 @@ const product = new mongoose.Schema({
 	documents_id: { type: Array },
 	slogan: { type: String },
 	photo: { type: String },
+	status: { type: Number },
 });
 
 const production_type = new mongoose.Schema({
 	name: { type: String },
 	photo: { type: String },
+	status: { type: Number },
 });
 
 const software = new mongoose.Schema({
@@ -55,11 +60,13 @@ const software = new mongoose.Schema({
 	prefit: { type: Array },
 	documents_id: { type: Array },
 	photo: { type: String },
+	status: { type: Number },
 });
 
 const software_type = new mongoose.Schema({
 	name: { type: String },
 	photo: { type: String },
+	status: { type: Number },
 });
 
 const document = new mongoose.Schema({
@@ -67,16 +74,19 @@ const document = new mongoose.Schema({
 	document_type_id: { type: String },
 	prefit: { type: Array },
 	version: { type: Array },
+	status: { type: Number },
 });
 
 const document_type = new mongoose.Schema({
 	name: { type: String },
 	photo: { type: String },
+	status: { type: Number },
 });
 
 const prefit = new mongoose.Schema({
 	name: { type: String },
 	prefit: { type: Number },
+	status: { type: Number },
 });
 
 module.exports = {

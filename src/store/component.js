@@ -1,17 +1,63 @@
 import { defineStore, storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { sessionGet, encode, changeItem, comfirmBox } from '@/utils';
 import { useParameterStore } from './parameter';
 import { postList, postAdd } from '../utils/api';
+import { ElMessageBox } from 'element-plus';
 
 export const useComponentStore = defineStore('component', () => {
 	const { loginAdmin } = storeToRefs(useParameterStore());
 	const { fixError, productAction } = useParameterStore();
 
+	const originShowPath = ref([
+		{
+			name: 'admin',
+			prefit: [0, 2, 3],
+			path: 'userList',
+			type: 0,
+		},
+		{
+			name: 'prefit',
+			prefit: [0],
+			path: 'prefitList',
+		},
+		{
+			name: 'document',
+			prefit: [0, 2],
+			path: 'documentList',
+			type: 1,
+		},
+		{
+			name: 'document_type',
+			prefit: [0, 2],
+			path: 'documentTypeList',
+		},
+		{
+			name: 'product',
+			prefit: [0, 2],
+			path: 'productList',
+			type: 3,
+		},
+		{
+			name: 'product_type',
+			prefit: [0, 2],
+			path: 'productTypeList',
+			type: 98,
+		},
+		{
+			name: 'firmware',
+			prefit: [0, 2, 1, 4],
+			path: 'firmwareList',
+			type: 2,
+		},
+	]);
+
 	const isOpenEditPop = ref(false);
+	const isOpenAddPop = ref(false);
 	const isShadow = ref(false);
 	const isLoading = ref(false);
 	const isZShadow = ref(false);
+	const isOpenFunctionButton = ref(false);
 
 	const page_limit = ref(20);
 
@@ -27,6 +73,15 @@ export const useComponentStore = defineStore('component', () => {
 	const productTypeList = ref([]);
 	const creatorList = ref([]);
 
+	const fixPage_limit = (size) => (page_limit.value = size);
+
+	const tableRowClassName = ({ row, rowIndex }) =>
+		row.status === 1
+			? '--el-table-tr-bg-color: var(--el-color-danger-light-3)'
+			: rowIndex % 2 === 1
+			? '--el-table-tr-bg-color: var(--el-color-info-light-9)'
+			: '';
+
 	// Fix List
 	const fixDocumentTypeList = async () => {
 		try {
@@ -35,7 +90,9 @@ export const useComponentStore = defineStore('component', () => {
 				token: sessionGet('cinoT'),
 				limit: 100,
 				page: 0,
-				filter: {},
+				filter: {
+					status: 0,
+				},
 			});
 			documentTypeList.value = (
 				await postList('documentType', documentType)
@@ -53,7 +110,9 @@ export const useComponentStore = defineStore('component', () => {
 				token: sessionGet('cinoT'),
 				limit: 100,
 				page: 0,
-				filter: {},
+				filter: {
+					status: 0,
+				},
 			});
 			firmwareList.value = (
 				await postList('firmware', firmware)
@@ -74,7 +133,9 @@ export const useComponentStore = defineStore('component', () => {
 					token: sessionGet('cinoT'),
 					limit: 100,
 					page: 0,
-					filter: {},
+					filter: {
+						status: 0,
+					},
 				})
 			);
 			documentList.value = document.list.map((el) => ({
@@ -93,7 +154,9 @@ export const useComponentStore = defineStore('component', () => {
 					token: sessionGet('cinoT'),
 					limit: 100,
 					page: 0,
-					filter: {},
+					filter: {
+						status: 0,
+					},
 				})
 			);
 			prefitList.value = prefit.list.map((el) => ({
@@ -111,7 +174,9 @@ export const useComponentStore = defineStore('component', () => {
 					token: sessionGet('cinoT'),
 					limit: 100,
 					page: 0,
-					filter: {},
+					filter: {
+						status: 0,
+					},
 				})
 			);
 			productTypeList.value = productType.list.map((el) => ({
@@ -133,7 +198,9 @@ export const useComponentStore = defineStore('component', () => {
 					token: sessionGet('cinoT'),
 					limit: 1000,
 					page: 0,
-					filter: {},
+					filter: {
+						status: 0,
+					},
 				})
 			);
 			productAction(product.list);
@@ -141,7 +208,7 @@ export const useComponentStore = defineStore('component', () => {
 			console.log(error);
 		}
 	};
-	const getCreatorList = async () => {
+	const getCreatorList = async (permissions) => {
 		try {
 			const creator = await postList(
 				'admin',
@@ -151,7 +218,8 @@ export const useComponentStore = defineStore('component', () => {
 					limit: 1000,
 					page: 0,
 					filter: {
-						permissions: [0, 1],
+						permissions,
+						status: 0,
 					},
 				})
 			);
@@ -195,20 +263,109 @@ export const useComponentStore = defineStore('component', () => {
 
 		return res;
 	};
-	const getSelectOptions = async (type) => {
-		// console.log(type);
-		if (type <= 1) {
-			await fixPrefitList();
-			await fixDocumentList();
-			await fixFirmwareList();
-		}
-		await getCreatorList();
-		await fixDocumentTypeList();
-		await fixProductTypeList();
-		await getProductList();
+	const getSelectOptions = async (jud, type) => {
+		if (jud.find((el) => el === 'PR')) await fixPrefitList();
+		if (jud.find((el) => el === 'D')) await fixDocumentList();
+		if (jud.find((el) => el === 'F')) await fixFirmwareList();
+		if (jud.find((el) => el === 'C'))
+			await getCreatorList(
+				originShowPath.value.find((el) => el.type === type).prefit
+			);
+		if (jud.find((el) => el === 'DT')) await fixDocumentTypeList();
+		if (jud.find((el) => el === 'PT')) await fixProductTypeList();
+		if (jud.find((el) => el === 'P')) await getProductList();
 	};
 
-	const getEditData = async (data, path, getData) => {
+	const whichSelectOptionsShouldBeGet = async (type) => {
+		// console.log(type);
+		let data = {};
+		let edit = [];
+		let jud = [];
+		switch (type) {
+			case 0: // User
+				if (!prefitList.value.length) jud.push('PR');
+				break;
+			case 1: // Document
+				if (!documentTypeList.value.length) jud.push('DT');
+				if (!prefitList.value.length) jud.push('PR');
+				jud.push('C');
+				break;
+			case 2: // Firmware
+				if (!prefitList.value.length) jud.push('PR');
+				jud.push('C');
+				break;
+			case 3: // Product
+				if (!productTypeList.value.length) jud.push('PT');
+				if (!prefitList.value.length) jud.push('PR');
+				if (!documentList.value.length) jud.push('D');
+				if (!firmwareList.value.length) jud.push('F');
+				break;
+			case 98: //Production List
+				if (!productTypeList.value.length) jud.push('PT');
+				break;
+		}
+		await getSelectOptions(jud, type);
+		switch (type) {
+			case 0:
+				data = {
+					permissions: prefitList.value,
+				};
+				edit = [
+					{
+						key: 'permissions',
+						width: 170,
+						list: prefitList.value,
+					},
+				];
+				break;
+			case 1:
+				data = {
+					document_type_id: documentTypeList.value,
+					prefit: prefitList.value,
+					creator: creatorList.value,
+				};
+				edit = [
+					{
+						key: 'document_type_id',
+						width: 200,
+						list: documentTypeList.value,
+					},
+				];
+				break;
+			case 2:
+				data = {
+					prefit: prefitList.value,
+					creator: creatorList.value,
+				};
+				edit = [];
+				break;
+			case 3:
+				data = {
+					production_type_id: productTypeList.value,
+					prefit: prefitList.value,
+					documents_id: documentList.value,
+					firmware_id: firmwareList.value,
+				};
+				edit = [
+					{
+						key: 'production_type_id',
+						width: 180,
+						list: productTypeList.value,
+					},
+				];
+				break;
+		}
+		data['status'] = statusList.value;
+		edit.push({
+			key: 'status',
+			width: 100,
+			list: statusList.value,
+		});
+		// console.log(data, edit);
+		return { data, edit };
+	};
+
+	const getEditData = async (data, path, getData, jud = true) => {
 		fixLoading(true);
 		changeItem(
 			'E',
@@ -217,7 +374,8 @@ export const useComponentStore = defineStore('component', () => {
 				token: sessionGet('cinoT'),
 				...data,
 			}),
-			path
+			path,
+			jud
 		).then(async (res) => {
 			if (res)
 				fixError({
@@ -232,27 +390,133 @@ export const useComponentStore = defineStore('component', () => {
 		});
 	};
 
+	const sendPostList = async (path, filter) =>
+		(
+			await postList(
+				path,
+				encode({
+					tokenReq: loginAdmin.value.account,
+					token: sessionGet('cinoT'),
+					limit: 1000,
+					page: 0,
+					filter,
+				})
+			)
+		).list;
+
+	const removeCheck2 = async (row, path) => {
+		let data;
+		if (path === 'prefit') {
+			// admin
+			data = await sendPostList('admin', {
+				permissions: row.prefit,
+			});
+			if (data.length)
+				return {
+					title: 'admin data',
+					data,
+				};
+
+			// document
+			data = await sendPostList('document', {
+				prefit: row.prefit,
+			});
+			if (data.length)
+				return {
+					title: 'document data',
+					data,
+				};
+			// product
+			data = await sendPostList('product', {
+				prefit: row.prefit,
+			});
+			if (data.length)
+				return {
+					title: 'product data',
+					data,
+				};
+		} else if (path === 'productionType') {
+			data = await sendPostList('product', {
+				production_type_id: row._id,
+			});
+			if (data.length)
+				return {
+					title: 'product data',
+					data,
+				};
+		} else if (path === 'documentType') {
+			data = await sendPostList('document', {
+				document_type_id: row._id,
+			});
+			if (data.length)
+				return {
+					title: 'document data',
+					data,
+				};
+		} else if (path === 'document' || path === 'firmware') {
+			data = await sendPostList(
+				'product',
+				path === 'document'
+					? {
+							documents_id: row._id,
+					  }
+					: { firmware_id: row._id }
+			);
+			if (data.length)
+				return {
+					title:
+						path === 'document' ? 'document data' : 'firmware data',
+					data,
+				};
+		}
+
+		return false;
+	};
+
 	const removeItem = async (row, path, cb) => {
-		await comfirmBox();
-		fixLoading(true);
-		changeItem(
-			'D',
-			encode({
-				tokenReq: loginAdmin.value.account,
-				token: sessionGet('cinoT'),
-				_id: row._id,
-			}),
-			path
-		).then(async (res) => {
-			if (res)
-				fixError({
-					title: 'Error',
-					msg: res.response.data.error_code,
-					isShow: true,
+		try {
+			await comfirmBox();
+			fixLoading(true);
+			const checkData = await removeCheck2(row, path);
+			if (checkData) {
+				ElMessageBox({
+					title: `須先刪除相關連動參數(${checkData.title})`,
+					message: h(
+						'ol',
+						{ style: 'margin-left : 20px' },
+						checkData.data.map((el) =>
+							h(
+								'li',
+								{ style: 'list-style-type: circle' },
+								el.name
+							)
+						)
+					),
 				});
-			else await cb();
-			fixLoading(false);
-		});
+				fixLoading(false);
+				return;
+			}
+			changeItem(
+				'D',
+				encode({
+					tokenReq: loginAdmin.value.account,
+					token: sessionGet('cinoT'),
+					_id: row._id,
+				}),
+				path
+			).then(async (res) => {
+				if (res)
+					fixError({
+						title: 'Error',
+						msg: res.response.data.error_code,
+						isShow: true,
+					});
+				else await cb();
+			});
+		} catch (error) {
+			console.log(error);
+		}
+		fixLoading(false);
 	};
 
 	const addItem = async (data, path, cb) => {
@@ -277,12 +541,18 @@ export const useComponentStore = defineStore('component', () => {
 				});
 		}
 		// router.push('/userList');
+		fixOpenAddPop(false);
 		fixLoading(false);
 	};
 
 	// trigger control
 	const fixOpenEditPop = (bool) => {
 		isOpenEditPop.value = bool;
+		isShadow.value = bool;
+	};
+
+	const fixOpenAddPop = (bool) => {
+		isOpenAddPop.value = bool;
 		isShadow.value = bool;
 	};
 
@@ -319,5 +589,12 @@ export const useComponentStore = defineStore('component', () => {
 		getEditData,
 		removeItem,
 		addItem,
+		fixPage_limit,
+		whichSelectOptionsShouldBeGet,
+		isOpenFunctionButton,
+		fixOpenAddPop,
+		isOpenAddPop,
+		originShowPath,
+		tableRowClassName,
 	};
 });

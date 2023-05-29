@@ -14,10 +14,12 @@ const dayjs = require('dayjs');
 
 router.post('/login', limiter, async (req, res, next) => {
 	const user = decryptRes(req.body.data);
+	// console.log(user);
 	if (!user) next(10003);
 	else
 		MongooseCRUD('R', 'admin', { account: user.account }).then(
 			async (arr, err) => {
+				// console.log(arr);
 				if (err || arr.length > 1) next(err || 10004);
 				else if (!arr.length) next(11001);
 				else if (!(user.password === arr[0]['password'])) next(11002);
@@ -54,7 +56,7 @@ router.post('/logout', limiter, checkToken, async (req, res, next) => {
 
 router.post('/list', limiter, checkToken, (req, res, next) => {
 	const { page, limit, filter } = decryptRes(req.body.data);
-	console.log(page, limit);
+	// console.log(page, limit);
 	pList(res, next, 'admin', filter, false, { limit, page });
 });
 

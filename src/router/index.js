@@ -1,8 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { depCopy } from '@/utils';
-import { router } from '../utils/router';
+import { router, router_bak } from '../utils/router';
 
 const newRoute = depCopy(router);
+const newRoute_bak = depCopy(router_bak);
 
 const defaultRouter = [
 	{
@@ -13,55 +14,93 @@ const defaultRouter = [
 		path: '/introduce',
 		name: 'Introduce',
 		component: () => import('../views/Introduce.vue'),
-		meta: { prefit: [0, 1, 2, 3] },
-	},
-	{
-		path: '/product/:id',
-		name: 'Product',
-		component: () => import('../views/Product/_id.vue'),
-		meta: { prefit: [0, 1, 2, 3] },
+		meta: { prefit: [0, 1, 2, 3, 4, 20, 21] },
 	},
 	{
 		path: '/login',
 		name: 'login',
 		component: () => import('../views/Login.vue'),
-		meta: { prefit: [0, 1, 2, 3] },
+		meta: { prefit: [0, 1, 2, 3, 4, 20, 21] },
+	},
+	{
+		path: '/configurationHub',
+		name: 'Configuration Hub',
+		component: () => import('../views/ConfigurationHub.vue'),
+		meta: { prefit: [0, 1, 2, 3, 4] },
+		children: [
+			{
+				path: 'userList',
+				name: 'User List',
+				component: () =>
+					import('../views/ConfigurationHub/UserList.vue'),
+				meta: { prefit: [0, 2, 3] },
+			},
+			{
+				path: 'prefitList',
+				name: 'Prefit List',
+				component: () =>
+					import('../views/ConfigurationHub/PrefitList.vue'),
+				meta: { prefit: [0] },
+			},
+			{
+				path: 'documentList',
+				name: 'Document List',
+				component: () =>
+					import('../views/ConfigurationHub/DocumentList.vue'),
+				meta: { prefit: [0, 2] },
+			},
+			{
+				path: 'documentTypeList',
+				name: 'Document Type List',
+				component: () =>
+					import('../views/ConfigurationHub/DocumentTypeList.vue'),
+				meta: { prefit: [0, 2] },
+			},
+			{
+				path: 'productList',
+				name: 'Product List',
+				component: () =>
+					import('../views/ConfigurationHub/ProductList.vue'),
+				meta: { prefit: [0, 2] },
+			},
+			{
+				path: 'productTypeList',
+				name: 'Product Type List',
+				component: () =>
+					import('../views/ConfigurationHub/ProductTypeList.vue'),
+				meta: { prefit: [0, 2] },
+			},
+			{
+				path: 'firmwareList',
+				name: 'Firmware List',
+				component: () =>
+					import('../views/ConfigurationHub/FirmwareList.vue'),
+				meta: { prefit: [0, 2, 1, 4] },
+			},
+		],
+	},
+	{
+		path: '/actionLog',
+		name: 'Action Log',
+		component: () => import('../views/ActionLog.vue'),
+		meta: { prefit: [0] },
+	},
+	{
+		path: '/production',
+		name: 'Production',
+		component: () => import('../views/ProductionList.vue'),
+		meta: { prefit: [0, 1, 2, 3, 4, 20, 21] },
+	},
+	{
+		path: '/production/:id',
+		name: 'Product',
+		component: () => import('../views/Product/_id.vue'),
+		meta: { prefit: [0, 1, 2, 3, 4, 20, 21] },
 	},
 ];
-let modules = import.meta.glob('../**/*.vue');
-const makeRouterData = (db) => {
-	let arr = [];
-	for (let i = 0; i < db.length; i++) {
-		const target = db[i];
-		if (target.subContent) {
-			arr = [
-				...arr,
-				...target.subContent.map((el) => ({
-					path: el.path,
-					name: el.name,
-					component: modules[`../views/${el.component}.vue`],
-					meta: { prefit: el.prefit },
-				})),
-			];
-		} else {
-			// console.log(target.prefit);
-			arr.push({
-				path: target.path,
-				name: target.name,
-				component: () => import(`../views/${target.component}.vue`),
-				meta: { prefit: target.prefit },
-			});
-		}
-	}
-
-	// console.log(arr);
-
-	return arr;
-};
 
 const routes = [
 	...defaultRouter,
-	...makeRouterData(newRoute),
 	{
 		path: '/:catchAll(.*)',
 		redirect: '/introduce',

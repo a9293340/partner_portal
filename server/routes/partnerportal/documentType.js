@@ -6,6 +6,7 @@ const {
 	pList,
 	canNotBeSameBeforeAdd,
 	pEdit,
+	pDelete,
 } = require('../../config/util/postAction');
 
 router.post('/list', limiter, checkToken, (req, res, next) => {
@@ -15,6 +16,24 @@ router.post('/list', limiter, checkToken, (req, res, next) => {
 	} catch (error) {
 		console.log(error);
 	}
+});
+
+router.post('/add', limiter, checkToken, (req, res, next) => {
+	const { token, tokenReq, ...useful } = decryptRes(req.body.data);
+	console.log(useful);
+	canNotBeSameBeforeAdd(res, next, 'document_type', useful, 'name');
+});
+
+router.post('/edit', limiter, checkToken, async (req, res, next) => {
+	const { token, tokenReq, _id, ...other } = decryptRes(req.body.data);
+	if (!_id && !other) next(10003);
+	else pEdit(res, next, 'document_type', other, _id);
+});
+
+router.post('/delete', limiter, checkToken, async (req, res, next) => {
+	const { _id } = decryptRes(req.body.data);
+	if (!_id) next(10003);
+	else pDelete(res, next, 'document_type', _id);
 });
 
 module.exports = router;

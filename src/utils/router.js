@@ -1,5 +1,35 @@
 export const router = [
 	{
+		name: 'Production',
+		path: '/production',
+		component: 'ProductionList',
+		prefit: [0, 1, 2, 3, 4, 20, 21],
+		subContent: null,
+	},
+	{
+		name: 'Configuration Hub',
+		path: '/configurationHub',
+		component: 'ConfigurationHub',
+		prefit: [0, 1, 2, 3, 4],
+		subContent: [
+			{
+				name: 'Setting',
+				path: '/configurationHub',
+				component: 'ConfigurationHub',
+				prefit: [0, 1, 2, 3, 4],
+			},
+			{
+				name: 'User Action Log',
+				path: '/actionLog',
+				component: 'ActionLog',
+				prefit: [0],
+			},
+		],
+	},
+];
+
+export const router_bak = [
+	{
 		name: 'Configuration Hub',
 		path: '/userControl',
 		component: 'UserControl',
@@ -17,19 +47,56 @@ export const router = [
 				component: 'User/UserList',
 				prefit: [0],
 			},
+			{
+				name: 'Add Prefit',
+				path: '/addPrefit',
+				component: 'User/PrefitAdd',
+				prefit: [0],
+			},
+			{
+				name: 'Prefit List',
+				path: '/prefitList',
+				component: 'User/PrefitList',
+				prefit: [0],
+			},
 		],
 	},
 	{
-		name: 'Production',
-		path: '/productionList',
-		component: 'ProductionList',
-		prefit: [0, 1, 2, 3],
-		subContent: null,
+		name: 'Document Processing Center',
+		path: '/documentProcessingCenter',
+		component: 'DocumentProcessingCenter',
+		prefit: [0, 1],
+		subContent: [
+			{
+				name: 'Add Document Data',
+				path: '/addDocument',
+				component: 'Document/DocumentAdd',
+				prefit: [0, 1],
+			},
+			{
+				name: 'Document List',
+				path: '/documentList',
+				component: 'Document/DocumentList',
+				prefit: [0, 1],
+			},
+			{
+				name: 'Add Document Type Data',
+				path: '/addDocumentType',
+				component: 'Document/DocumentTypeAdd',
+				prefit: [0, 1],
+			},
+			{
+				name: 'Document Type List',
+				path: '/documentTypeList',
+				component: 'Document/DocumentTypeList',
+				prefit: [0, 1],
+			},
+		],
 	},
 	{
-		name: 'Data Processing Center',
-		path: '/dataProcessingCenter',
-		component: 'DataProcessingCenter',
+		name: 'Product Processing Center',
+		path: '/productProcessingCenter',
+		component: 'ProductProcessingCenter',
 		prefit: [0, 1],
 		subContent: [
 			{
@@ -45,15 +112,15 @@ export const router = [
 				prefit: [0, 1],
 			},
 			{
-				name: 'Add Document Data',
-				path: '/addDocument',
-				component: 'Document/DocumentAdd',
+				name: 'Add Product Type Data',
+				path: '/addProductType',
+				component: 'Production/ProductTypeAdd',
 				prefit: [0, 1],
 			},
 			{
-				name: 'Document List',
-				path: '/documentList',
-				component: 'Document/DocumentList',
+				name: 'Product Type List',
+				path: '/productTypeList',
+				component: 'Production/ProductTypeList',
 				prefit: [0, 1],
 			},
 			{

@@ -12,13 +12,14 @@ const router = useRouter();
 const login = useParameterStore();
 const comStore = useComponentStore();
 const { showMenu, loginAdmin, errorMsg, products } = storeToRefs(login);
-const { isShadow, isZShadow, isLoading } = storeToRefs(comStore);
+const { isShadow, isZShadow, isLoading, originShowPath } =
+	storeToRefs(comStore);
 const { changeShowMenu, fixError, fixHeader, isPassPrefit, loginAction } =
 	login;
 
 const state = reactive({
 	showMenu: false,
-	defaultOpen: ['1', '2', '3', '4'],
+	defaultOpen: ['1'],
 	currentPath: '/',
 });
 const mainTitle = ref(null);
@@ -36,10 +37,17 @@ const errorHandle = (tag = 0, path, next) => {
 
 router.afterEach((to) => {
 	changeShowMenu(!(to.path === '/login'));
+	if (to.name === 'Configuration Hub') {
+		// console.log('!!!');
+		const usefulPath = originShowPath.value.filter(
+			(el) => !isPassPrefit(el.prefit)
+		);
+
+		router.push(`/configurationHub/${usefulPath[0].path}`);
+	}
 });
 
 router.beforeEach(async (to, from, next) => {
-	// console.log(to, from);
 	// console.log(to.params.id);
 	if (to.path == '/login') {
 		if (loginAdmin.value.account) {
@@ -73,7 +81,6 @@ router.beforeEach(async (to, from, next) => {
 			next();
 		}
 	}
-	state.currentPath = to.path;
 });
 
 onBeforeMount(async () => {
@@ -262,7 +269,7 @@ body,
 }
 .main {
 	height: calc(100vh - 100px);
-	overflow: auto;
+	overflow: hidden;
 	padding: 10px;
 }
 .title-link {
@@ -276,7 +283,7 @@ body,
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import './assets/scss/_color.scss';
 
 body {

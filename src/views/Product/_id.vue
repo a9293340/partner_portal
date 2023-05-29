@@ -9,17 +9,20 @@ import { postList } from '@/utils/api';
 import * as dayjs from 'dayjs';
 
 const { loginAdmin, products } = storeToRefs(useParameterStore());
-const { fixLoading } = useComponentStore();
+const { loginAction } = useParameterStore();
+const { fixLoading, fixDocumentTypeList, getCreatorList, getEditData } =
+	useComponentStore();
 const { documentTypeList, creatorList } = storeToRefs(useComponentStore());
 
 const route = useRoute();
 const router = useRouter();
 const product = ref({});
 const documentType = ref([]);
+const firmware_id = ref('');
 const triggerVersion = ref([]);
 const triggerFirmware = ref(false);
 
-const goToProductList = () => router.push('/productionList');
+const goToProductList = () => router.push('/production');
 
 const getTargetDatabase = async (route, target) =>
 	await postList(
@@ -40,22 +43,52 @@ const triggerVersionList = (jud, ff, cc) =>
 		? (triggerVersion.value[ff][cc] = !triggerVersion.value[ff][cc])
 		: (triggerFirmware.value = !triggerFirmware.value);
 
-const openPdf = (path) => window.open(path);
+const openPdf = async (_id, ver, d_path, path) => {
+	const log = {
+		time: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+		type: 'L',
+		detail: {
+			path,
+			target: _id,
+			product: product.value['name'],
+			target_version: ver,
+		},
+	};
+	const final = depCopy(loginAdmin.value['action_log']);
+	final.push(log);
+	if (final.length > 100) final.shift();
+
+	await getEditData(
+		{ action_log: final, _id: loginAdmin.value['_id'] },
+		'admin',
+		() => {
+			let newTarget = depCopy(loginAdmin.value);
+			newTarget['action_log'] = final;
+			loginAction(newTarget);
+			window.open(d_path);
+		},
+		false
+	);
+};
 
 const makeProductValue = async () => {
 	product.value = depCopy(
 		products.value.find((el) => el.name === route.params.id)
 	);
-
+	// console.log(product.value);
+	firmware_id.value = product.value['firmware_id'][0];
 	product.value['firmware_id'] = sortBy(
 		(
 			await getTargetDatabase('firmware', product.value['firmware_id'])
-		).list[0].version.map((el) => ({
-			version: el.version,
-			download_path: el.download_path,
-			create_date: dayjs(el.create_date).format('YYYY-MM-DD'),
-			creator: creatorList.value.find((x) => x.val === el.creator).opt,
-		}))
+		).list[0].version
+			.filter((el) => !el.status)
+			.map((el) => ({
+				version: el.version,
+				download_path: el.download_path,
+				create_date: dayjs(el.create_date).format('YYYY-MM-DD'),
+				creator: creatorList.value.find((x) => x.val === el.creator)
+					.opt,
+			}))
 	);
 
 	product.value['documents_id'] = (
@@ -64,13 +97,15 @@ const makeProductValue = async () => {
 		name: el.name,
 		prefit: el.prefit,
 		version: sortBy(
-			el.version.map((el) => ({
-				version: el.version,
-				download_path: el.download_path,
-				create_date: dayjs(el.create_date).format('YYYY-MM-DD'),
-				creator: creatorList.value.find((x) => x.val === el.creator)
-					.opt,
-			}))
+			el.version
+				.filter((el) => !el.status)
+				.map((el) => ({
+					version: el.version,
+					download_path: el.download_path,
+					create_date: dayjs(el.create_date).format('YYYY-MM-DD'),
+					creator: creatorList.value.find((x) => x.val === el.creator)
+						.opt,
+				}))
 		),
 		_id: el._id,
 		document_type_id: documentTypeList.value.find(
@@ -100,6 +135,8 @@ const makeDocumentType = () => {
 onBeforeMount(async () => {
 	product.value = [];
 	fixLoading(true);
+	if (!documentTypeList.value.length) await fixDocumentTypeList();
+	if (!creatorList.value.length) await getCreatorList();
 	await makeProductValue();
 	makeDocumentType();
 	fixLoading(false);
@@ -107,7 +144,10 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-	<div class="product-page">
+	<div
+		class="product-page"
+		v-if="documentType.length && product.firmware_id.length"
+	>
 		<header>
 			<div class="logo-box">
 				<div class="font-box w-112 mr-8 p-8">
@@ -134,7 +174,7 @@ onBeforeMount(async () => {
 				</div>
 				<div class="box" v-for="(dc, cc) in df.content" :key="dc.name">
 					<div class="document-list">
-						<span class="w-6/12">{{ dc.name }}</span>
+						<span class="w-1/2">{{ dc.name }}</span>
 						<span class="w-1/12 text-center">
 							{{ dc.version[0].version }}
 						</span>
@@ -145,14 +185,13 @@ onBeforeMount(async () => {
 							{{ dc.version[0].create_date }}
 						</span>
 						<div
-							class="doc-icon"
+							class="cursor-pointer"
 							@click="triggerVersionList('d', ff, cc)"
 						>
-							<img
-								src="@/assets/img/png/icon_downloads.png"
-								alt=""
-								class="w-5"
-							/>
+							<el-icon>
+								<ArrowRight v-if="!triggerVersion[ff][cc]" />
+								<ArrowDown v-else />
+							</el-icon>
 						</div>
 					</div>
 					<div
@@ -165,7 +204,7 @@ onBeforeMount(async () => {
 						v-for="dv in dc.version"
 						:key="dv.version"
 					>
-						<span class="w-6/12"></span>
+						<span class="w-1/2">{{ dc.name }}</span>
 						<span class="w-1/12 text-center">
 							{{ dv.version }}
 						</span>
@@ -177,7 +216,14 @@ onBeforeMount(async () => {
 						</span>
 						<div
 							class="doc-icon"
-							@click="openPdf(dv.download_path)"
+							@click="
+								openPdf(
+									dc._id,
+									dv.version,
+									dv.download_path,
+									'document'
+								)
+							"
 						>
 							<img
 								src="@/assets/img/png/icon_downloads.png"
@@ -209,12 +255,14 @@ onBeforeMount(async () => {
 						<span class="w-2/12 text-center">
 							{{ product.firmware_id[0].create_date }}
 						</span>
-						<div class="doc-icon" @click="triggerVersionList('f')">
-							<img
-								src="@/assets/img/png/icon_downloads.png"
-								alt=""
-								class="w-5"
-							/>
+						<div
+							class="cursor-pointer"
+							@click="triggerVersionList('f')"
+						>
+							<el-icon>
+								<ArrowRight v-if="!triggerFirmware" />
+								<ArrowDown v-else />
+							</el-icon>
 						</div>
 					</div>
 					<div
@@ -239,7 +287,14 @@ onBeforeMount(async () => {
 						</span>
 						<div
 							class="doc-icon"
-							@click="openPdf(firm.download_path)"
+							@click="
+								openPdf(
+									firmware_id,
+									firm.version,
+									firm.download_path,
+									'firmware'
+								)
+							"
 						>
 							<img
 								src="@/assets/img/png/icon_downloads.png"
@@ -254,7 +309,7 @@ onBeforeMount(async () => {
 	</div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .product-page {
 	@apply overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-50 scrollbar-thumb-rounded-md w-full h-full;
 	header {

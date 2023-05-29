@@ -24,4 +24,10 @@ router.post('/edit', limiter, checkToken, async (req, res, next) => {
 	else pEdit(res, next, 'production_type', other, _id);
 });
 
+router.post('/delete', limiter, checkToken, async (req, res, next) => {
+	const { _id } = decryptRes(req.body.data);
+	if (!_id) next(10003);
+	else pDelete(res, next, 'production_type', _id);
+});
+
 module.exports = router;

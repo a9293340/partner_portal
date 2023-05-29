@@ -21,8 +21,12 @@
 					</div>
 				</template>
 				<div class="nickname">
-					<p>Name : {{ loginAdmin.name }}</p>
-					<p>company : {{ loginAdmin.company }}</p>
+					<p class="text-congo-brown-800">
+						Name : {{ loginAdmin.name }}
+					</p>
+					<p class="text-congo-brown-800">
+						company : {{ loginAdmin.company }}
+					</p>
 					<el-tag
 						size="small"
 						effect="dark"
@@ -106,7 +110,7 @@ const back = () => {
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../assets/scss/_color.scss';
 .popper-user-box {
 	background: url('https://s.yezgea02.com/lingling-h5/static/account-banner-bg.png')
