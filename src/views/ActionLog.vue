@@ -80,14 +80,16 @@ const searchAdmin = async () => {
 			);
 		}
 
-		data['action_log'].sort((a, b) => new Date(b.time) - new Date(a.time));
+		data['action_log'] = data['action_log'].sort(
+			(a, b) => new Date(b.time) - new Date(a.time)
+		);
 
 		fixLoading(false);
 	}
 	nowSearchAdmin.value = data;
-	if (nowSearchAdmin.value) {
+	if (nowSearchAdmin.value)
 		nowLog.value = nowSearchAdmin.value['action_log'].slice(0, 10);
-	}
+
 	// console.log(nowSearchAdmin.value);
 };
 

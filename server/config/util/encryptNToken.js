@@ -33,7 +33,7 @@ const checkToken = async (req, res, next) => {
 						const checkDate =
 							new Date() -
 								new Date(decryptRes(arr[0]['token'])['date']) >
-							15 * 60 * 1000;
+							1 * 60 * 1000;
 						req.error_code = checkDate ? 10005 : 0;
 						if (!req.error_code) {
 							await MongooseCRUD(

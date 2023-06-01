@@ -74,7 +74,7 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
 	console.log('Error Code :', err);
 	const error_code = Number.isInteger(err) ? err : 10003;
-	res.status(200).json({ error_code, data: encryptRes({}) });
+	res.status(500).json({ error_code, data: encryptRes({}) });
 });
 
 module.exports = app;
