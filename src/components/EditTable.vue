@@ -4,7 +4,7 @@ import { depCopy, firstStringUpperCase } from '@/utils';
 import { useComponentStore } from '@/store/component';
 import { useParameterStore } from '@/store/parameter';
 import { storeToRefs } from 'pinia';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 const { creatorList, statusList, page_limit, isOpenAddPop } = storeToRefs(
 	useComponentStore()
@@ -425,10 +425,18 @@ onBeforeMount(async () => {
 					sortable
 				>
 					<template #default="scope">
-						<span>{{
-							spa.list.find((el) => el.val === scope.row[spa.key])
-								.opt
-						}}</span>
+						<span
+							v-if="
+								spa.list.find(
+									(el) => el.val === scope.row[spa.key]
+								)
+							"
+							>{{
+								spa.list.find(
+									(el) => el.val === scope.row[spa.key]
+								).opt
+							}}</span
+						>
 					</template>
 				</el-table-column>
 				<!-- Version -->
@@ -440,7 +448,7 @@ onBeforeMount(async () => {
 					:show-overflow-tooltip="true"
 				>
 					<template class="flex flex-col" #default="scope">
-						<div v-if="scope.row.version.length">
+						<div v-if="scope.row.version?.length">
 							<span>{{ scope.row.version[0].version }}</span>
 							<span class="mr-3">
 								({{

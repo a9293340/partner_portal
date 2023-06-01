@@ -217,7 +217,7 @@ onBeforeMount(async () => {
 					<template #default="scope">
 						<p
 							class="hover:text-blue-500 cursor-pointer"
-							@click="goToList(scope.row.detail.path)"
+							@click="goToList(scope.row.detail?.path)"
 						>
 							{{ scope.row.detail.path }}
 						</p>

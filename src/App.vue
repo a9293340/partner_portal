@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onBeforeMount, ref } from 'vue';
+import { reactive, onBeforeMount, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
 import { useComponentStore } from '@/store/component.js';
@@ -11,11 +11,18 @@ import { logout } from '@/utils/api';
 const router = useRouter();
 const login = useParameterStore();
 const comStore = useComponentStore();
-const { showMenu, loginAdmin, errorMsg, products } = storeToRefs(login);
+const { showMenu, loginAdmin, errorMsg, products, loginTimeout } =
+	storeToRefs(login);
 const { isShadow, isZShadow, isLoading, originShowPath } =
 	storeToRefs(comStore);
-const { changeShowMenu, fixError, fixHeader, isPassPrefit, loginAction } =
-	login;
+const {
+	changeShowMenu,
+	fixError,
+	fixHeader,
+	isPassPrefit,
+	loginAction,
+	fixLoginTimeout,
+} = login;
 
 const state = reactive({
 	showMenu: false,
@@ -23,6 +30,8 @@ const state = reactive({
 	currentPath: '/',
 });
 const mainTitle = ref(null);
+
+const activeIndex = ref(router.currentRoute.value.path.split('/')[1]);
 
 const goToIntroduce = () => router.push('/introduce');
 
@@ -35,8 +44,16 @@ const errorHandle = (tag = 0, path, next) => {
 	next({ path });
 };
 
+watch(loginTimeout, (newIndex) => {
+	if (newIndex) {
+		router.push('/login');
+		fixLoginTimeout(false);
+	}
+});
+
 router.afterEach((to) => {
 	changeShowMenu(!(to.path === '/login'));
+	// changeShowMenu(true);
 	if (to.name === 'Configuration Hub') {
 		// console.log('!!!');
 		const usefulPath = originShowPath.value.filter(
@@ -114,7 +131,7 @@ onBeforeMount(async () => {
 					text-color="#dbdbdb"
 					:default-openeds="state.defaultOpen"
 					:router="true"
-					:default-active="this.$route.path"
+					:default-active="activeIndex"
 				>
 					<el-sub-menu
 						v-for="(title, ti) in mainTitle"

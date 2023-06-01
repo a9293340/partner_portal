@@ -38,19 +38,13 @@ export default ({ mode }) =>
 			hmr: true,
 			proxy: {
 				'/api': {
-					target: 'http://localhost:3300',
+					target: 'http://127.0.0.1:3300',
 					changeOrigin: true,
 					rewrite: (path) => path,
 				},
 			},
 		},
 		css: {
-			// preprocessorOptions: {
-			// 	// 覆盖掉element-plus包中的主题变量文件
-			// 	scss: {
-			// 		additionalData: `@use "@/styles/element/index.scss" as *;`,
-			// 	},
-			// },
 			postcss: {
 				plugins: [require('tailwindcss'), require('autoprefixer')],
 			},

@@ -13,6 +13,9 @@ export const useParameterStore = defineStore('parameter', () => {
 		isShow: false,
 	});
 	const nowHeader = ref('');
+	const loginTimeout = ref(false);
+
+	const fixLoginTimeout = (bool) => (loginTimeout.value = bool);
 
 	const checkEmail = (rule, value, callback) => {
 		let emailRegxp =
@@ -114,6 +117,7 @@ export const useParameterStore = defineStore('parameter', () => {
 					break;
 				case 10005:
 					obj.msg = 'Login TimeOut!';
+					loginTimeout.value = true;
 					break;
 				case 11003:
 					obj.msg = 'Account Existed!';
@@ -129,7 +133,7 @@ export const useParameterStore = defineStore('parameter', () => {
 		if (obj.isShow)
 			setTimeout(() => {
 				errorMsg.value.isShow = false;
-			}, 1500);
+			}, 3000);
 	};
 
 	const loginAction = (obj) => (loginAdmin.value = obj);
@@ -156,5 +160,7 @@ export const useParameterStore = defineStore('parameter', () => {
 		resetAdminList,
 		products,
 		productAction,
+		loginTimeout,
+		fixLoginTimeout,
 	};
 });

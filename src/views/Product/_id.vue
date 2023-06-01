@@ -6,7 +6,7 @@ import { useComponentStore } from '@/store/component';
 import { storeToRefs } from 'pinia';
 import { encode, sessionGet, sortBy, depCopy } from '@/utils';
 import { postList } from '@/utils/api';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 const { loginAdmin, products } = storeToRefs(useParameterStore());
 const { loginAction } = useParameterStore();
