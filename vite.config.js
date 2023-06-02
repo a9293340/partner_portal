@@ -38,7 +38,7 @@ export default ({ mode }) =>
 			hmr: true,
 			proxy: {
 				'/api': {
-					target: 'http://127.0.0.1:3300',
+					target: 'http://35.78.93.149/',
 					changeOrigin: true,
 					rewrite: (path) => path,
 				},
