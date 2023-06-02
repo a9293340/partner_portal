@@ -36,6 +36,7 @@ export default ({ mode }) =>
 		base: './',
 		server: {
 			hmr: true,
+			cors: true,
 			proxy: {
 				'/api': {
 					target: 'http://35.78.93.149/',
@@ -47,6 +48,11 @@ export default ({ mode }) =>
 		css: {
 			postcss: {
 				plugins: [require('tailwindcss'), require('autoprefixer')],
+			},
+			preprocessorOptions: {
+				scss: {
+					charset: false,
+				},
 			},
 		},
 	});
