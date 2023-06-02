@@ -152,6 +152,7 @@ const selectItems = ref({});
 const totalWidth = ref(0);
 
 const emptyData = ref({});
+const filter = ref({});
 
 const editAdmin = (row) => {
 	triggerEditOrAdd.value = 'E';
@@ -248,7 +249,12 @@ const actionLog = async (type, data) => {
 };
 
 const resetData = async (type, data) => {
-	const tar = await getDataByPage(nowPage.value, props.path, false);
+	const tar = await getDataByPage(
+		nowPage.value,
+		props.path,
+		false,
+		filter.value
+	);
 	adList.value = tar.list;
 	totalData.value = tar.total;
 	await actionLog(type, data);
@@ -256,12 +262,16 @@ const resetData = async (type, data) => {
 
 const pageChange = async (page) => {
 	nowPage.value = page - 1;
-	adList.value = (await getDataByPage(nowPage.value, props.path)).list;
+	adList.value = (
+		await getDataByPage(nowPage.value, props.path, true, filter.value)
+	).list;
 };
 
 const sizeChange = async (size) => {
 	fixPage_limit(size);
-	adList.value = (await getDataByPage(0, props.path)).list;
+	adList.value = (
+		await getDataByPage(0, props.path, true, filter.value)
+	).list;
 };
 
 const countTotalTableLength = () => {
@@ -289,6 +299,11 @@ const openCreatePop = () => {
 };
 
 onBeforeMount(async () => {
+	if (props.path === 'admin' && loginAdmin.value.permissions) {
+		filter.value = {
+			permissions: [20, 21],
+		};
+	}
 	fixLoading(true);
 	if (props.routerType !== 1000) {
 		const res = await whichSelectOptionsShouldBeGet(props.routerType);
@@ -298,7 +313,7 @@ onBeforeMount(async () => {
 	}
 	countTotalTableLength();
 	try {
-		const res = await getDataByPage(0, props.path, false);
+		const res = await getDataByPage(0, props.path, false, filter.value);
 		totalData.value = res.total;
 		adList.value = res.list;
 		// console.log(adList.value);

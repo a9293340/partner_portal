@@ -234,7 +234,7 @@ export const useComponentStore = defineStore('component', () => {
 	};
 
 	// Component Action
-	const getDataByPage = async (page, route, jud = true) => {
+	const getDataByPage = async (page, route, jud = true, filter = {}) => {
 		if (jud) fixLoading(true);
 		let res = {
 			total: 0,
@@ -248,7 +248,7 @@ export const useComponentStore = defineStore('component', () => {
 					token: sessionGet('cinoT'),
 					limit: page_limit.value,
 					page,
-					filter: {},
+					filter,
 				})
 			);
 		} catch (error) {
@@ -380,7 +380,7 @@ export const useComponentStore = defineStore('component', () => {
 			if (res)
 				fixError({
 					title: 'Error',
-					msg: res.response.data.error_code,
+					msg: res.response?.data.error_code,
 					isShow: true,
 				});
 			else await getData();
@@ -532,11 +532,11 @@ export const useComponentStore = defineStore('component', () => {
 			);
 			await cb();
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			if (error.response)
 				fixError({
 					title: 'Error',
-					msg: error.response.data.error_code,
+					msg: error.response?.data.error_code,
 					isShow: true,
 				});
 		}
