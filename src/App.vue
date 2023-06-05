@@ -46,7 +46,7 @@ const errorHandle = (tag = 0, path, next) => {
 
 watch(loginTimeout, (newIndex) => {
 	if (newIndex) {
-		console.log('sss');
+		console.log('login out');
 		router.push('/login');
 		fixLoginTimeout(false);
 	}
@@ -76,12 +76,10 @@ router.beforeEach(async (to, from, next) => {
 						token: sessionGet('cinoT'),
 					})
 				);
-				sessionRemove('cinoT');
-				loginAction({});
-			} catch (error) {
-				console.log(error);
-			}
+			} catch (error) {}
 		}
+		sessionRemove('cinoT');
+		loginAction({});
 		next();
 	} else {
 		if (!loginAdmin.value.account) errorHandle(0, '/login', next);
