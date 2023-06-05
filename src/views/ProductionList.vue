@@ -86,7 +86,10 @@ onBeforeMount(async () => {
 		pickProductsGroup(usefulProductType.value[0]._id, 0);
 		// console.log(showProduct.value);
 		fixLoading(false);
-	} catch (error) {}
+	} catch (error) {
+		fixLoading(false);
+		router.push('/login');
+	}
 });
 </script>
 
