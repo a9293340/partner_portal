@@ -28,7 +28,7 @@ const checkToken = async (req, res, next) => {
 			MongooseCRUD('R', 'admin_token', { token }).then(
 				async (arr, err) => {
 					if (err || arr.length > 1) next(err || 10004);
-					else if (!arr.length) next(10008);
+					else if (!arr.length) next(10005);
 					else {
 						const checkDate =
 							new Date() -

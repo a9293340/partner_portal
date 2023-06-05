@@ -114,6 +114,7 @@ export const useParameterStore = defineStore('parameter', () => {
 					break;
 				case 10008:
 					obj.msg = 'Your account has been suspended!';
+					loginTimeout.value = true;
 					break;
 				case 10005:
 					obj.msg = 'Login TimeOut!';
