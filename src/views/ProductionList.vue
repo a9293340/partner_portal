@@ -71,20 +71,22 @@ const goToProductPage = (id) => {
 };
 
 onBeforeMount(async () => {
-	fixLoading(true);
-	await whichSelectOptionsShouldBeGet(98);
-	usefulProducts.value = products.value.filter(
-		(el) => !isPassPrefit(el.prefit)
-	);
-	if (!usefulProducts.value.length) return;
-	usefulProductType.value = productTypeList.value.filter((el) =>
-		usefulProducts.value.find((x) => x.production_type_id === el.val)
-	);
+	try {
+		fixLoading(true);
+		await whichSelectOptionsShouldBeGet(98);
+		usefulProducts.value = products.value.filter(
+			(el) => !isPassPrefit(el.prefit)
+		);
+		if (!usefulProducts.value.length) return;
+		usefulProductType.value = productTypeList.value.filter((el) =>
+			usefulProducts.value.find((x) => x.production_type_id === el.val)
+		);
 
-	pickpTList(0);
-	pickProductsGroup(usefulProductType.value[0]._id, 0);
-	// console.log(showProduct.value);
-	fixLoading(false);
+		pickpTList(0);
+		pickProductsGroup(usefulProductType.value[0]._id, 0);
+		// console.log(showProduct.value);
+		fixLoading(false);
+	} catch (error) {}
 });
 </script>
 

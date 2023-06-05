@@ -94,7 +94,7 @@ const submitForm = async () => {
 				fixLoading(false);
 			} catch (error) {
 				console.log(error);
-				const errCode = error.response.data.error_code;
+				const errCode = error.response?.data.error_code;
 				if (error.response)
 					fixError({
 						title: 'Error',

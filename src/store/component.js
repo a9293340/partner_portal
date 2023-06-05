@@ -100,7 +100,14 @@ export const useComponentStore = defineStore('component', () => {
 				val: el._id,
 				opt: el.name,
 			}));
-		} catch (error) {}
+		} catch (error) {
+			fixError({
+				title: 'Error',
+				msg: error.response?.data.error_code,
+				isShow: true,
+			});
+			fixLoading(false);
+		}
 	};
 
 	const fixFirmwareList = async () => {
@@ -121,7 +128,14 @@ export const useComponentStore = defineStore('component', () => {
 				opt: el.name,
 			}));
 			// console.log(firmwareList.value);
-		} catch (error) {}
+		} catch (error) {
+			fixError({
+				title: 'Error',
+				msg: error.response?.data.error_code,
+				isShow: true,
+			});
+			fixLoading(false);
+		}
 	};
 
 	const fixDocumentList = async () => {
@@ -143,7 +157,14 @@ export const useComponentStore = defineStore('component', () => {
 				opt: el.name,
 			}));
 			// console.log(documentList.value);
-		} catch (error) {}
+		} catch (error) {
+			fixError({
+				title: 'Error',
+				msg: error.response?.data.error_code,
+				isShow: true,
+			});
+			fixLoading(false);
+		}
 	};
 	const fixPrefitList = async () => {
 		try {
@@ -163,7 +184,14 @@ export const useComponentStore = defineStore('component', () => {
 				val: el.prefit,
 				opt: el.name,
 			}));
-		} catch (error) {}
+		} catch (error) {
+			fixError({
+				title: 'Error',
+				msg: error.response?.data.error_code,
+				isShow: true,
+			});
+			fixLoading(false);
+		}
 	};
 	const fixProductTypeList = async () => {
 		try {
@@ -187,10 +215,17 @@ export const useComponentStore = defineStore('component', () => {
 			}));
 		} catch (error) {
 			console.log(error);
+			fixError({
+				title: 'Error',
+				msg: error.response?.data.error_code,
+				isShow: true,
+			});
+			fixLoading(false);
 		}
 	};
 	const getProductList = async () => {
 		try {
+			console.log(loginAdmin.value);
 			const product = await postList(
 				'product',
 				encode({
@@ -206,6 +241,12 @@ export const useComponentStore = defineStore('component', () => {
 			productAction(product.list);
 		} catch (error) {
 			console.log(error);
+			fixError({
+				title: 'Error',
+				msg: error.response?.data.error_code,
+				isShow: true,
+			});
+			fixLoading(false);
 		}
 	};
 	const getCreatorList = async (permissions) => {
@@ -230,6 +271,12 @@ export const useComponentStore = defineStore('component', () => {
 			// console.log(creatorList.value);
 		} catch (error) {
 			console.log(error);
+			fixError({
+				title: 'Error',
+				msg: error.response?.data.error_code,
+				isShow: true,
+			});
+			fixLoading(false);
 		}
 	};
 

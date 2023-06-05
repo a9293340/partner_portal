@@ -46,6 +46,7 @@ const errorHandle = (tag = 0, path, next) => {
 
 watch(loginTimeout, (newIndex) => {
 	if (newIndex) {
+		console.log('sss');
 		router.push('/login');
 		fixLoginTimeout(false);
 	}
