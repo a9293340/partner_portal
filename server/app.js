@@ -13,6 +13,8 @@ const {
 	FirmwareRouter,
 	ProductRouter,
 	DocumentTypeRouter,
+	pMode0Router,
+	pMode1Router,
 } = require('./routes');
 const { encryptRes } = require('./config/util/encryptNToken');
 const { default: mongoose } = require('mongoose');
@@ -37,6 +39,8 @@ app.use('/api/document', DocumentRouter);
 app.use('/api/firmware', FirmwareRouter);
 app.use('/api/product', ProductRouter);
 app.use('/api/documentType', DocumentTypeRouter);
+app.use('/api/p_mode_0', pMode0Router);
+app.use('/api/p_mode_1', pMode1Router);
 
 app.get('/', (req, res) => {
 	res.sendfile('./views/index.html');
