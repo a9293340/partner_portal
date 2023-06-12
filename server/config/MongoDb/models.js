@@ -13,6 +13,25 @@ const admin = new mongoose.Schema({
 	company: { type: String },
 });
 
+const p_mode_0 = new mongoose.Schema({
+	description: { type: String },
+	binMode: { type: Number },
+	scanType: { type: Array },
+	offset: { type: Number },
+	val: { type: Object },
+	key: { type: String },
+	unit: { type: Array },
+});
+
+const p_mode_1 = new mongoose.Schema({
+	description: { type: String },
+	binMode: { type: Number },
+	scanType: { type: Array },
+	offset: { type: Number },
+	key: { type: String },
+	unit: { type: Array },
+});
+
 const admin_token = new mongoose.Schema({
 	token: { type: String },
 	tokenReq: { type: String },
@@ -101,4 +120,6 @@ module.exports = {
 	document_type,
 	prefit,
 	admin_token,
+	p_mode_0,
+	p_mode_1,
 };

@@ -77,6 +77,13 @@ const defaultRouter = [
 					import('../views/ConfigurationHub/FirmwareList.vue'),
 				meta: { prefit: [0, 2, 1, 4] },
 			},
+			{
+				path: 'parameterList',
+				name: 'Parameter',
+				component: () =>
+					import('../views/ConfigurationHub/ParameterList.vue'),
+				meta: { prefit: [0, 2, 4] },
+			},
 		],
 	},
 	{

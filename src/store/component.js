@@ -50,6 +50,12 @@ export const useComponentStore = defineStore('component', () => {
 			path: 'firmwareList',
 			type: 2,
 		},
+		{
+			name: 'parameter',
+			prefit: [0, 2, 4],
+			path: 'parameterList',
+			type: 2,
+		},
 	]);
 
 	const isOpenEditPop = ref(false);
@@ -225,7 +231,7 @@ export const useComponentStore = defineStore('component', () => {
 	};
 	const getProductList = async () => {
 		try {
-			console.log(loginAdmin.value);
+			// console.log(loginAdmin.value);
 			const product = await postList(
 				'product',
 				encode({

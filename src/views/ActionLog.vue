@@ -221,7 +221,7 @@ onBeforeMount(async () => {
 							class="hover:text-blue-500 cursor-pointer"
 							@click="goToList(scope.row.detail?.path)"
 						>
-							{{ scope.row.detail.path }}
+							{{ scope.row.detail?.path }}
 						</p>
 					</template>
 				</el-table-column>
@@ -233,7 +233,7 @@ onBeforeMount(async () => {
 					:show-overflow-tooltip="true"
 				>
 					<template #default="scope">
-						<span> {{ scope.row.detail.target.name }} </span>
+						<span> {{ scope.row.detail?.target.name }} </span>
 					</template>
 				</el-table-column>
 				<el-table-column
