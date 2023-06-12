@@ -9,8 +9,12 @@ const {
 	pDelete,
 } = require('../../config/util/postAction');
 
+const fuzzySearch = (str) => new RegExp(`.*${str}.*$`);
+
 router.post('/list', limiter, checkToken, (req, res, next) => {
 	const { page, limit, filter } = decryptRes(req.body.data);
+	if (filter.description)
+		filter.description = fuzzySearch(filter.description);
 	try {
 		pList(res, next, 'p_mode_0', filter, false, { limit, page });
 	} catch (error) {
