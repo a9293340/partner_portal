@@ -27,7 +27,7 @@ const p_mode_1 = new mongoose.Schema({
 	description: { type: String },
 	binMode: { type: Number },
 	scanType: { type: Array },
-	offset: { type: Number },
+	offset: { type: Object },
 	key: { type: String },
 	unit: { type: Array },
 });

@@ -24,6 +24,10 @@ const modeOptions = [
 
 const typeOption_1d = [
 	{
+		desc: 'ALL',
+		val: 'ALL',
+	},
+	{
 		desc: 'NORMAL',
 		val: 'NORMAL',
 	},
@@ -52,7 +56,7 @@ const nowPage = ref(0);
 const filter = reactive({
 	desc: '',
 	offset: 0,
-	type: 'NORMAL',
+	type: 'ALL',
 });
 const nowFilter = ref({});
 
@@ -83,6 +87,7 @@ const getPModeData = async () => {
 		nowList.value = data.list;
 		totalData.value = data.total;
 		fixLoading(false);
+		console.log(nowList.value);
 	} catch (error) {
 		nowList.value = [];
 	}
@@ -90,10 +95,17 @@ const getPModeData = async () => {
 
 // Mode 0
 
-const makeFilter = async () => {
-	if (filter.desc) nowFilter.value['description'] = fuzzySearch(filter.desc);
-	if (filter.desc) nowFilter.value['offset'] = filter.offset;
-	if (filter.type) nowFilter.value['val.type'] = filter.type;
+const makeFilter = async (type) => {
+	nowFilter.value = {};
+	if (type === 's') {
+		if (filter.desc) nowFilter.value['description'] = filter.desc;
+		if (filter.offset) nowFilter.value['offset'] = filter.offset;
+		if (filter.type !== 'ALL') nowFilter.value['val.type'] = filter.type;
+	} else {
+		filter.desc = '';
+		filter.offset = 0;
+		filter.type = 'ALL';
+	}
 
 	await getPModeData();
 };
@@ -164,7 +176,8 @@ onBeforeMount(async () => {
 						></el-option>
 					</el-select>
 				</el-form-item>
-				<el-button @click="makeFilter">Select</el-button>
+				<el-button @click="makeFilter('s')">Select</el-button>
+				<el-button @click="makeFilter('r')">Reset</el-button>
 			</div>
 			<!-- Table Mode 0 -->
 			<el-table
@@ -173,10 +186,14 @@ onBeforeMount(async () => {
 				stripe
 				style="max-width: 100%"
 				height="100%"
-				v-if="!nowMode"
 			>
 				<!-- offset -->
-				<el-table-column prop="offset" label="Offset" width="120" />
+				<el-table-column
+					prop="offset"
+					label="Offset"
+					width="120"
+					v-if="!nowMode"
+				/>
 				<!-- key -->
 				<el-table-column prop="key" label="Key" width="180" />
 				<!-- description -->
@@ -186,7 +203,18 @@ onBeforeMount(async () => {
 					width="300"
 				/>
 				<!-- Type -->
-				<el-table-column prop="val.type" label="Type" width="100" />
+				<el-table-column
+					prop="val.type"
+					label="Type"
+					width="100"
+					v-if="!nowMode"
+				/>
+				<el-table-column
+					prop="offset.typeStyle"
+					label="Type"
+					width="100"
+					v-else
+				/>
 				<!-- Scanner Type -->
 				<el-table-column
 					prop="scanType"
