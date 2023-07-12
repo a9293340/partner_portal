@@ -1,9 +1,10 @@
 import { defineStore, storeToRefs } from 'pinia';
 import { h, ref } from 'vue';
-import { sessionGet, encode, changeItem, comfirmBox } from '@/utils';
+import { sessionGet, encode, changeItem, comfirmBox, depCopy } from '@/utils';
 import { useParameterStore } from './parameter';
 import { postList, postAdd } from '../utils/api';
 import { ElMessageBox } from 'element-plus';
+import dayjs from 'dayjs';
 
 export const useComponentStore = defineStore('component', () => {
 	const { loginAdmin } = storeToRefs(useParameterStore());
@@ -615,6 +616,77 @@ export const useComponentStore = defineStore('component', () => {
 		isZShadow.value = bool;
 	};
 
+	const fixShadow = (bool) => {
+		isShadow.value = bool;
+	};
+
+	const actionLog = async (path, type, data, editTarget, res, finalCB) => {
+		let detail = {
+			path: path,
+			target: data._id,
+			from: {},
+			to: {},
+		};
+		if (type === 'E') {
+			const keys = Object.keys(data);
+			let from = {};
+			let to = {};
+			for (let i = 0; i < keys.length; i++) {
+				const key = keys[i];
+				if (
+					JSON.stringify(data[key]) !==
+					JSON.stringify(editTarget[key])
+				) {
+					if (key !== 'version') {
+						from[key] = editTarget[key];
+						to[key] = data[key];
+					} else {
+						for (let x = 0; x < data[key].length; x++) {
+							const after = data[key][x];
+							const before = editTarget[key][x];
+							if (
+								JSON.stringify(after) !== JSON.stringify(before)
+							) {
+								const childKeys = Object.keys(after);
+								childKeys.forEach((ke) => {
+									if (ke === 'version') {
+										from['ver_target'] = before[ke];
+										to['ver_target'] = after[ke];
+									} else if (before[ke] !== after[ke]) {
+										from[ke] = before[ke];
+										to[ke] = after[ke];
+									}
+								});
+							}
+						}
+					}
+				}
+			}
+			detail.from = from;
+			detail.to = to;
+		}
+		if (type === 'A') detail.target = res.list[0]._id;
+
+		const log = {
+			time: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+			type,
+			detail,
+		};
+
+		const final = depCopy(loginAdmin.value['action_log']);
+		final.push(log);
+		if (final.length > 100) final.shift();
+
+		getEditData(
+			{ action_log: final, _id: loginAdmin.value['_id'] },
+			'admin',
+			() => {},
+			false
+		).then(() => {
+			finalCB(final);
+		});
+	};
+
 	return {
 		isOpenEditPop,
 		fixOpenEditPop,
@@ -649,5 +721,7 @@ export const useComponentStore = defineStore('component', () => {
 		isOpenAddPop,
 		originShowPath,
 		tableRowClassName,
+		fixShadow,
+		actionLog,
 	};
 });

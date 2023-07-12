@@ -21,6 +21,7 @@ const {
 	fixOpenAddPop,
 	addItem,
 	tableRowClassName,
+	actionLog,
 } = useComponentStore();
 
 const emit = defineEmits(['row']);
@@ -182,72 +183,6 @@ const getAddItem = async (data) => {
 		await getEditData(data, props.path, final);
 };
 
-const actionLog = async (type, data) => {
-	let detail = {
-		path: props.path,
-		target: data._id,
-		from: {},
-		to: {},
-	};
-	if (type === 'E') {
-		const keys = Object.keys(data);
-		let from = {};
-		let to = {};
-		for (let i = 0; i < keys.length; i++) {
-			const key = keys[i];
-			if (
-				JSON.stringify(data[key]) !==
-				JSON.stringify(editTarget.value[key])
-			) {
-				if (key !== 'version') {
-					from[key] = editTarget.value[key];
-					to[key] = data[key];
-				} else {
-					for (let x = 0; x < data[key].length; x++) {
-						const after = data[key][x];
-						const before = editTarget.value[key][x];
-						if (JSON.stringify(after) !== JSON.stringify(before)) {
-							const childKeys = Object.keys(after);
-							childKeys.forEach((ke) => {
-								if (ke === 'version') {
-									from['ver_target'] = before[ke];
-									to['ver_target'] = after[ke];
-								} else if (before[ke] !== after[ke]) {
-									from[ke] = before[ke];
-									to[ke] = after[ke];
-								}
-							});
-						}
-					}
-				}
-			}
-		}
-		detail.from = from;
-		detail.to = to;
-	}
-	const log = {
-		time: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-		type,
-		detail,
-	};
-
-	const final = depCopy(loginAdmin.value['action_log']);
-	final.push(log);
-	if (final.length > 100) final.shift();
-
-	await getEditData(
-		{ action_log: final, _id: loginAdmin.value['_id'] },
-		'admin',
-		() => {
-			let newTarget = depCopy(loginAdmin.value);
-			newTarget['action_log'] = final;
-			loginAction(newTarget);
-			emit('row', true);
-		},
-		false
-	);
-};
-
 const resetData = async (type, data) => {
 	const tar = await getDataByPage(
 		nowPage.value,
@@ -257,7 +192,14 @@ const resetData = async (type, data) => {
 	);
 	adList.value = tar.list;
 	totalData.value = tar.total;
-	await actionLog(type, data);
+	let res =
+		type === 'A' ? await getDataByPage(0, props.path, false, data) : null;
+	await actionLog(props.path, type, data, editTarget.value, res, (final) => {
+		let newTarget = depCopy(loginAdmin.value);
+		newTarget['action_log'] = final;
+		loginAction(newTarget);
+		emit('row', true);
+	});
 };
 
 const pageChange = async (page) => {

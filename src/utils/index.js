@@ -1,5 +1,5 @@
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { postDelete, postEdit } from './api';
+import { postAdd, postDelete, postEdit, postList } from './api';
 
 export function localGet(key) {
 	const value = window.localStorage.getItem(key);
@@ -95,10 +95,16 @@ export const changeItem = async (target, data, path, jud = true) => {
 		try {
 			target === 'D'
 				? await postDelete(path, data)
-				: await postEdit(path, data);
+				: target === 'E'
+				? await postEdit(path, data)
+				: await postAdd(path, data);
 			if (jud)
 				await popMsg(
-					target === 'D' ? 'Delete completed' : 'Edit completed'
+					target === 'D'
+						? 'Delete completed'
+						: target === 'E'
+						? 'Edit completed'
+						: 'Add completed'
 				);
 		} catch (error) {
 			if (error.response) err = error;

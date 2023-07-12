@@ -39,7 +39,7 @@ export default ({ mode }) =>
 			cors: true,
 			proxy: {
 				'/api': {
-					target: 'http://35.78.93.149/',
+					target: 'http://localhost:3300',
 					changeOrigin: true,
 					rewrite: (path) => path,
 				},

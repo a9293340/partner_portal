@@ -73,7 +73,7 @@ const searchAdmin = async () => {
 				).list,
 			];
 		}
-
+		console.log(detail);
 		for (let i = 0; i < data['action_log'].length; i++) {
 			data['action_log'][i].detail.target = detail.find(
 				(el) => el._id === data['action_log'][i].detail.target
@@ -233,7 +233,16 @@ onBeforeMount(async () => {
 					:show-overflow-tooltip="true"
 				>
 					<template #default="scope">
-						<span> {{ scope.row.detail?.target.name }} </span>
+						<span>
+							{{
+								scope.row.detail?.target[
+									scope.row.detail?.path.indexOf('p_mode') !==
+									-1
+										? 'description'
+										: 'name'
+								]
+							}}
+						</span>
 					</template>
 				</el-table-column>
 				<el-table-column
