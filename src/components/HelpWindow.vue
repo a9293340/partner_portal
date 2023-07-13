@@ -38,6 +38,29 @@ const detail = reactive({
 			],
 		},
 	],
+	p_mode_1: [
+		{
+			title: 'Mode',
+			contents: [
+				{ l: 'none', r: '僅需選單列表' },
+				{ l: 'ASCII', r: '僅為填入文字' },
+				{ l: 'ASCII_3', r: '選單列表+填入文字' },
+				{ l: 'NUMBER', r: '僅為填入數字' },
+			],
+		},
+		{
+			title: 'Scanner Type',
+			contents: [
+				{ l: 'HS', r: '槍型' },
+				{ l: 'BT', r: '藍芽' },
+				{ l: 'CS', r: 'Pocket' },
+				{ l: 'FX', r: 'Fixded Mount(分0,1,9)' },
+				{ l: 'OC', r: 'On-counter' },
+				{ l: 'SE', r: '分0,1,9' },
+				{ l: 'Lxx', r: '雷射' },
+			],
+		},
+	],
 });
 
 const nowDetail = ref([]);
@@ -53,8 +76,6 @@ onBeforeMount(() => {
 				? `p_mode_${props.mode}`
 				: props.source
 		];
-
-	console.log(nowDetail.value);
 });
 </script>
 
