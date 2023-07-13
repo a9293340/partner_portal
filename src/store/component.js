@@ -61,6 +61,7 @@ export const useComponentStore = defineStore('component', () => {
 
 	const isOpenEditPop = ref(false);
 	const isOpenAddPop = ref(false);
+	const isShowHelpPop = ref(false);
 	const isShadow = ref(false);
 	const isLoading = ref(false);
 	const isZShadow = ref(false);
@@ -687,6 +688,11 @@ export const useComponentStore = defineStore('component', () => {
 		});
 	};
 
+	const showHelpWindow = (bool) => {
+		fixShadow(bool);
+		isShowHelpPop.value = bool;
+	};
+
 	return {
 		isOpenEditPop,
 		fixOpenEditPop,
@@ -723,5 +729,7 @@ export const useComponentStore = defineStore('component', () => {
 		tableRowClassName,
 		fixShadow,
 		actionLog,
+		showHelpWindow,
+		isShowHelpPop,
 	};
 });

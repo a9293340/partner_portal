@@ -5,11 +5,11 @@ import { onBeforeMount, reactive, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useParameterStore } from '@/store/parameter';
 import { useComponentStore } from '@/store/component';
-import dayjs from 'dayjs';
 
 const { loginAdmin } = storeToRefs(useParameterStore());
-const { page_limit } = storeToRefs(useComponentStore());
-const { fixLoading, fixPage_limit, fixShadow, actionLog } = useComponentStore();
+const { page_limit, isShowHelpPop } = storeToRefs(useComponentStore());
+const { fixLoading, fixPage_limit, fixShadow, actionLog, showHelpWindow } =
+	useComponentStore();
 const { fixError, loginAction } = useParameterStore();
 
 // options
@@ -268,8 +268,6 @@ const output2JSONFile = async () => {
 	fixLoading(false);
 };
 
-//
-
 onBeforeMount(async () => {
 	try {
 		await getPModeData();
@@ -333,6 +331,12 @@ onBeforeMount(async () => {
 				</el-form-item>
 				<el-button @click="makeFilter('s')">Select</el-button>
 				<el-button @click="makeFilter('r')">Reset</el-button>
+				<div
+					class="w-8 h-8 border-gray-400 hover:text-gray-400 border-2 rounded-full flex flex-row justify-center ml-3 cursor-pointer bg-gray-400 text-white hover:bg-white ease-linear duration-300"
+					@click="showHelpWindow(true)"
+				>
+					<span style="margin-top: 2px">?</span>
+				</div>
 			</div>
 			<!-- Table Mode 0 -->
 			<el-table
@@ -415,6 +419,12 @@ onBeforeMount(async () => {
 			:use-data="nowPick"
 			@abort="makePop(false)"
 			@data="sendData"
+		/>
+		<HelpWindow
+			v-if="isShowHelpPop"
+			:source="'parameterList'"
+			:mode="nowMode"
+			@abort="showHelpWindow(false)"
 		/>
 	</div>
 </template>
