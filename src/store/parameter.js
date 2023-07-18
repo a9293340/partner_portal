@@ -116,10 +116,12 @@ export const useParameterStore = defineStore('parameter', () => {
 				case 10008:
 					obj.msg = 'Your account has been suspended!';
 					loginTimeout.value = true;
+					goToIndex.value++;
 					break;
 				case 10005:
 					obj.msg = 'Login TimeOut!';
 					loginTimeout.value = true;
+					goToIndex.value++;
 					break;
 				case 11003:
 					obj.msg = 'Account Existed!';
@@ -132,7 +134,6 @@ export const useParameterStore = defineStore('parameter', () => {
 					break;
 			}
 		errorMsg.value = obj;
-		if (obj.msg && Number.isInteger(obj.msg)) goToIndex.value++;
 		if (obj.isShow)
 			setTimeout(() => {
 				errorMsg.value.isShow = false;
