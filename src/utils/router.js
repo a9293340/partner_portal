@@ -6,25 +6,77 @@ export const router = [
 		prefit: [0, 1, 2, 3, 4, 20, 21],
 		subContent: null,
 	},
+	// {
+	// 	name: 'Configuration Hub',
+	// 	path: '/configurationHub',
+	// 	component: 'ConfigurationHub',
+	// 	prefit: [0, 1, 2, 3, 4],
+	// 	subContent: [
+	// 		{
+	// 			name: 'Setting',
+	// 			path: '/configurationHub',
+	// 			component: 'ConfigurationHub',
+	// 			prefit: [0, 1, 2, 3, 4],
+	// 		},
+	// 		{
+	// 			name: 'User Action Log',
+	// 			path: '/actionLog',
+	// 			component: 'ActionLog',
+	// 			prefit: [0],
+	// 		},
+	// 	],
+	// },
+];
+
+export const router_cino = [
 	{
-		name: 'Configuration Hub',
+		name: 'Control',
 		path: '/configurationHub',
 		component: 'ConfigurationHub',
 		prefit: [0, 1, 2, 3, 4],
 		subContent: [
 			{
-				name: 'Setting',
-				path: '/configurationHub',
+				name: 'Account Management',
+				path: '/configurationHub/userList',
 				component: 'ConfigurationHub',
 				prefit: [0, 1, 2, 3, 4],
+				sub: ['Account List', 'Account Permission Management'],
 			},
 			{
-				name: 'User Action Log',
-				path: '/actionLog',
-				component: 'ActionLog',
-				prefit: [0],
+				name: 'Document List',
+				path: '/configurationHub/documentList',
+				component: 'ConfigurationHub',
+				prefit: [0, 1, 2, 3, 4],
+				sub: ['Document List', 'Document Type List'],
+			},
+			{
+				name: 'Product List',
+				path: '/configurationHub/productList',
+				component: 'ConfigurationHub',
+				prefit: [0, 1, 2, 3, 4],
+				sub: ['Product List', 'Product Type List'],
+			},
+			{
+				name: 'Application Management',
+				path: '/configurationHub/firmwareList',
+				component: 'ConfigurationHub',
+				prefit: [0, 1, 2, 3, 4],
+				sub: ['Firmware List', 'Software List'],
+			},
+			{
+				name: 'Powertool3 Database',
+				path: '/configurationHub/parameterList',
+				component: 'ConfigurationHub',
+				prefit: [0, 1, 2, 3, 4],
+				sub: ['Parameter List', 'Help Window'],
 			},
 		],
+	},
+	{
+		name: 'User Action Log',
+		path: '/actionLog',
+		component: 'ActionLog',
+		prefit: [0, 1, 2, 3, 4],
 	},
 ];
 

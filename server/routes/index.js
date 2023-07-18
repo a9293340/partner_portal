@@ -8,6 +8,7 @@ const ProductRouter = require('./partnerportal/product');
 const DocumentTypeRouter = require('./partnerportal/documentType');
 const pMode0Router = require('./partnerportal/pMode0');
 const pMode1Router = require('./partnerportal/pMode1');
+const adminTokenRouter = require('./partnerportal/adminToken');
 
 module.exports = {
 	adminRouter,
@@ -20,4 +21,5 @@ module.exports = {
 	DocumentTypeRouter,
 	pMode0Router,
 	pMode1Router,
+	adminTokenRouter,
 };

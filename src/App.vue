@@ -4,17 +4,23 @@ import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
 import { useComponentStore } from '@/store/component.js';
 import { storeToRefs } from 'pinia';
-import { sessionRemove, encode, sessionGet } from '@/utils';
-import { router as RouterData } from './utils/router';
-import { logout } from '@/utils/api';
+import { sessionRemove, encode, sessionGet, sessionSet } from '@/utils';
+import { router as RouterData, router_cino } from './utils/router';
+import { logout, postList } from '@/utils/api';
 
 const router = useRouter();
 const login = useParameterStore();
 const comStore = useComponentStore();
 const { showMenu, loginAdmin, errorMsg, products, loginTimeout } =
 	storeToRefs(login);
-const { isShadow, isZShadow, isLoading, originShowPath } =
-	storeToRefs(comStore);
+const {
+	isShadow,
+	isZShadow,
+	isLoading,
+	originShowPath,
+	usefulPath,
+	routerTrigger,
+} = storeToRefs(comStore);
 const {
 	changeShowMenu,
 	fixError,
@@ -23,6 +29,7 @@ const {
 	loginAction,
 	fixLoginTimeout,
 } = login;
+const { getProductList, fixLoading } = comStore;
 
 const state = reactive({
 	showMenu: false,
@@ -33,6 +40,12 @@ const mainTitle = ref(null);
 
 const activeIndex = ref(router.currentRoute.value.path.split('/')[1]);
 
+watch(routerTrigger, () => {
+	// console.log('Trigger!');
+	routerTrig();
+	router.push('/');
+});
+
 const goToIntroduce = () => router.push('/introduce');
 
 const errorHandle = (tag = 0, path, next) => {
@@ -42,6 +55,12 @@ const errorHandle = (tag = 0, path, next) => {
 		isShow: true,
 	});
 	next({ path });
+};
+
+const checkBtns = (ctx) => {
+	usefulPath.value = originShowPath.value.filter((el) =>
+		ctx.find((x) => x === el.btnName)
+	);
 };
 
 watch(loginTimeout, (newIndex) => {
@@ -55,14 +74,15 @@ watch(loginTimeout, (newIndex) => {
 router.afterEach((to) => {
 	changeShowMenu(!(to.path === '/login'));
 	// changeShowMenu(true);
-	if (to.name === 'Configuration Hub') {
-		// console.log('!!!');
-		const usefulPath = originShowPath.value.filter(
-			(el) => !isPassPrefit(el.prefit)
-		);
+	// console.log('!!!', to.path);
+	// if (to.name === 'Configuration Hub') {
+	// 	// console.log('!!!', to.name);
+	// 	const usefulPath = originShowPath.value.filter(
+	// 		(el) => !isPassPrefit(el.prefit)
+	// 	);
 
-		router.push(`/configurationHub/${usefulPath[0].path}`);
-	}
+	// 	router.push(`/configurationHub/${usefulPath[0].path}`);
+	// }
 });
 
 router.beforeEach(async (to, from, next) => {
@@ -82,7 +102,10 @@ router.beforeEach(async (to, from, next) => {
 		loginAction({});
 		next();
 	} else {
-		if (!loginAdmin.value.account) errorHandle(0, '/login', next);
+		if (!sessionGet('cinoT') && !Object.keys(loginAdmin.value).length)
+			errorHandle(0, '/login', next);
+		else if (sessionGet('cinoT') && !Object.keys(loginAdmin.value).length)
+			await reLog(next);
 		// Product... single page check
 		else if (
 			to.params.id &&
@@ -99,8 +122,46 @@ router.beforeEach(async (to, from, next) => {
 	}
 });
 
+const routerTrig = () => {
+	mainTitle.value = !routerTrigger.value ? RouterData : router_cino;
+};
+
+const reLog = async (cb = (path) => router.push(path)) => {
+	fixLoading(true);
+	try {
+		const tokenReq = (
+			await postList(
+				'adminToken',
+				encode({
+					token: sessionGet('cinoT'),
+				})
+			)
+		).list[0];
+		sessionSet('cinoT', tokenReq.token);
+		const adminDetail = await postList(
+			'admin',
+			encode({
+				tokenReq: tokenReq.tokenReq,
+				token: sessionGet('cinoT'),
+				limit: 1,
+				page: 0,
+				filter: {
+					account: tokenReq.tokenReq,
+				},
+			})
+		);
+		loginAction(adminDetail.list[0]);
+		await getProductList();
+		cb('/');
+	} catch (error) {
+		console.log(error);
+		cb('/login');
+	}
+	fixLoading(false);
+};
+
 onBeforeMount(async () => {
-	mainTitle.value = RouterData;
+	routerTrig();
 });
 </script>
 
@@ -155,6 +216,7 @@ onBeforeMount(async () => {
 									) !== -1
 								"
 								:index="sub.path"
+								@click="checkBtns(sub.sub)"
 							>
 								<el-icon>
 									<Odometer />

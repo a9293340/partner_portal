@@ -1,17 +1,12 @@
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { postAdd, postDelete, postEdit, postList } from './api';
+import { postAdd, postDelete, postEdit } from './api';
 
 export function localGet(key) {
-	const value = window.localStorage.getItem(key);
-	try {
-		return JSON.parse(window.localStorage.getItem(key));
-	} catch (error) {
-		return value;
-	}
+	return window.localStorage.getItem(key);
 }
 
 export function sessionGet(key) {
-	return window.sessionStorage.getItem(key);
+	return window.localStorage.getItem(key);
 }
 
 export function localSet(key, value) {
@@ -19,11 +14,11 @@ export function localSet(key, value) {
 }
 
 export function sessionSet(key, value) {
-	window.sessionStorage.setItem(key, value);
+	window.localStorage.setItem(key, value);
 }
 
 export function sessionRemove(key) {
-	window.sessionStorage.removeItem(key);
+	window.localStorage.removeItem(key);
 }
 
 export function localRemove(key) {

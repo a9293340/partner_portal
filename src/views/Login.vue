@@ -158,6 +158,8 @@ const submitForm = async () => {
 						@keyup.enter.native="submitForm"
 					></el-input>
 					<VueClientRecaptcha
+						width="140"
+						height="50"
 						:value="inputValue"
 						@getCode="checkValidCaptcha"
 					/>
@@ -247,7 +249,7 @@ const submitForm = async () => {
 		width: 100px;
 	}
 	.vue_client_recaptcha {
-		width: 200px;
+		width: 300px;
 	}
 }
 </style>

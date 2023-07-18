@@ -16,49 +16,59 @@ export const useComponentStore = defineStore('component', () => {
 			prefit: [0, 2, 3],
 			path: 'userList',
 			type: 0,
+			btnName: 'Account List',
 		},
 		{
 			name: 'prefit',
 			prefit: [0],
 			path: 'prefitList',
+			btnName: 'Account Permission Management',
 		},
 		{
 			name: 'document',
 			prefit: [0, 2],
 			path: 'documentList',
 			type: 1,
+			btnName: 'Document List',
 		},
 		{
 			name: 'document_type',
 			prefit: [0, 2],
 			path: 'documentTypeList',
+			btnName: 'Document Type List',
 		},
 		{
 			name: 'product',
 			prefit: [0, 2],
 			path: 'productList',
 			type: 3,
+			btnName: 'Product List',
 		},
 		{
 			name: 'product_type',
 			prefit: [0, 2],
 			path: 'productTypeList',
 			type: 98,
+			btnName: 'Product Type List',
 		},
 		{
 			name: 'firmware',
 			prefit: [0, 2, 1, 4],
 			path: 'firmwareList',
 			type: 2,
+			btnName: 'Firmware List',
 		},
 		{
 			name: 'parameter',
 			prefit: [0, 2, 4],
 			path: 'parameterList',
 			type: 2,
+			btnName: 'Parameter List',
 		},
 	]);
+	const usefulPath = ref([]);
 
+	const routerTrigger = ref(false);
 	const isOpenEditPop = ref(false);
 	const isOpenAddPop = ref(false);
 	const isShowHelpPop = ref(false);
@@ -731,5 +741,7 @@ export const useComponentStore = defineStore('component', () => {
 		actionLog,
 		showHelpWindow,
 		isShowHelpPop,
+		routerTrigger,
+		usefulPath,
 	};
 });

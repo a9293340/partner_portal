@@ -1,18 +1,10 @@
 <script setup>
-import { ref } from 'vue';
-import { useParameterStore } from '@/store/parameter.js';
 import { useComponentStore } from '@/store/component.js';
 import { useRouter } from 'vue-router';
-import { firstStringUpperCase } from '@/utils';
 import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-const { isPassPrefit } = useParameterStore();
-const { originShowPath } = storeToRefs(useComponentStore());
-
-const usefulPath = ref(
-	originShowPath.value.filter((el) => !isPassPrefit(el.prefit))
-);
+const { usefulPath } = storeToRefs(useComponentStore());
 
 const goToPath = (path) => router.push(`/configurationHub/${path}`);
 </script>
@@ -25,7 +17,7 @@ const goToPath = (path) => router.push(`/configurationHub/${path}`);
 				v-for="path in usefulPath"
 				@click="goToPath(path.path)"
 				:key="path.path"
-				>{{ firstStringUpperCase(path.path) }}</el-button
+				>{{ path.btnName }}</el-button
 			>
 		</div>
 	</div>

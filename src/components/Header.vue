@@ -27,6 +27,17 @@
 					<p class="text-congo-brown-800">
 						company : {{ loginAdmin.company }}
 					</p>
+					<p
+						class="text-blue-400 cursor-pointer"
+						v-if="
+							[0, 1, 2, 3, 4].find(
+								(el) => el === loginAdmin.permissions
+							) !== -1
+						"
+						@click="triggerRoute"
+					>
+						{{ !routerTrigger ? 'Setting' : 'Normal' }}
+					</p>
 					<el-tag
 						size="small"
 						effect="dark"
@@ -45,9 +56,11 @@ import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useParameterStore } from '@/store/parameter.js';
+import { useComponentStore } from '@/store/component.js';
 
 const login = useParameterStore();
 const { loginAdmin, nowHeader } = storeToRefs(login);
+const { routerTrigger } = storeToRefs(useComponentStore());
 
 const router = useRouter();
 const state = reactive({
@@ -55,6 +68,8 @@ const state = reactive({
 	userInfo: null, // 用户信息变量
 	hasBack: false, // 是否展示返回icon
 });
+
+const triggerRoute = () => (routerTrigger.value = !routerTrigger.value);
 
 // 退出登录
 const logout = async () => {

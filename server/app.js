@@ -15,6 +15,7 @@ const {
 	DocumentTypeRouter,
 	pMode0Router,
 	pMode1Router,
+	adminTokenRouter,
 } = require('./routes');
 const { encryptRes } = require('./config/util/encryptNToken');
 const { default: mongoose } = require('mongoose');
@@ -41,6 +42,7 @@ app.use('/api/product', ProductRouter);
 app.use('/api/documentType', DocumentTypeRouter);
 app.use('/api/p_mode_0', pMode0Router);
 app.use('/api/p_mode_1', pMode1Router);
+app.use('/api/adminToken', adminTokenRouter);
 
 app.get('/', (req, res) => {
 	res.sendfile('./views/index.html');
