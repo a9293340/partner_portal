@@ -131,6 +131,7 @@ export const useParameterStore = defineStore('parameter', () => {
 					break;
 				default:
 					obj.msg = 'Error!';
+					goToIndex.value++;
 					break;
 			}
 		errorMsg.value = obj;
