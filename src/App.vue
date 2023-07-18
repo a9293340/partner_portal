@@ -11,7 +11,7 @@ import { logout, postList } from '@/utils/api';
 const router = useRouter();
 const login = useParameterStore();
 const comStore = useComponentStore();
-const { showMenu, loginAdmin, errorMsg, products, loginTimeout } =
+const { showMenu, loginAdmin, errorMsg, products, loginTimeout, goToIndex } =
 	storeToRefs(login);
 const {
 	isShadow,
@@ -44,6 +44,10 @@ watch(routerTrigger, () => {
 	// console.log('Trigger!');
 	routerTrig();
 	router.push('/');
+});
+
+watch(goToIndex, () => {
+	router.push('/login');
 });
 
 const goToIntroduce = () => router.push('/introduce');

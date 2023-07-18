@@ -7,6 +7,7 @@ export const useParameterStore = defineStore('parameter', () => {
 	const products = ref([]);
 	const tokenKey = ref('C8763');
 	const showMenu = ref(false);
+	const goToIndex = ref(0);
 	const errorMsg = ref({
 		title: '',
 		msg: '',
@@ -131,6 +132,7 @@ export const useParameterStore = defineStore('parameter', () => {
 					break;
 			}
 		errorMsg.value = obj;
+		if (obj.msg && Number.isInteger(obj.msg)) goToIndex.value++;
 		if (obj.isShow)
 			setTimeout(() => {
 				errorMsg.value.isShow = false;
@@ -163,5 +165,6 @@ export const useParameterStore = defineStore('parameter', () => {
 		productAction,
 		loginTimeout,
 		fixLoginTimeout,
+		goToIndex,
 	};
 });

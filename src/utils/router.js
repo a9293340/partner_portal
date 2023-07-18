@@ -1,6 +1,6 @@
 export const router = [
 	{
-		name: 'Production',
+		name: 'Product',
 		path: '/production',
 		component: 'ProductionList',
 		prefit: [0, 1, 2, 3, 4, 20, 21],
