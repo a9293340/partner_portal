@@ -4,9 +4,12 @@ import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-const { usefulPath } = storeToRefs(useComponentStore());
+const { usefulPath, nowConfiguration } = storeToRefs(useComponentStore());
 
-const goToPath = (path) => router.push(`/configurationHub/${path}`);
+const goToPath = (path) => {
+	nowConfiguration.value = path;
+	router.push(`/configurationHub/${path}`);
+};
 </script>
 
 <template>
@@ -15,6 +18,7 @@ const goToPath = (path) => router.push(`/configurationHub/${path}`);
 		<div class="w-full h-1/12 flex justify-around">
 			<el-button
 				v-for="path in usefulPath"
+				:color="nowConfiguration === path.path ? '#626aef' : ''"
 				@click="goToPath(path.path)"
 				:key="path.path"
 				>{{ path.btnName }}</el-button

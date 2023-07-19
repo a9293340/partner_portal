@@ -4,14 +4,14 @@ import { useRouter } from 'vue-router';
 import { useParameterStore } from '@/store/parameter.js';
 import { useComponentStore } from '@/store/component.js';
 import { storeToRefs } from 'pinia';
-import { sessionRemove, encode, sessionGet, sessionSet } from '@/utils';
+import { sessionRemove, encode, sessionGet, sessionSet, decode } from '@/utils';
 import { router as RouterData, router_cino } from './utils/router';
 import { logout, postList } from '@/utils/api';
 
 const router = useRouter();
 const login = useParameterStore();
 const comStore = useComponentStore();
-const { showMenu, loginAdmin, errorMsg, products, loginTimeout, goToIndex } =
+const { showMenu, loginAdmin, errorMsg, products, goToIndex } =
 	storeToRefs(login);
 const {
 	isShadow,
@@ -20,15 +20,10 @@ const {
 	originShowPath,
 	usefulPath,
 	routerTrigger,
+	nowConfiguration,
 } = storeToRefs(comStore);
-const {
-	changeShowMenu,
-	fixError,
-	fixHeader,
-	isPassPrefit,
-	loginAction,
-	fixLoginTimeout,
-} = login;
+const { changeShowMenu, fixError, fixHeader, isPassPrefit, loginAction } =
+	login;
 const { getProductList, fixLoading } = comStore;
 
 const state = reactive({
@@ -43,7 +38,6 @@ const activeIndex = ref(router.currentRoute.value.path.split('/')[1]);
 watch(routerTrigger, () => {
 	// console.log('Trigger!');
 	routerTrig();
-	router.push('/');
 });
 
 watch(goToIndex, () => {
@@ -65,32 +59,16 @@ const checkBtns = (ctx) => {
 	usefulPath.value = originShowPath.value.filter((el) =>
 		ctx.find((x) => x === el.btnName)
 	);
+	nowConfiguration.value = usefulPath.value[0].path;
 };
 
-watch(loginTimeout, (newIndex) => {
-	if (newIndex) {
-		console.log('login out');
-		router.push('/login');
-		fixLoginTimeout(false);
-	}
-});
-
-router.afterEach((to) => {
+router.afterEach((to, from) => {
+	// console.log(to.fullPath);
 	changeShowMenu(!(to.path === '/login'));
-	// changeShowMenu(true);
-	// console.log('!!!', to.path);
-	// if (to.name === 'Configuration Hub') {
-	// 	// console.log('!!!', to.name);
-	// 	const usefulPath = originShowPath.value.filter(
-	// 		(el) => !isPassPrefit(el.prefit)
-	// 	);
-
-	// 	router.push(`/configurationHub/${usefulPath[0].path}`);
-	// }
 });
 
 router.beforeEach(async (to, from, next) => {
-	// console.log(to.params.id);
+	// console.log(from);
 	if (to.path == '/login') {
 		if (loginAdmin.value.account) {
 			try {
@@ -109,7 +87,7 @@ router.beforeEach(async (to, from, next) => {
 		if (!sessionGet('cinoT') && !Object.keys(loginAdmin.value).length)
 			errorHandle(0, '/login', next);
 		else if (sessionGet('cinoT') && !Object.keys(loginAdmin.value).length)
-			await reLog(next);
+			await reLog(next, to.fullPath);
 		// Product... single page check
 		else if (
 			to.params.id &&
@@ -130,37 +108,44 @@ const routerTrig = () => {
 	mainTitle.value = !routerTrigger.value ? RouterData : router_cino;
 };
 
-const reLog = async (cb = (path) => router.push(path)) => {
+const reLog = async (cb = (path) => router.push(path), path) => {
 	fixLoading(true);
-	try {
-		const tokenReq = (
-			await postList(
-				'adminToken',
-				encode({
-					token: sessionGet('cinoT'),
-				})
-			)
-		).list[0];
-		sessionSet('cinoT', tokenReq.token);
-		const adminDetail = await postList(
-			'admin',
-			encode({
-				tokenReq: tokenReq.tokenReq,
-				token: sessionGet('cinoT'),
-				limit: 1,
-				page: 0,
-				filter: {
-					account: tokenReq.tokenReq,
-				},
-			})
-		);
-		loginAction(adminDetail.list[0]);
-		await getProductList();
-		cb('/');
-	} catch (error) {
-		console.log(error);
+	console.log(path);
+	if (new Date() - decode(sessionGet('cinoT'))['date'] > 60 * 60 * 1000)
 		cb('/login');
-	}
+	else
+		try {
+			const tokenReq = (
+				await postList(
+					'adminToken',
+					encode({
+						token: sessionGet('cinoT'),
+					})
+				)
+			).list[0];
+			sessionSet('cinoT', tokenReq.token);
+			const adminDetail = await postList(
+				'admin',
+				encode({
+					tokenReq: tokenReq.tokenReq,
+					token: sessionGet('cinoT'),
+					limit: 1,
+					page: 0,
+					filter: {
+						account: tokenReq.tokenReq,
+					},
+				})
+			);
+			loginAction(adminDetail.list[0]);
+			await getProductList();
+			cb(path ? path : '/');
+			routerTrigger.value = !RouterData.filter(
+				(el) => path.indexOf(el.path) !== -1
+			).length;
+		} catch (error) {
+			console.log(error);
+			cb('/login');
+		}
 	fixLoading(false);
 };
 

@@ -14,9 +14,6 @@ export const useParameterStore = defineStore('parameter', () => {
 		isShow: false,
 	});
 	const nowHeader = ref('');
-	const loginTimeout = ref(false);
-
-	const fixLoginTimeout = (bool) => (loginTimeout.value = bool);
 
 	const checkEmail = (rule, value, callback) => {
 		let emailRegxp =
@@ -115,12 +112,10 @@ export const useParameterStore = defineStore('parameter', () => {
 					break;
 				case 10008:
 					obj.msg = 'Your account has been suspended!';
-					loginTimeout.value = true;
 					goToIndex.value++;
 					break;
 				case 10005:
 					obj.msg = 'Login TimeOut!';
-					loginTimeout.value = true;
 					goToIndex.value++;
 					break;
 				case 11003:
@@ -165,8 +160,6 @@ export const useParameterStore = defineStore('parameter', () => {
 		resetAdminList,
 		products,
 		productAction,
-		loginTimeout,
-		fixLoginTimeout,
 		goToIndex,
 	};
 });

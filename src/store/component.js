@@ -67,7 +67,7 @@ export const useComponentStore = defineStore('component', () => {
 		},
 	]);
 	const usefulPath = ref([]);
-
+	const nowConfiguration = ref('');
 	const routerTrigger = ref(false);
 	const isOpenEditPop = ref(false);
 	const isOpenAddPop = ref(false);
@@ -743,5 +743,6 @@ export const useComponentStore = defineStore('component', () => {
 		isShowHelpPop,
 		routerTrigger,
 		usefulPath,
+		nowConfiguration,
 	};
 });
