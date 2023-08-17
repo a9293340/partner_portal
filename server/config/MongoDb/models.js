@@ -35,7 +35,7 @@ const p_mode_1 = new mongoose.Schema({
 const admin_token = new mongoose.Schema({
 	token: { type: String },
 	tokenReq: { type: String },
-	time: { type: Date },
+	date: { type: Date },
 	status: { type: Number },
 });
 
@@ -91,6 +91,8 @@ const software_type = new mongoose.Schema({
 const document = new mongoose.Schema({
 	name: { type: String },
 	document_type_id: { type: String },
+	download_path: { type: String },
+	remark: { type: Array },
 	prefit: { type: Array },
 	version: { type: Array },
 	status: { type: Number },
@@ -108,6 +110,11 @@ const prefit = new mongoose.Schema({
 	status: { type: Number },
 });
 
+const resources_lang = new mongoose.Schema({
+	name: { type: String },
+	code: { type: String },
+});
+
 module.exports = {
 	admin,
 	router,
@@ -122,4 +129,5 @@ module.exports = {
 	admin_token,
 	p_mode_0,
 	p_mode_1,
+	resources_lang,
 };

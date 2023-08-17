@@ -1,0 +1,17 @@
+{
+	"name": "FuzzyScan A780BT HC Series Datasheett-English",
+	"document_type_id": "645af6804d87fbe108480e80",
+	"remark": [],
+	"download_path": "https://www.cino.com.tw/assets/datasheet/A780/Cino_Datasheet_A780_",
+	"version": [
+		{
+			"version": "A3",
+			"language": "64d9e0963b9b63b3bfcae228",
+			"language_version": 1,
+			"creator": "644109335670c02b44d83271",
+			"create_date": "2023-6-16"
+		}
+	],
+	"prefit": [0, 1, 2, 3, 4, 20],
+	"status": 0
+}

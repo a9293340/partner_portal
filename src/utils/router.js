@@ -43,11 +43,15 @@ export const router_cino = [
 				sub: ['Account List', 'Account Permission Management'],
 			},
 			{
-				name: 'Document List',
+				name: 'Resources List',
 				path: '/configurationHub/documentList',
 				component: 'ConfigurationHub',
 				prefit: [0, 1, 2, 3, 4],
-				sub: ['Document List', 'Document Type List'],
+				sub: [
+					'Resources List',
+					'Resources Type List',
+					'Resources Language List',
+				],
 			},
 			{
 				name: 'Product List',

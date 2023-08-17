@@ -29,13 +29,19 @@ export const useComponentStore = defineStore('component', () => {
 			prefit: [0, 2],
 			path: 'documentList',
 			type: 1,
-			btnName: 'Document List',
+			btnName: 'Resources List',
 		},
 		{
 			name: 'document_type',
 			prefit: [0, 2],
 			path: 'documentTypeList',
-			btnName: 'Document Type List',
+			btnName: 'Resources Type List',
+		},
+		{
+			name: 'document_lang',
+			prefit: [0, 2],
+			path: 'documentLangList',
+			btnName: 'Resources Language List',
 		},
 		{
 			name: 'product',
@@ -90,6 +96,7 @@ export const useComponentStore = defineStore('component', () => {
 	const documentTypeList = ref([]);
 	const productTypeList = ref([]);
 	const creatorList = ref([]);
+	const langList = ref([]);
 
 	const fixPage_limit = (size) => (page_limit.value = size);
 
@@ -106,7 +113,7 @@ export const useComponentStore = defineStore('component', () => {
 			const documentType = encode({
 				tokenReq: loginAdmin.value.account,
 				token: sessionGet('cinoT'),
-				limit: 100,
+				limit: 1000,
 				page: 0,
 				filter: {
 					status: 0,
@@ -133,7 +140,7 @@ export const useComponentStore = defineStore('component', () => {
 			const firmware = encode({
 				tokenReq: loginAdmin.value.account,
 				token: sessionGet('cinoT'),
-				limit: 100,
+				limit: 1000,
 				page: 0,
 				filter: {
 					status: 0,
@@ -163,7 +170,7 @@ export const useComponentStore = defineStore('component', () => {
 				encode({
 					tokenReq: loginAdmin.value.account,
 					token: sessionGet('cinoT'),
-					limit: 100,
+					limit: 1000,
 					page: 0,
 					filter: {
 						status: 0,
@@ -191,7 +198,7 @@ export const useComponentStore = defineStore('component', () => {
 				encode({
 					tokenReq: loginAdmin.value.account,
 					token: sessionGet('cinoT'),
-					limit: 100,
+					limit: 1000,
 					page: 0,
 					filter: {
 						status: 0,
@@ -218,7 +225,7 @@ export const useComponentStore = defineStore('component', () => {
 				encode({
 					tokenReq: loginAdmin.value.account,
 					token: sessionGet('cinoT'),
-					limit: 100,
+					limit: 1000,
 					page: 0,
 					filter: {
 						status: 0,
@@ -241,6 +248,35 @@ export const useComponentStore = defineStore('component', () => {
 			fixLoading(false);
 		}
 	};
+
+	const getLangList = async () => {
+		try {
+			const lang = await postList(
+				'resourcesLang',
+				encode({
+					tokenReq: loginAdmin.value.account,
+					token: sessionGet('cinoT'),
+					limit: 1000,
+					page: 0,
+					filter: {},
+				})
+			);
+			langList.value = lang.list.map((el) => ({
+				val: el._id,
+				opt: el.name,
+				code: el.code,
+			}));
+		} catch (error) {
+			console.log(error);
+			fixError({
+				title: 'Error',
+				msg: error.response?.data.error_code,
+				isShow: true,
+			});
+			fixLoading(false);
+		}
+	};
+
 	const getProductList = async () => {
 		try {
 			// console.log(loginAdmin.value);
@@ -329,16 +365,19 @@ export const useComponentStore = defineStore('component', () => {
 		return res;
 	};
 	const getSelectOptions = async (jud, type) => {
+		let promiseArray = [];
 		if (jud.find((el) => el === 'PR')) await fixPrefitList();
 		if (jud.find((el) => el === 'D')) await fixDocumentList();
 		if (jud.find((el) => el === 'F')) await fixFirmwareList();
+		if (jud.find((el) => el === 'DT')) await fixDocumentTypeList();
+		if (jud.find((el) => el === 'PT')) await fixProductTypeList();
+		if (jud.find((el) => el === 'P')) await getProductList();
+		if (jud.find((el) => el === 'LA')) await getLangList();
+
 		if (jud.find((el) => el === 'C'))
 			await getCreatorList(
 				originShowPath.value.find((el) => el.type === type).prefit
 			);
-		if (jud.find((el) => el === 'DT')) await fixDocumentTypeList();
-		if (jud.find((el) => el === 'PT')) await fixProductTypeList();
-		if (jud.find((el) => el === 'P')) await getProductList();
 	};
 
 	const whichSelectOptionsShouldBeGet = async (type) => {
@@ -353,6 +392,7 @@ export const useComponentStore = defineStore('component', () => {
 			case 1: // Document
 				if (!documentTypeList.value.length) jud.push('DT');
 				if (!prefitList.value.length) jud.push('PR');
+				if (!langList.value.length) jud.push('LA');
 				jud.push('C');
 				break;
 			case 2: // Firmware
@@ -366,6 +406,7 @@ export const useComponentStore = defineStore('component', () => {
 				if (!firmwareList.value.length) jud.push('F');
 				break;
 			case 98: //Production List
+				// console.log(1);
 				if (!productTypeList.value.length) jud.push('PT');
 				break;
 		}
@@ -388,6 +429,7 @@ export const useComponentStore = defineStore('component', () => {
 					document_type_id: documentTypeList.value,
 					prefit: prefitList.value,
 					creator: creatorList.value,
+					lang: langList.value,
 				};
 				edit = [
 					{
@@ -420,6 +462,7 @@ export const useComponentStore = defineStore('component', () => {
 				];
 				break;
 		}
+
 		data['status'] = statusList.value;
 		edit.push({
 			key: 'status',
@@ -453,135 +496,6 @@ export const useComponentStore = defineStore('component', () => {
 			fixLoading(false);
 			fixOpenEditPop(false);
 		});
-	};
-
-	const sendPostList = async (path, filter) =>
-		(
-			await postList(
-				path,
-				encode({
-					tokenReq: loginAdmin.value.account,
-					token: sessionGet('cinoT'),
-					limit: 1000,
-					page: 0,
-					filter,
-				})
-			)
-		).list;
-
-	const removeCheck2 = async (row, path) => {
-		let data;
-		if (path === 'prefit') {
-			// admin
-			data = await sendPostList('admin', {
-				permissions: row.prefit,
-			});
-			if (data.length)
-				return {
-					title: 'admin data',
-					data,
-				};
-
-			// document
-			data = await sendPostList('document', {
-				prefit: row.prefit,
-			});
-			if (data.length)
-				return {
-					title: 'document data',
-					data,
-				};
-			// product
-			data = await sendPostList('product', {
-				prefit: row.prefit,
-			});
-			if (data.length)
-				return {
-					title: 'product data',
-					data,
-				};
-		} else if (path === 'productionType') {
-			data = await sendPostList('product', {
-				production_type_id: row._id,
-			});
-			if (data.length)
-				return {
-					title: 'product data',
-					data,
-				};
-		} else if (path === 'documentType') {
-			data = await sendPostList('document', {
-				document_type_id: row._id,
-			});
-			if (data.length)
-				return {
-					title: 'document data',
-					data,
-				};
-		} else if (path === 'document' || path === 'firmware') {
-			data = await sendPostList(
-				'product',
-				path === 'document'
-					? {
-							documents_id: row._id,
-					  }
-					: { firmware_id: row._id }
-			);
-			if (data.length)
-				return {
-					title:
-						path === 'document' ? 'document data' : 'firmware data',
-					data,
-				};
-		}
-
-		return false;
-	};
-
-	const removeItem = async (row, path, cb) => {
-		try {
-			await comfirmBox();
-			fixLoading(true);
-			const checkData = await removeCheck2(row, path);
-			if (checkData) {
-				ElMessageBox({
-					title: `須先刪除相關連動參數(${checkData.title})`,
-					message: h(
-						'ol',
-						{ style: 'margin-left : 20px' },
-						checkData.data.map((el) =>
-							h(
-								'li',
-								{ style: 'list-style-type: circle' },
-								el.name
-							)
-						)
-					),
-				});
-				fixLoading(false);
-				return;
-			}
-			changeItem(
-				'D',
-				encode({
-					tokenReq: loginAdmin.value.account,
-					token: sessionGet('cinoT'),
-					_id: row._id,
-				}),
-				path
-			).then(async (res) => {
-				if (res)
-					fixError({
-						title: 'Error',
-						msg: res.response.data.error_code,
-						isShow: true,
-					});
-				else await cb();
-			});
-		} catch (error) {
-			console.log(error);
-		}
-		fixLoading(false);
 	};
 
 	const addItem = async (data, path, cb) => {
@@ -728,7 +642,6 @@ export const useComponentStore = defineStore('component', () => {
 		creatorList,
 		getCreatorList,
 		getEditData,
-		removeItem,
 		addItem,
 		fixPage_limit,
 		whichSelectOptionsShouldBeGet,
@@ -740,9 +653,11 @@ export const useComponentStore = defineStore('component', () => {
 		fixShadow,
 		actionLog,
 		showHelpWindow,
+		getLangList,
 		isShowHelpPop,
 		routerTrigger,
 		usefulPath,
 		nowConfiguration,
+		langList,
 	};
 });

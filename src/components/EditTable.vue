@@ -6,9 +6,8 @@ import { useParameterStore } from '@/store/parameter';
 import { storeToRefs } from 'pinia';
 import dayjs from 'dayjs';
 
-const { creatorList, statusList, page_limit, isOpenAddPop } = storeToRefs(
-	useComponentStore()
-);
+const { creatorList, statusList, page_limit, isOpenAddPop, langList } =
+	storeToRefs(useComponentStore());
 const { loginAdmin } = storeToRefs(useParameterStore());
 const { loginAction } = useParameterStore();
 const {
@@ -46,6 +45,15 @@ const empty = [
 			document_type_id: '',
 			version: [],
 			prefit: [0],
+			download_path: '',
+			remark: [],
+		},
+	},
+	{
+		path: 'resourcesLang',
+		val: {
+			name: '',
+			code: '',
 		},
 	},
 	{
@@ -122,6 +130,10 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
+	showMultiInput: {
+		type: Array,
+		default: () => [],
+	},
 	showSelect: {
 		type: Array,
 		default: () => [],
@@ -141,6 +153,7 @@ const props = defineProps({
 });
 
 const triggerEditOrAdd = ref(null);
+const triggerIsVersionEditOrAdd = ref(-1);
 
 const adList = ref();
 const totalData = ref();
@@ -154,9 +167,11 @@ const totalWidth = ref(0);
 
 const emptyData = ref({});
 const filter = ref({});
+const nowPath = ref('');
 
 const editAdmin = (row) => {
 	triggerEditOrAdd.value = 'E';
+	triggerIsVersionEditOrAdd.value = -1;
 	editTarget.value = row;
 	fixOpenAddPop(true);
 };
@@ -236,11 +251,25 @@ const countTotalTableLength = () => {
 const openCreatePop = () => {
 	// console.log(props.path);
 	triggerEditOrAdd.value = 'A';
+	triggerIsVersionEditOrAdd.value = -1;
 	emptyData.value = empty.find((el) => el.path === props.path).val;
 	fixOpenAddPop(true);
 };
 
+const sortVersion = (ver) =>
+	ver
+		.sort((a, b) => b[1] - a[1])
+		.sort((a, b) => b.charCodeAt() - a.charCodeAt());
+
+const editVersion = (row, versionData) => {
+	triggerEditOrAdd.value = 'E';
+	triggerIsVersionEditOrAdd.value = versionData.$index;
+	editTarget.value = row;
+	fixOpenAddPop(true);
+};
+
 onBeforeMount(async () => {
+	nowPath.value = props.path;
 	if (props.path === 'admin' && loginAdmin.value.permissions) {
 		filter.value = {
 			permissions: [20, 21],
@@ -249,7 +278,6 @@ onBeforeMount(async () => {
 	fixLoading(true);
 	if (props.routerType !== 1000) {
 		const res = await whichSelectOptionsShouldBeGet(props.routerType);
-		// console.log(res);
 		selectItems.value = res.data;
 		specialList.value = res.edit;
 	}
@@ -263,15 +291,13 @@ onBeforeMount(async () => {
 		adList.value = [];
 	}
 	fixLoading(false);
+	// console.log(props.path);
 });
 </script>
 
 <template>
 	<div class="w-full h-full flex flex-col items-center">
-		<div
-			class="h-11/12 overflow-auto"
-			:style="`max-width: ${totalWidth}px`"
-		>
+		<div class="h-11/12 w-full overflow-auto overflow-x-auto">
 			<el-table
 				:data="adList"
 				border
@@ -283,19 +309,22 @@ onBeforeMount(async () => {
 					type="expand"
 					v-if="props.hasVersion"
 					class="p-4"
+					fixed
 				>
 					<template #default="props">
-						<div class="m-10">
+						<div class="flex flex-col items-center m-4">
 							<el-table
 								:data="props.row.version"
-								style="width: 1200px; margin-left: 0px"
+								style="width: 900px; margin-left: 0px"
 								:row-style="tableRowClassName"
 							>
+								<!-- Version -->
 								<el-table-column
 									width="200"
 									label="Version"
 									prop="version"
 								/>
+								<!-- Creator -->
 								<el-table-column width="150" label="Creator">
 									<template #default="propsChild">
 										<div>
@@ -316,11 +345,13 @@ onBeforeMount(async () => {
 										</div>
 									</template>
 								</el-table-column>
+								<!-- Create Date -->
 								<el-table-column
 									width="200"
 									label="Create Date"
 									prop="create_date"
 								/>
+								<!-- Status -->
 								<el-table-column
 									label="Status"
 									prop="status"
@@ -336,12 +367,49 @@ onBeforeMount(async () => {
 										}}</span>
 									</template>
 								</el-table-column>
+								<!-- Language -->
 								<el-table-column
-									label="Download Path"
-									prop="download_path"
-									:show-overflow-tooltip="true"
-								/>
+									label="Language"
+									prop="language"
+									width="120"
+									v-if="nowPath === 'document'"
+								>
+									<template #default="propsChild">
+										<span
+											>{{
+												langList.find(
+													(x) =>
+														x.val ===
+														propsChild.row.language
+												).opt
+											}}({{
+												langList.find(
+													(x) =>
+														x.val ===
+														propsChild.row.language
+												).code
+											}})</span
+										>
+									</template>
+								</el-table-column>
+								<!-- button -->
+								<el-table-column align="center" label="Action">
+									<template #default="scope">
+										<el-button
+											plain
+											type="warning"
+											size="small"
+											@click.prevent="
+												editVersion(props.row, scope)
+											"
+											>Edit</el-button
+										>
+									</template>
+								</el-table-column>
 							</el-table>
+							<el-button style="width: 900px" class="mt-4"
+								>Add</el-button
+							>
 						</div>
 					</template>
 				</el-table-column>
@@ -406,11 +474,21 @@ onBeforeMount(async () => {
 				>
 					<template class="flex flex-col" #default="scope">
 						<div v-if="scope.row.version?.length">
-							<span>{{ scope.row.version[0].version }}</span>
+							<span>{{
+								sortVersion(scope.row.version)[0].version
+							}}</span>
 							<span class="mr-3">
 								({{
+									langList.find(
+										(el) =>
+											el.val ===
+											sortVersion(scope.row.version)[0]
+												.language
+									).code
+								}}/{{
 									dayjs(
-										scope.row.version[0].create_date
+										sortVersion(scope.row.version)[0]
+											.create_date
 									).format('YYYY-MM-DD')
 								}})
 							</span>
@@ -465,8 +543,12 @@ onBeforeMount(async () => {
 					? props.title.replace('Edit', 'Add')
 					: props.title
 			"
+			:isEdit="triggerEditOrAdd !== 'A'"
+			:is-version-edit="triggerIsVersionEditOrAdd"
 			:input-data="triggerEditOrAdd === 'A' ? emptyData : editTarget"
+			:path="props.path"
 			:show-input="props.showInput"
+			:show-multi-input="showMultiInput"
 			:show-select="props.showSelect"
 			:show-multi-selct="props.showMultiSelct"
 			:show-special="props.showSpecial"

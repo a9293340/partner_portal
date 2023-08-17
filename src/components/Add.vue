@@ -5,11 +5,27 @@ const props = defineProps({
 		type: String,
 		default: 'EMPTY',
 	},
+	path: {
+		type: String,
+		default: '',
+	},
+	isEdit: {
+		type: Boolean,
+		default: false,
+	},
+	isVersionEdit: {
+		type: Number,
+		default: -1,
+	},
 	inputData: {
 		type: Object,
 		default: () => ({}),
 	},
 	showInput: {
+		type: Array,
+		default: () => [],
+	},
+	showMultiInput: {
 		type: Array,
 		default: () => [],
 	},
@@ -54,14 +70,17 @@ const abort = (bool) => {
 			</h1>
 		</header>
 		<AddTemplate
+			:path="props.path"
 			:input-data="props.inputData"
 			:show-input="props.showInput"
 			:show-select="props.showSelect"
+			:show-multi-input="showMultiInput"
 			:show-multi-selct="props.showMultiSelct"
 			:show-special="props.showSpecial"
 			:select-items="props.selectItems"
 			:show-version="props.showVersion"
-			:is-edit="true"
+			:is-edit="props.isEdit"
+			:is-version-edit="props.isVersionEdit"
 			@data="editAdmin"
 			@abort="abort"
 		/>

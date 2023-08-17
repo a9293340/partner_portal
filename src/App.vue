@@ -63,7 +63,13 @@ const checkBtns = (ctx) => {
 };
 
 router.afterEach((to, from) => {
-	// console.log(to.fullPath);
+	// 產出編輯頁籤
+	if (to.fullPath.indexOf('configurationHub') !== -1) {
+		const ctx = router_cino
+			.find((x) => x.path.indexOf('configurationHub') !== -1)
+			.subContent.find((el) => el.path === to.fullPath)?.sub;
+		if (ctx) checkBtns(ctx);
+	}
 	changeShowMenu(!(to.path === '/login'));
 });
 
@@ -110,7 +116,7 @@ const routerTrig = () => {
 
 const reLog = async (cb = (path) => router.push(path), path) => {
 	fixLoading(true);
-	console.log(path);
+	// console.log(path);
 	if (new Date() - decode(sessionGet('cinoT'))['date'] > 60 * 60 * 1000)
 		cb('/login');
 	else
@@ -143,7 +149,7 @@ const reLog = async (cb = (path) => router.push(path), path) => {
 				(el) => path.indexOf(el.path) !== -1
 			).length;
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			cb('/login');
 		}
 	fixLoading(false);
@@ -205,7 +211,6 @@ onBeforeMount(async () => {
 									) !== -1
 								"
 								:index="sub.path"
-								@click="checkBtns(sub.sub)"
 							>
 								<el-icon>
 									<Odometer />

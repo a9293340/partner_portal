@@ -73,7 +73,7 @@ const searchAdmin = async () => {
 				).list,
 			];
 		}
-		console.log(detail);
+		// console.log(detail);
 		for (let i = 0; i < data['action_log'].length; i++) {
 			data['action_log'][i].detail.target = detail.find(
 				(el) => el._id === data['action_log'][i].detail.target

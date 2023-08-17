@@ -4,7 +4,8 @@ import EditTable from '../../components/EditTable.vue';
 
 const { fixDocumentList } = useComponentStore();
 
-const showInput = ['name'];
+const showInput = ['name', 'download_path'];
+const showMultiInput = ['remark'];
 const showSelect = ['document_type_id', 'status'];
 const showVersion = ['version'];
 const showMultiSelct = ['prefit'];
@@ -13,6 +14,10 @@ const normalKey = [
 	{
 		key: 'name',
 		width: 450,
+	},
+	{
+		key: 'download_path',
+		width: 150,
 	},
 ];
 
@@ -29,6 +34,7 @@ const getEditItem = async () => await fixDocumentList();
 			:has-version="true"
 			:show-input="showInput"
 			:show-select="showSelect"
+			:show-multi-input="showMultiInput"
 			:show-multi-selct="showMultiSelct"
 			:show-version="showVersion"
 			@row="getEditItem"

@@ -9,6 +9,8 @@ const DocumentTypeRouter = require('./partnerportal/documentType');
 const pMode0Router = require('./partnerportal/pMode0');
 const pMode1Router = require('./partnerportal/pMode1');
 const adminTokenRouter = require('./partnerportal/adminToken');
+const resourcesLangRouter = require('./partnerportal/resourcesLang');
+const uploadFileRouter = require('./partnerportal/uploadFile');
 
 module.exports = {
 	adminRouter,
@@ -22,4 +24,6 @@ module.exports = {
 	pMode0Router,
 	pMode1Router,
 	adminTokenRouter,
+	resourcesLangRouter,
+	uploadFileRouter,
 };

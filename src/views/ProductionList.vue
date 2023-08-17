@@ -81,12 +81,12 @@ onBeforeMount(async () => {
 		usefulProductType.value = productTypeList.value.filter((el) =>
 			usefulProducts.value.find((x) => x.production_type_id === el.val)
 		);
-
 		pickpTList(0);
 		pickProductsGroup(usefulProductType.value[0]._id, 0);
 		// console.log(showProduct.value);
 		fixLoading(false);
 	} catch (error) {
+		console.log(error);
 		fixLoading(false);
 		router.push('/login');
 	}

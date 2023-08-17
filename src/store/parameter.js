@@ -46,6 +46,20 @@ export const useParameterStore = defineStore('parameter', () => {
 				trigger: 'blur',
 			},
 		],
+		download_path: [
+			{
+				required: 'true',
+				message: "Downlad Path can't be empty",
+				trigger: 'blur',
+			},
+		],
+		code: [
+			{
+				required: 'true',
+				message: "Code can't be empty",
+				trigger: 'blur',
+			},
+		],
 		password: [
 			{
 				required: 'true',

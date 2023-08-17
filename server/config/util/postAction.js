@@ -11,7 +11,11 @@ const pList = (
 	hasPage = false,
 	projection = {}
 ) => {
-	const option = hasPage
+	const checkHasPage =
+		hasPage &&
+		Number.isInteger(hasPage.limit) &&
+		Number.isInteger(hasPage.page);
+	const option = checkHasPage
 		? {
 				limit: hasPage.limit,
 				skip: hasPage.page * hasPage.limit,
@@ -29,13 +33,13 @@ const pList = (
 					next(10004);
 				} else {
 					if (hasDateFormat) arr = makeArticleDateArr(arr);
-					const count = hasPage
+					const count = checkHasPage
 						? await MongooseCRUD('COUNT', modelName, target)
 						: 0;
 					res.status(200).json({
 						error_code: 0,
 						data: encryptRes(
-							hasPage
+							checkHasPage
 								? {
 										total: count,
 										list: arr,

@@ -50,6 +50,13 @@ const defaultRouter = [
 				meta: { prefit: [0, 2] },
 			},
 			{
+				path: 'documentLangList',
+				name: 'Document Language List',
+				component: () =>
+					import('../views/ConfigurationHub/DoucmentLang.vue'),
+				meta: { prefit: [0, 2] },
+			},
+			{
 				path: 'documentTypeList',
 				name: 'Document Type List',
 				component: () =>

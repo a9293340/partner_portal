@@ -1,5 +1,5 @@
-const createError = require('http-errors');
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -16,6 +16,8 @@ const {
 	pMode0Router,
 	pMode1Router,
 	adminTokenRouter,
+	resourcesLangRouter,
+	uploadFileRouter,
 } = require('./routes');
 const { encryptRes } = require('./config/util/encryptNToken');
 const { default: mongoose } = require('mongoose');
@@ -27,9 +29,18 @@ app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
 
 app.use(logger('dev'));
-app.use(express.json({ limit: '10240kb' }));
+app.use(express.json({ limit: '20480kb' }));
 app.use(express.urlencoded({ extended: false }));
+app.use(
+	fileUpload({
+		createParentPath: true,
+		limits: {
+			fileSize: 30 * 1024 * 1024 * 1024, //2MB
+		},
+	})
+);
 app.use(cookieParser());
+app.use(express.static('uploadFiles'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/admin', adminRouter);
@@ -43,6 +54,8 @@ app.use('/api/documentType', DocumentTypeRouter);
 app.use('/api/p_mode_0', pMode0Router);
 app.use('/api/p_mode_1', pMode1Router);
 app.use('/api/adminToken', adminTokenRouter);
+app.use('/api/resourcesLang', resourcesLangRouter);
+app.use('/api/file', uploadFileRouter);
 
 app.get('/', (req, res) => {
 	res.sendfile('./views/index.html');
