@@ -135,7 +135,7 @@
       const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'cino9527').toString()
       // console.log(obj)
       axios
-        .post('http://localhost:3300/api/admin/login', {
+        .post('https://partnerportal.cino.com.tw/api/admin/login', {
           data: obj
         })
         .then(res => {

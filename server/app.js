@@ -40,7 +40,6 @@ app.use(
 	})
 );
 app.use(cookieParser());
-app.use(express.static('uploadFiles'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/admin', adminRouter);
@@ -57,9 +56,11 @@ app.use('/api/adminToken', adminTokenRouter);
 app.use('/api/resourcesLang', resourcesLangRouter);
 app.use('/api/file', uploadFileRouter);
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
 	res.sendfile('./views/index.html');
 });
+
+app.use('/api/download', express.static(path.join(__dirname, 'uploadFiles')));
 
 // development
 app.use(
