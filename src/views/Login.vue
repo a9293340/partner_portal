@@ -115,7 +115,7 @@ const submitForm = async () => {
 			<div class="head">
 				<img class="logo" src="../assets/img/product-img/A560.png" />
 				<div class="name">
-					<div class="title">CINO</div>
+					<div class="title">{{ $t('title') }}</div>
 					<div class="tips">Partner Portal</div>
 					<!-- text-amber-400 -->
 				</div>

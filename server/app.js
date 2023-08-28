@@ -20,14 +20,12 @@ const {
 	uploadFileRouter,
 } = require('./routes');
 const { encryptRes } = require('./config/util/encryptNToken');
-const { default: mongoose } = require('mongoose');
 
 const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
-
 app.use(logger('dev'));
 app.use(express.json({ limit: '20480kb' }));
 app.use(express.urlencoded({ extended: false }));
@@ -35,8 +33,9 @@ app.use(
 	fileUpload({
 		createParentPath: true,
 		limits: {
-			fileSize: 30 * 1024 * 1024 * 1024, //2MB
+			fileSize: 70 * 1024 * 1024, //2MB
 		},
+		abortOnLimit: true,
 	})
 );
 app.use(cookieParser());
@@ -54,14 +53,13 @@ app.use('/api/p_mode_0', pMode0Router);
 app.use('/api/p_mode_1', pMode1Router);
 app.use('/api/adminToken', adminTokenRouter);
 app.use('/api/resourcesLang', resourcesLangRouter);
-app.use('/api/file', uploadFileRouter);
+app.use('/api/upload', uploadFileRouter);
 
 app.get('/api', (req, res) => {
 	res.sendfile('./views/index.html');
 });
 
 app.use('/api/download', express.static(path.join(__dirname, 'uploadFiles')));
-
 // development
 app.use(
 	cors({

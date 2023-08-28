@@ -1,9 +1,4 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { depCopy } from '@/utils';
-import { router, router_bak } from '../utils/router';
-
-const newRoute = depCopy(router);
-const newRoute_bak = depCopy(router_bak);
 
 const defaultRouter = [
 	{

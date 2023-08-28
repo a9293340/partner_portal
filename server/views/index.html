@@ -28,13 +28,17 @@
   <script>
     let token;
 
-    function change(event){
+    async function change(event){
       // console.log(event.target.files)
       const form = new FormData()
       form.append('uploadedFile',event.target.files[0])
-      axios.post('http://localhost:3300/api/file/upload',form).then(res => {
-        console.log(res)
-      })
+      form.append('path','2D')
+      try {
+        let res = await axios.post('http://localhost:3300/api/upload/ppkg',form)
+      } catch (error) {
+        console.log(error)
+      }
+      event.target.value = ''
     }
 
     function send(data, router) {

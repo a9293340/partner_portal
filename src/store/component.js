@@ -1,9 +1,8 @@
 import { defineStore, storeToRefs } from 'pinia';
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 import { sessionGet, encode, changeItem, comfirmBox, depCopy } from '@/utils';
 import { useParameterStore } from './parameter';
 import { postList, postAdd } from '../utils/api';
-import { ElMessageBox } from 'element-plus';
 import dayjs from 'dayjs';
 
 export const useComponentStore = defineStore('component', () => {
