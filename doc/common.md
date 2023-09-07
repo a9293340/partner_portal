@@ -134,6 +134,7 @@ encrypt string 為 AES(JSON string).toString()
 | Powertool3 group | 1    | Powertool3 Database  | -                    | -             |
 | Powertool3 參數  | 2    | Parameter            | Powertool3 Database  | /ptParameter  |
 | Powertool3 HW    | 2    | Help Window          | Powertool3 Database  | /ptHelpWindow |
+|                  |      |                      |                      |               |
 
 ### 下載路徑(/upload)
 
