@@ -43,7 +43,7 @@ encrypt string 為 AES(JSON string).toString()
 ## 上傳檔案規則
 
 1. 目前僅提供 ppkg 、 pdf 兩種格式上傳
-2. 目前檔案大小限制為 70 mb
+2. 目前檔案大小限制為 10000 mb
 3. 檔案儲存路徑須依照定義規則存放，且不得任意更動
 
 ### Upload Path 定義
@@ -106,35 +106,39 @@ encrypt string 為 AES(JSON string).toString()
 
 ### 客戶瀏覽路徑規劃(/customer)
 
-待補充
+| 名稱           | 級數 | 名稱(英文)       | 屬於 | 路徑                           |
+| -------------- | ---- | ---------------- | ---- | ------------------------------ |
+| 首頁           | 1    | Introduce        | -    | /introduce                     |
+| Major SKU 列表 | 1    | Major SKU        | -    | /majorSku                      |
+| Major SKU      |      | [Major SKU NAME] | -    | /majorSkuList/[major sku name] |
 
 ### 後台(/backStage)
 
-| 名稱             | 級數 | 名稱(英文)           | 屬於                 | 路徑          |
-| ---------------- | ---- | -------------------- | -------------------- | ------------- |
-| 帳號管理 group   | 1    | Account Management   | -                    | -             |
-| 員工 group       | 2    | Staff                | Account Management   | -             |
-| 員工             | 3    | Staff List           | Staff                | /staffList    |
-| 部門             | 3    | Division List        | Staff                | /divisionList |
-| 員工群組         | 3    | Staff Group          | Staff                | /staffGroup   |
-| 夥伴 group       | 2    | Partner              | Account Management   | -             |
-| 夥伴             | 3    | Partner List         | Partner              | /partnerList  |
-| 夥伴層級         | 3    | Partner Level        | Partner              | /partnerLevel |
-| 公司             | 3    | Compnay List         | Partner              | /companyList  |
-| 夥伴群組         | 3    | Partner Group        | Partner              | /partnerGroup |
-| 產品 group       | 1    | Product              | -                    | -             |
-| 產品             | 2    | Product List         | Product              | /productList  |
-| 產品分類         | 2    | Product Type         | Product              | /productType  |
-| 資源管理 group   | 1    | Resources Management | -                    | -             |
-| 文件 group       | 2    | Document             | Resources Management | -             |
-| 文件             | 3    | Document List        | Document             | /documentList |
-| 文件分類         | 3    | Document Type        | Document             | /documentType |
-| 韌體             | 2    | Firmware List        | Resources Management | /firmwareList |
-| 軟體             | 2    | Software List        | Resources Management | /softwareList |
-| Powertool3 group | 1    | Powertool3 Database  | -                    | -             |
-| Powertool3 參數  | 2    | Parameter            | Powertool3 Database  | /ptParameter  |
-| Powertool3 HW    | 2    | Help Window          | Powertool3 Database  | /ptHelpWindow |
-|                  |      |                      |                      |               |
+| 名稱             | 級數 | 名稱(英文)            | 屬於                  | 路徑          |
+| ---------------- | ---- | --------------------- | --------------------- | ------------- |
+| 首頁             | 1    | Introduce             | -                     | /introduce    |
+| 帳號管理 group   | 1    | Account Management    | -                     | -             |
+| 員工 group       | 2    | Staff                 | Account Management    | -             |
+| 員工             | 3    | Staff List            | Staff                 | /staffList    |
+| 部門             | 3    | Division List         | Staff                 | /divisionList |
+| 員工群組         | 3    | Staff Group           | Staff                 | /staffGroup   |
+| 夥伴 group       | 2    | Partner               | Account Management    | -             |
+| 夥伴             | 3    | Partner List          | Partner               | /partnerList  |
+| 夥伴層級         | 3    | Partner Level         | Partner               | /partnerLevel |
+| 公司             | 3    | Compnay List          | Partner               | /companyList  |
+| 夥伴群組         | 3    | Partner Group         | Partner               | /partnerGroup |
+| 產品 group       | 1    | Product Management    | -                     | -             |
+| 產品             | 2    | Major Sku List        | Product Management    | /majorSkuList |
+| 產品分類         | 2    | Major Sku Type        | Product Management    | /majorSkuType |
+| 資源管理 group   | 1    | Resources Management  | -                     | -             |
+| 文件 group       | 2    | Document              | Resources Management  | -             |
+| 文件             | 3    | Document List         | Document              | /documentList |
+| 文件分類         | 3    | Document Type         | Document              | /documentType |
+| 韌體             | 2    | Firmware List         | Resources Management  | /firmwareList |
+| 軟體             | 2    | Software List         | Resources Management  | /softwareList |
+| Powertool3 group | 1    | Powertool3 Management | -                     | -             |
+| Powertool3 參數  | 2    | Parameter             | Powertool3 Management | /ptParameter  |
+| Action Log       | 1    | Action Log            | -                     | /actionLog    |
 
 ### 下載路徑(/upload)
 
@@ -175,45 +179,89 @@ encrypt string 為 AES(JSON string).toString()
 下列為目前會使用到之動態選項:
 
 1. staff
-2. department
-3. staff group
-4. resources type
-5. resources language
+2. division
+3. partner
+4. company
+5. major_sku_type
+6. major_sku
+7. document_type
+8. documents
+9. resources_download_level
+10. router_scy
+11. db_scy
+
+\*動態資料庫需透過向後端請求後提供
 
 ### 靜態資料庫定義
 
-#### Status 狀態
+#### status 狀態
 
 | val | opt     |
 | --- | ------- |
 | 0   | enable  |
 | 1   | disable |
 
+#### is special resources 特殊資源
+
+| val | opt     |
+| --- | ------- |
+| 0   | Normal  |
+| 1   | Special |
+
 #### database control 資料庫控制
 
 | val | opt           |
 | --- | ------------- |
 | 0   | No permission |
-| 1   | read-only     |
-| 2   | editor        |
-| 3   | creator       |
+| 1   | Read-only     |
+| 2   | Editor        |
+| 3   | Creator       |
 
 #### database list 資料庫列表
 
--   由資料庫 json 檔生成
+- 由資料庫 json 檔生成
 
 #### router list 路徑列表
 
--   由路徑 json 檔生成
+- 由路徑 json 檔生成
 
-#### computer platform 電腦平台
+#### resources level 資源等級
 
-| val | opt         |
-| --- | ----------- |
-| 0   | Windows     |
-| 1   | Windows X64 |
-| 2   | Windows X86 |
-| 3   | MacOs       |
-| 4   | Linux       |
-| 5   | Android     |
-| 6   | IOS         |
+| val | opt                     |
+| --- | ----------------------- |
+| 0   | Normal                  |
+| 1   | Must apply for download |
+| 2   | Invisible               |
+
+#### major sku belong 主要商品歸屬
+
+| val | opt  |
+| --- | ---- |
+| 0   | CINO |
+| 1   | SICK |
+| 2   | AIDA |
+
+#### action log type 活動紀錄類型
+
+| val | opt      |
+| --- | -------- |
+| 0   | Edit     |
+| 1   | Create   |
+| 2   | Download |
+
+#### document language 文件語言
+
+| val | opt            |
+| --- | -------------- |
+| 0   | English (EN)   |
+| 1   | 繁體中文 (TC)  |
+| 2   | 简体中文 (SC)  |
+| 3   | 日本語 (JP)    |
+| 4   | 한국어 (KO)    |
+| 5   | Deutsch (DE)   |
+| 6   | Français (FR)  |
+| 7   | Español (ES)   |
+| 8   | Русский (RU)   |
+| 9   | Português (PT) |
+| 10  | Italiano (IT)  |
+| 11  | อักษรไทย (TH)  |
