@@ -80,7 +80,7 @@ encrypt string 為 AES(JSON string).toString()
 ### 網頁 router 規劃
 
 1. 域名 : https://partnerportal.com.tw/
-2. IP : 192.168.2.11
+2. IP : -------
 3.
 
 | Router                  | 描述                            |

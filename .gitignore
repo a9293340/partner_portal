@@ -3,6 +3,7 @@ node_modules
 server/uploadFiles/*
 
 # local env files
+*/.env
 .env.local
 .env.*.local
 
