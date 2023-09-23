@@ -1,12 +1,12 @@
 // Options
 import { status } from "./options/status";
-import { databaseFunctionControl } from "./options/databaseFunctionControl";
-import { databaseOptions } from "./options/databaseOptions";
-import { routerOptions } from "./options/routerOptions";
-import { document_language } from "./options/document_language";
+import { database_function_control } from "./options/databaseFunctionControl";
+import { database_options_partner_portal } from "./options/databaseOptions";
+import { router_options_partner_portal } from "./options/routerOptions";
+import { document_language } from "./options/documentLanguage";
 import { owner } from "./options/owner";
-import { actionLogType } from "./options/actionLogType";
-import { resourcesAction } from "./options/resourcesAction";
+import { action_log_type } from "./options/actionLogType";
+import { resources_action } from "./options/resourcesAction";
 
 // Roles
 import { databaseList } from "./roles/database";
@@ -21,13 +21,13 @@ import { document_language_role } from "./roles/document_language";
 // Export Options
 export const options = {
 	status,
-	databaseFunctionControl,
-	databaseOptions,
-	routerOptions,
+	database_function_control,
+	database_options_partner_portal,
+	router_options_partner_portal,
 	document_language,
 	owner,
-	actionLogType,
-	resourcesAction,
+	action_log_type,
+	resources_action,
 };
 
 // Export Roles
@@ -38,6 +38,7 @@ export const roles = {
 		...routers_partner,
 		...routers_partner_portal_backStage,
 	],
+	forTreeView: { routers_partner, routers_partner_portal_backStage },
 	specialForm,
 	document_language_role,
 };

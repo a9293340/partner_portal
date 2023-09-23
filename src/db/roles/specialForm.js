@@ -9,11 +9,11 @@ export const specialForm = [
 			},
 			{
 				key: "uploader",
-				type: "select",
+				type: "auto-staff",
 			},
 			{
 				key: "upload_date",
-				type: "date-select",
+				type: "auto-today",
 			},
 		],
 	},
@@ -27,11 +27,11 @@ export const specialForm = [
 			},
 			{
 				key: "uploader",
-				type: "select",
+				type: "auto-staff",
 			},
 			{
 				key: "upload_date",
-				type: "date-select",
+				type: "auto-today",
 			},
 			{
 				key: "language_version",

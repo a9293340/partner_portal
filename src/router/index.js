@@ -23,6 +23,10 @@ const routes = [
 		redirect: "/backStage/partnerPortal/introduce",
 	},
 	{
+		path: "/backStage/:catchAll(.*)",
+		redirect: "/backStage",
+	},
+	{
 		path: "/:catchAll(.*)",
 		redirect: "/",
 	},

@@ -14,7 +14,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 	app.component(key, component);
 }
 
-app.use(router).use(createPinia()).use(i18n); // 引用路由实例
+app.use(i18n).use(router).use(createPinia()); // 引用路由实例
 app.use(ElementPlus);
 
 app.component("VueClientRecaptcha", VueClientRecaptcha);

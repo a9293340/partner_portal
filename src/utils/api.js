@@ -1,6 +1,8 @@
 import { decode, useGetAxiosData } from "./index";
+import axios from "axios";
 
-export const postList = async (address, data) =>
+// R
+export const require_db_list = async (address, data) =>
 	decode(
 		useGetAxiosData(
 			await axios.post(`/api/${address}/list`, {
@@ -9,27 +11,20 @@ export const postList = async (address, data) =>
 		)
 	);
 
-export const postAdd = async (address, data) =>
+// C
+export const require_db_create = async (address, data) =>
 	await axios.post(`/api/${address}/add`, {
 		data,
 	});
 
-export const postEdit = async (address, data) =>
+// U
+export const require_db_edit = async (address, data) =>
 	await axios.post(`/api/${address}/edit`, { data });
 
-export const postDelete = async (address, data) =>
-	await axios.post(`/api/${address}/delete`, { data });
+// Login Partner
 
-export const logout = async (data) =>
-	await axios.post("/api/admin/logout", {
-		data,
-	});
+// Logout Partner
 
-export const login = async (data) =>
-	decode(
-		axiosList(
-			await axios.post("/api/admin/login", {
-				data,
-			})
-		)
-	);
+// Login Staff
+
+// Logout Staff

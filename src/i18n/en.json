@@ -1,4 +1,65 @@
 {
-	"title": "CINO",
-	"description": "IT learn"
+	"routers_tree_view": {
+		"majorSKU": "Major SKU",
+		"accountManagement": "Account Management",
+		"staff": "Staff",
+		"staffList": "Staff List",
+		"divisionList": "Division List",
+		"staffGroup": "Staff Group",
+		"partner": "Partner",
+		"partnerList": "Partner List",
+		"partnerLevel": "Partner Level",
+		"companyList": "Company List",
+		"partnerGroup": "Partner Group",
+		"security": "Security",
+		"databaseSecurity": "Database Security",
+		"routerSecurity": "Router Security",
+		"productManagement": "Product Management",
+		"majorSkuList": "Major Sku List",
+		"majorSkuType": "Major Sku Type",
+		"resourcesManagement": "Resources Management",
+		"document": "Document",
+		"documentList": "Document List",
+		"documentType": "Document Type",
+		"firmwareList": "Firmware List",
+		"softwareList": "Software List",
+		"powertool3Management": "Powertool3 Management",
+		"powertool3Parameter": "Powertool3 Parameter",
+		"actionLog": "Action Log"
+	},
+	"header": {
+		"i18nSetting": "Language",
+		"fontSize": "Text Size"
+	},
+	"errorCode": {
+		"10001": "請求路徑錯誤",
+		"10002": "請求方法應為 POST",
+		"10003": "JSON decode failed",
+		"10004": "請求參數不合法",
+		"10005": "token 過期",
+		"10006": "Base64 decode failed",
+		"10007": "找不到對應資料",
+		"10008": "沒有權限的操作",
+		"10009": "已從其他地方登入",
+		"10010": "上傳圖片失敗",
+		"10011": "JSON encode failed",
+		"10012": "資料重複",
+		"11002": "找不到使用者",
+		"11003": "註冊帳號重複",
+		"20000": "上傳檔案錯誤",
+		"20001": "上傳檔案副檔名未支援",
+		"20002": "上傳檔案副檔名錯誤",
+		"20003": "上傳檔案失敗",
+		"30001": "網頁載入錯誤",
+		"30002": "驗證碼錯誤"
+	},
+	"login": {
+		"staff_title": "Cino Staff Login",
+		"staff_desc": "This is for Staff.",
+		"partner_title": "Cino Partner Portal Login",
+		"partner_desc": "Our partner website provides information, firmware & software, and ordering options to help you manage your Cino partnership.",
+		"account_placeholder": "Username",
+		"password_placeholder": "Password",
+		"validation_placeholder": "Input recaptcha"
+	}
 }

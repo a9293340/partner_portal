@@ -1,5 +1,5 @@
-export const makeUsefulRouter = (arr) => {
-	return arr
+export const makeUsefulRouter = (router) => {
+	return router
 		.filter((el) => el.component)
 		.map((el) => ({
 			name: el.name,

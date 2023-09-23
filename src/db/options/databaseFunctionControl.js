@@ -1,18 +1,18 @@
-export const databaseFunctionControl = [
+export const database_function_control = [
 	{
 		val: 0,
-		opt: "No permission",
+		opt: "Edit",
 	},
 	{
 		val: 1,
-		opt: "read-only",
+		opt: "Create",
 	},
 	{
 		val: 2,
-		opt: "editor",
+		opt: "Import",
 	},
 	{
 		val: 3,
-		opt: "creator",
+		opt: "Export",
 	},
 ];

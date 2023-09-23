@@ -1,11 +1,11 @@
-export const actionLogType = [
+export const action_log_type = [
 	{
 		val: 0,
 		opt: "Edit",
 	},
 	{
 		val: 1,
-		opt: "SICK",
+		opt: "Create",
 	},
 	{
 		val: 2,
