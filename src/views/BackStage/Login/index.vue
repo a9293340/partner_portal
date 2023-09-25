@@ -1,7 +1,7 @@
 <script setup>
 import Login from "@/components/Login/index.vue";
 import { useUserStore } from "@/store/useUserStore";
-import loginPath from "@/assets/img/jpg/login-2.jpg";
+import loginPath from "@/assets/img/jpg/login-1.jpg";
 
 const { loginExecute } = useUserStore();
 

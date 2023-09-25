@@ -1,0 +1,1 @@
+import{_ as e,o,c as r}from"./index.b044e34b.js";const a=e({},[["render",function(e,a){return o(),r("div",null,"BackStage Powertool3 Parameter")}],["__file","E:/my-code/code/_tool/partner_portal/src/views/BackStage/PowerTool/Parameter.vue"]]);export{a as default};

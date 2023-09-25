@@ -2,7 +2,7 @@
 import Login from "@/components/Login/index.vue";
 import { useUserStore } from "@/store/useUserStore";
 import { useRoute } from "vue-router";
-import loginPath from "@/assets/img/jpg/login-1.jpg";
+import loginPath from "@/assets/img/jpg/login-2.jpg";
 
 const { loginExecute } = useUserStore();
 const route = useRoute();

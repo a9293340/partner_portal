@@ -1,1 +1,0 @@
-import{_ as o,o as r,c as t}from"./index.2766f542.js";const e=o({},[["render",function(o,e){return r(),t("div",null,"BackStage Partner Portal Action Log")}],["__file","E:/my-code/code/_tool/partner_portal/src/views/BackStage/PartnerPortal/ActionLog.vue"]]);export{e as default};
