@@ -1,1 +1,0 @@
-import{_ as a,l as r,r as e,o,c as t,t as s}from"./index.439ac68f.js";const l=a({__name:"_id",setup(a){const l=r(),n=e(l.params.id);return(a,r)=>(o(),t("div",null,"PartnerPortal Major SKU "+s(n.value),1))}},[["__file","E:/my-code/code/_tool/partner_portal/src/views/PartnerPortal/MajorSKU/_id.vue"]]);export{l as default};

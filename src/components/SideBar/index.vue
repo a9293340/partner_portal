@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useComponentStore } from "@/store/useComponentsStatusStore";
 import { ref } from "vue";
+import sidebar_bg from "@/assets/img/png/sidebar_bg.png";
 
 const { isShowSideBar, useful_tv, fontSizeController } = storeToRefs(
 	useComponentStore()
@@ -11,7 +12,10 @@ const defaultOpens = ref(["1", "1-1"]);
 </script>
 
 <template>
-	<div :class="['side-bar', { 'side-bar-show': isShowSideBar }, 'side-bar-xl']">
+	<div
+		:class="['side-bar', { 'side-bar-show': isShowSideBar }, 'side-bar-xl']"
+		:style="`background-image: url(${sidebar_bg})`"
+	>
 		<div class="logo"></div>
 		<div class="menu">
 			<el-menu
@@ -68,7 +72,7 @@ const defaultOpens = ref(["1", "1-1"]);
 
 <style lang="scss" scoped>
 .side-bar {
-	@apply m-0 h-full w-76 ease-linear duration-200 fixed -left-76  flex flex-col bg-side-bar-img bg-no-repeat bg-bottom;
+	@apply m-0 h-full w-76 ease-linear duration-200 fixed -left-76  flex flex-col bg-no-repeat bg-bottom;
 	.logo {
 		@apply w-full h-32;
 	}

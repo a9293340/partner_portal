@@ -1,6 +1,7 @@
 <script setup>
 import Login from "@/components/Login/index.vue";
 import { useUserStore } from "@/store/useUserStore";
+import loginPath from "@/assets/img/jpg/login-2.jpg";
 
 const { loginExecute } = useUserStore();
 
@@ -10,7 +11,7 @@ const login = async (user) => {
 </script>
 
 <template>
-	<div class="back-stage-login">
+	<div class="back-stage-login" :style="`background-image: url(${loginPath})`">
 		<div class="blur-img">
 			<div class="login">
 				<Login
@@ -25,7 +26,7 @@ const login = async (user) => {
 
 <style lang="scss" scoped>
 .back-stage-login {
-	@apply w-full h-screen bg-login-1-img bg-cover bg-center;
+	@apply w-full h-screen bg-cover bg-center;
 	.blur-img {
 		@apply w-full h-full flex flex-col justify-center items-center backdrop-blur-lg;
 		.login {

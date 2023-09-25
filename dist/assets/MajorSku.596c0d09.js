@@ -1,0 +1,1 @@
+import{_ as r,o as a,c as e}from"./index.2766f542.js";const t=r({},[["render",function(r,t){return a(),e("div",null,"BackStage Partner Portal Major Sku List")}],["__file","E:/my-code/code/_tool/partner_portal/src/views/BackStage/PartnerPortal/MajorSku.vue"]]);export{t as default};

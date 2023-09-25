@@ -2,6 +2,7 @@
 import { useComponentStore } from "@/store/useComponentsStatusStore";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
+import topbar_bg from "@/assets/img/png/topbar_bg.png";
 
 const {
 	setFontSizeController,
@@ -14,7 +15,7 @@ const { locale } = useI18n();
 </script>
 
 <template>
-	<div class="header">
+	<div class="header" :style="`background-image: url(${topbar_bg})`">
 		<!--//! 1280以下 -->
 		<div class="is-not-xl">
 			<div class="burger" @click="showSideBarExecute(!isShowSideBar)">

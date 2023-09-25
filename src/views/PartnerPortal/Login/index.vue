@@ -2,6 +2,7 @@
 import Login from "@/components/Login/index.vue";
 import { useUserStore } from "@/store/useUserStore";
 import { useRoute } from "vue-router";
+import loginPath from "@/assets/img/jpg/login-1.jpg";
 
 const { loginExecute } = useUserStore();
 const route = useRoute();
@@ -12,7 +13,10 @@ const login = async (user) => {
 </script>
 
 <template>
-	<div class="partner-portal-login xl-login">
+	<div
+		class="partner-portal-login xl-login"
+		:style="`background-image: url(${loginPath})`"
+	>
 		<div class="bg-img-zone"></div>
 		<div class="login">
 			<Login
@@ -28,7 +32,7 @@ const login = async (user) => {
 .partner-portal-login {
 	@apply flex flex-col w-full h-full;
 	.bg-img-zone {
-		@apply bg-login-2-img w-full h-52 bg-no-repeat bg-cover;
+		@apply w-full h-52 bg-no-repeat bg-cover;
 		background-position: center -11rem;
 	}
 	.login {
