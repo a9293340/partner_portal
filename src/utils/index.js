@@ -45,7 +45,7 @@ export const getBase64 = (file) =>
 	});
 
 // Import Image
-export const makeImage = (src) => new URL(`${src}`, import.meta.url).href;
+// export const makeImage = (src) => new URL(`${src}`, import.meta.url).href;
 
 // 降冪
 export const sortBy = (arr, key) =>
