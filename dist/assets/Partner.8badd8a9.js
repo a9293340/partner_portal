@@ -1,0 +1,1 @@
+import{_ as r,o as e,c as a}from"./index.6c50b573.js";const t=r({},[["render",function(r,t){return e(),a("div",null,"BackStage Partner Portal Partner")}],["__file","E:/my-code/code/_tool/partner_portal/src/views/BackStage/PartnerPortal/Partner.vue"]]);export{t as default};

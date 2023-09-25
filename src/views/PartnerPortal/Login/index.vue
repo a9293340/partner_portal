@@ -13,11 +13,11 @@ const login = async (user) => {
 </script>
 
 <template>
-	<div
-		class="partner-portal-login xl-login"
-		:style="`background-image: url(${loginPath})`"
-	>
-		<div class="bg-img-zone"></div>
+	<div class="partner-portal-login xl-login">
+		<div
+			class="bg-img-zone"
+			:style="`background-image: url(${loginPath})`"
+		></div>
 		<div class="login">
 			<Login
 				:title="$t('login.partner_title')"
