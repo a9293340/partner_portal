@@ -5,8 +5,8 @@
 ```json
 {
 	"_id": "ObjectId",
-	"*name": "string",
-	"*tc_name": "string",
+	"*name_en": "string",
+	"*name_tc": "string",
 	"*staff_id": "string",
 	"*account": "string",
 	"*password": "string",
@@ -20,8 +20,8 @@
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
-	"_comment_name": "英文名",
-	"_comment_tc_name": "中文名",
+	"_comment_name_en": "英文名",
+	"_comment_name_tc": "中文名",
 	"_comment_staff_id": "員工編號",
 	"_comment_on_board_time": "到職日 YYYY-MM-DD ",
 	"_comment_division": "division _id",
@@ -58,15 +58,17 @@
 {
 	"_id": "ObjectId",
 	"*name": "string",
-	"short_name": "string",
+	"nickname": "string",
 	"*established_date": "Date",
 	"*status": 0,
 	"staff_names": ["ObjectId"],
 	"remarks": ["string"],
+	"*group_id": "string",
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
-	"_comment_short_name": "群組簡稱",
+	"_comment_nickname": "群組簡稱",
+	"_comment_group_id": "群組編號",
 	"_comment_established_date": "建立時間 YYYY-MM-DD",
 	"_comment_staff_names": "staff _id"
 }
@@ -81,9 +83,11 @@
 	"email": "string",
 	"*status": 0,
 	"remarks": ["string"],
+	"*division_id": ["string"],
 
 	"_comment__id": "database 自動生成",
-	"_comment_status": "0=enable, 1=disable"
+	"_comment_status": "0=enable, 1=disable",
+	"_comment_division_id": "部門編號"
 }
 ```
 
@@ -92,8 +96,8 @@
 ```json
 {
 	"_id": "ObjectId",
-	"*name": "string",
-	"tc_name": "string",
+	"*name_en": "string",
+	"*name_local": "string",
 	"*partner_id": "string",
 	"*account": "string",
 	"*password": "string",
@@ -123,16 +127,18 @@
 {
 	"_id": "ObjectId",
 	"*name": "string",
-	"short_name": "string",
+	"nickname": "string",
 	"*established_date": "Date",
+	"*partner_group_id": "string",
 	"*status": 0,
 	"partner_names": ["ObjectId"],
 	"remarks": ["string"],
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
-	"_comment_short_name": "群組簡稱",
+	"_comment_nickname": "群組簡稱",
 	"_comment_established_date": "建立時間 YYYY-MM-DD",
+	"_comment_partner_group_id": "夥伴群組編號",
 	"_comment_staff_names": "partner _id"
 }
 ```
@@ -143,6 +149,7 @@
 {
 	"_id": "ObjectId",
 	"*name": "string",
+	"nickname": "string",
 	"*status": 0,
 	"remarks": ["string"],
 
@@ -164,18 +171,18 @@
 	"remarks": ["string"],
 	"*version": [
 		{
-			"version": "string",
+			"ver": "string",
 			"uploader": "ObjectId",
 			"upload_date": "Date"
 		}
 	],
 	"*major_sku": "ObjectId",
-	"*resources_action": 0,
+	"*resources_default_action": 0,
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
 	"_comment_major_sku": "major_sku _id",
-	"_comment_resources_action": "0=Normal 1=Must apply for download 2=Invisible",
+	"_comment_resources_default_action": "0=Normal 1=Must apply for download 2=Invisible",
 	"_comment_version": "version : 版號 ; uploader : staff _id ; upload_date: YYYY-MM-DD;",
 	"_comment_download_path_s": "公司server 的download path",
 	"_comment_download_path_g": "google server 的download path",
@@ -196,18 +203,18 @@
 	"remarks": ["string"],
 	"*version": [
 		{
-			"version": "string",
+			"ver": "string",
 			"uploader": "ObjectId",
 			"upload_date": "Date"
 		}
 	],
-	"*resources_action": 0,
+	"*resources_default_action": 0,
 	"*owner": [0],
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
 	"_comment_version": "version : 版號 ; uploader : staff _id ; upload_date: YYYY-MM-DD;",
-	"_comment_resources_action": "0=Normal 1=Must apply for download 2=Invisible",
+	"_comment_resources_default_action": "0=Normal 1=Must apply for download 2=Invisible",
 	"_comment_owner": "0=ODM 1=SICK",
 	"_comment_download_path_s": "公司server 的download path",
 	"_comment_download_path_g": "google server 的download path",
@@ -222,7 +229,7 @@
 	"_id": "ObjectId",
 	"*name": "string",
 	"*status": 0,
-	"*photo": "string",
+	"photo": "string",
 	"remarks": ["string"],
 
 	"_comment__id": "database 自動生成",
@@ -238,7 +245,7 @@
 	"_id": "ObjectId",
 	"*name": "string",
 	"*status": 0,
-	"*photo": "string",
+	"photo": "string",
 	"remarks": ["string"],
 	"*major_sku_type": "ObjectId",
 	"*owner": [0],
@@ -273,7 +280,8 @@
 {
 	"_id": "ObjectId",
 	"*name": "string",
-	"*document_name": "string",
+	"*file_name": "string",
+	"nickname": "string",
 	"*status": 0,
 	"*download_path_s": "string",
 	"download_path_g": "string",
@@ -281,26 +289,26 @@
 	"remarks": ["string"],
 	"*version": [
 		{
-			"version": "string",
+			"ver": "string",
 			"uploader": "ObjectId",
 			"upload_date": "Date",
-			"language_version": "string",
+			"language_ver": "string",
 			"document_language": 0
 		}
 	],
-	"*resources_action": 0,
+	"*resources_default_action": 0,
 	"*owner": [0],
 
 	"_comment__id": "database 自動生成",
 	"_comment_document_name": "文件檔案名稱",
 	"_comment_name": "文件名稱",
 	"_comment_status": "0=enable, 1=disable",
-	"_comment_resources_action": "0=Normal 1=Must apply for download 2=Invisible",
+	"_comment_resources_default_action": "0=Normal 1=Must apply for download 2=Invisible",
 	"_comment_owner": "0=ODM 1=SICK",
 	"_comment_download_path_s": "公司server 的download path",
 	"_comment_download_path_g": "google server 的download path",
 	"_comment_download_path_b": "baidu server 的download path",
-	"_comment_version": "version : 版號 ;document_language: 參考language options; uploader : staff _id ; upload_date: YYYY-MM-DD; language_version: 語言版號"
+	"_comment_version": "ver : 版號 ;document_language: 參考language options; uploader : staff _id ; upload_date: YYYY-MM-DD; language_ver: 語言版號"
 }
 ```
 
@@ -314,28 +322,28 @@
 	"*special_documents": [
 		{
 			"target": "ObjectId",
-			"resources_action": 0
+			"resources_default_action": 0
 		}
 	],
 	"*special_firmware": [
 		{
 			"target": "ObjectId",
-			"resources_action": 0
+			"resources_default_action": 0
 		}
 	],
 	"*special_software": [
 		{
 			"target": "ObjectId",
-			"resources_action": 0
+			"resources_default_action": 0
 		}
 	],
 	"*owner": [0],
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
-	"_comment_special_documents": "target= documents _id resources_action : 0=normal 1=must apply for download 2=invisible",
-	"_comment_special_firmware": "target= firmware _id resources_action : 0=normal 1=must apply for download 2=invisible",
-	"_comment_special_software": "target= software _id resources_action : 0=normal 1=must apply for download 2=invisible",
+	"_comment_special_documents": "target= document _id resources_default_action : 0=normal 1=must apply for download 2=invisible",
+	"_comment_special_firmware": "target= firmware _id resources_default_action : 0=normal 1=must apply for download 2=invisible",
+	"_comment_special_software": "target= software _id resources_default_action : 0=normal 1=must apply for download 2=invisible",
 	"_comment_owner": "0= CINO , 1=SICK , 2=AIDA"
 }
 ```
@@ -369,11 +377,12 @@
 	"*db_ctrl": [
 		{
 			"*db_path" : "string",
-			"not_access_field": : ["string"],
+			"sensitive_field": : ["string"],
 			"filters": [
 				{
 					"field": "string",
-					"filter_dependence": "string"
+					"filter_dependence": "int",
+					"filter_target": "string"
 				}
 			]
 		}
@@ -381,5 +390,5 @@
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
-	"_comment_db_ctrl": "db_path: 資料庫; not_access_field: 無法看到的field; filters-field: 特定資料篩選field; filters-filter_dependence: 篩選依據",
+	"_comment_db_ctrl": "db_path: 資料庫; sensitive_field: 無法看到的field; filters-field: 特定資料篩選field; filters-filter_dependence: 0=等於 1=大於 2=大於等於 3=小於 4=小於等於; filters-filter_target: 判斷依據",
 ```

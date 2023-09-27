@@ -1,45 +1,19 @@
 export const specialForm = [
 	{
-		database: ["firmware", "software"],
-		key: ["version"],
-		contents: [
-			{
-				key: "version",
-				type: "input",
-			},
-			{
-				key: "uploader",
-				type: "auto-staff",
-			},
-			{
-				key: "upload_date",
-				type: "auto-today",
-			},
-		],
-	},
-	{
 		database: "document",
 		key: ["version"],
 		contents: [
 			{
-				key: "version",
+				key: "ver",
 				type: "input",
 			},
 			{
-				key: "uploader",
-				type: "auto-staff",
-			},
-			{
-				key: "upload_date",
-				type: "auto-today",
-			},
-			{
-				key: "language_version",
+				key: "language_ver",
 				type: "input",
 			},
 			{
 				key: "document_language",
-				type: "input-number",
+				type: "select",
 			},
 		],
 	},
@@ -52,7 +26,7 @@ export const specialForm = [
 				type: "select",
 			},
 			{
-				key: "resources_action",
+				key: "resources_default_action",
 				type: "select",
 			},
 		],
@@ -67,7 +41,7 @@ export const specialForm = [
 			},
 			{
 				key: "database_function_control",
-				type: "select",
+				type: "multi-select",
 			},
 		],
 	},
@@ -80,7 +54,7 @@ export const specialForm = [
 				type: "select",
 			},
 			{
-				key: "not_access_field",
+				key: "sensitive_field",
 				type: "multi-select",
 			},
 			{
@@ -94,6 +68,10 @@ export const specialForm = [
 					{
 						key: "filter_dependence",
 						type: "select",
+					},
+					{
+						key: "filter_target",
+						type: "input",
 					},
 				],
 			},

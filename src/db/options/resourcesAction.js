@@ -1,4 +1,4 @@
-export const resources_action = [
+export const resources_default_action = [
 	{
 		val: 0,
 		opt: "Normal",

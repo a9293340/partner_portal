@@ -98,10 +98,10 @@ const summitLogin = () => {
 	@apply w-96 h-10 mb-8;
 }
 .login-validation {
-	@apply mb-14 w-96 h-14 rounded bg-white flex justify-between pl-3 items-center;
+	@apply mb-14 w-96 h-12 rounded bg-white flex justify-between pl-3 items-center;
 }
 .validation-input {
-	@apply w-48 h-14;
+	@apply w-48 h-12;
 }
 .login-btn {
 	@apply w-96 h-10 bg-blue-500 border-blue-500 text-white text-lg;

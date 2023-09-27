@@ -196,8 +196,8 @@ encrypt string 為 AES(JSON string).toString()
 5. major_sku_type
 6. major_sku
 7. document_type
-8. documents
-9. resources_download_level
+8. document
+9. partner_level
 10. router_scy
 11. db_scy
 
@@ -229,7 +229,7 @@ encrypt string 為 AES(JSON string).toString()
 
 - 由路徑 role 檔生成
 
-#### resources action 資源操作
+#### resources default action 資源操作
 
 | val | opt                     |
 | --- | ----------------------- |
@@ -239,10 +239,10 @@ encrypt string 為 AES(JSON string).toString()
 
 #### owner 商品歸屬
 
-| val | opt  |
-| --- | ---- |
-| 0   | ODM  |
-| 1   | SICK |
+| val | opt     |
+| --- | ------- |
+| 0   | Non-ODM |
+| 1   | SICK    |
 
 #### action log type 活動紀錄類型
 
@@ -270,3 +270,13 @@ encrypt string 為 AES(JSON string).toString()
 | 9   | Português (PT) |
 | 10  | Italiano (IT)  |
 | 11  | อักษรไทย (TH)  |
+
+#### database security filter dependence 資料庫安全管理敏感性資料判斷依據
+
+| val | opt      |
+| --- | -------- |
+| 0   | 等於     |
+| 1   | 大於     |
+| 2   | 大於等於 |
+| 3   | 小於     |
+| 4   | 小於等於 |

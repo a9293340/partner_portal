@@ -1,7 +1,7 @@
 export const owner = [
 	{
 		val: 0,
-		opt: "ODM",
+		opt: "Non-ODM",
 	},
 	{
 		val: 1,

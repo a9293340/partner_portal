@@ -6,7 +6,7 @@ import { router_options_partner_portal } from "./options/routerOptions";
 import { document_language } from "./options/documentLanguage";
 import { owner } from "./options/owner";
 import { action_log_type } from "./options/actionLogType";
-import { resources_action } from "./options/resourcesAction";
+import { resources_default_action } from "./options/resourcesAction";
 
 // Roles
 import { databaseList } from "./roles/database";
@@ -22,12 +22,12 @@ import { document_language_role } from "./roles/document_language";
 export const options = {
 	status,
 	database_function_control,
-	database_options_partner_portal,
-	router_options_partner_portal,
+	database_options: database_options_partner_portal,
+	router_options: router_options_partner_portal,
 	document_language,
 	owner,
 	action_log_type,
-	resources_action,
+	resources_default_action,
 };
 
 // Export Roles

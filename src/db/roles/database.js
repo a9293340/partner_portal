@@ -3,8 +3,8 @@ export const databaseList = [
 		name: "staff",
 		optionName: "Staff",
 		keys: [
-			"name",
-			"tc_name",
+			"name_en",
+			"name_tc",
 			"staff_id",
 			"account",
 			"password",
@@ -16,33 +16,164 @@ export const databaseList = [
 			"router_scy",
 			"db_scy",
 		],
-		optional_keys: ["remarks"],
+		type: {
+			name_en: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			name_tc: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			staff_id: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			account: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			password: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			email: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			on_board_time: {
+				style: "date",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+			division: {
+				style: "select",
+				options: "division",
+				require: true,
+				validation: undefined,
+			},
+			router_scy: {
+				style: "select",
+				options: "router_scy",
+				require: true,
+				validation: undefined,
+			},
+			db_scy: {
+				style: "select",
+				options: "db_scy",
+				require: true,
+				validation: undefined,
+			},
+		},
 	},
 	{
 		name: "staff_group",
 		optionName: "Staff Group",
 		keys: [
 			"name",
-			"short_name",
+			"nickname",
 			"established_date",
 			"status",
 			"staff_names",
 			"remarks",
+			"group_id",
 		],
-		optional_keys: ["short_name", "remarks"],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			nickname: {
+				style: "input",
+				require: false,
+				validation: undefined,
+			},
+			group_id: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			established_date: {
+				style: "date",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+			staff_names: {
+				style: "multi-select",
+				require: false,
+				validation: undefined,
+				options: "staff",
+			},
+		},
 	},
 	{
 		name: "division",
 		optionName: "Division",
-		keys: ["name", "email", "status", "remarks"],
-		optional_keys: ["email", "remarks"],
+		keys: ["name", "email", "status", "remarks", "division_id"],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			email: {
+				style: "input",
+				require: false,
+				validation: undefined,
+			},
+			division_id: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+		},
 	},
 	{
 		name: "partner",
 		optionName: "Partner",
 		keys: [
-			"name",
-			"tc_name",
+			"name_en",
+			"name_local",
 			"partner_id",
 			"account",
 			"password",
@@ -55,26 +186,158 @@ export const databaseList = [
 			"db_scy",
 			"partner_level",
 		],
-		optional_keys: ["tc_name", "remarks"],
+		type: {
+			name_en: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			name_local: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			partner_id: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			account: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			password: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			email: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			job_title: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+			company: {
+				style: "select",
+				options: "company",
+				require: true,
+				validation: undefined,
+			},
+			router_scy: {
+				style: "select",
+				options: "router_scy",
+				require: true,
+				validation: undefined,
+			},
+			db_scy: {
+				style: "select",
+				options: "db_scy",
+				require: true,
+				validation: undefined,
+			},
+			partner_level: {
+				style: "select",
+				options: "partner_level",
+				require: true,
+				validation: undefined,
+			},
+		},
 	},
 	{
 		name: "partner_group",
 		optionName: "Partner Group",
 		keys: [
 			"name",
-			"short_name",
+			"nickname",
 			"established_date",
 			"status",
 			"partner_names",
 			"remarks",
+			"partner_group_id",
 		],
-		optional_keys: ["short_name", "remarks"],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			nickname: {
+				style: "input",
+				require: false,
+				validation: undefined,
+			},
+			established_date: {
+				style: "date",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+			partner_group_id: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			partner_names: {
+				style: "multi-select",
+				options: "partner_names",
+				require: false,
+				validation: undefined,
+			},
+		},
 	},
 	{
 		name: "company",
 		optionName: "Company",
-		keys: ["name", "status", "remarks"],
-		optional_keys: ["remarks"],
+		keys: ["name", "nickname", "status", "remarks"],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			nickname: {
+				style: "input",
+				require: false,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+		},
 	},
 	{
 		name: "firmware",
@@ -88,9 +351,53 @@ export const databaseList = [
 			"remarks",
 			"version",
 			"major_sku",
-			"resources_action",
+			"resources_default_action",
 		],
-		optional_keys: ["remarks", "download_path_g", "download_path_b"],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			major_sku: {
+				style: "select",
+				options: "major_sku",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+			download_path_s: {
+				style: "input-file",
+				file_type: "ppkg",
+				require: true,
+				validation: undefined,
+			},
+			resources_default_action: {
+				style: "select",
+				options: "resources_default_action",
+				require: true,
+				validation: undefined,
+			},
+		},
+		special_type: {
+			version: {
+				ver: {
+					style: "input",
+					require: true,
+					validation: undefined,
+				},
+			},
+		},
 	},
 	{
 		name: "software",
@@ -106,32 +413,166 @@ export const databaseList = [
 			"owner",
 			"resources_action",
 		],
-		optional_keys: ["remarks", "download_path_s", "download_path_b"],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			owner: {
+				style: "multi-select",
+				options: "owner",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+			download_path_s: {
+				style: "input-file",
+				file_type: "tool",
+				require: true,
+				validation: undefined,
+			},
+			resources_default_action: {
+				style: "select",
+				options: "resources_default_action",
+				require: true,
+				validation: undefined,
+			},
+		},
+		special_type: {
+			version: {
+				ver: {
+					style: "input",
+					require: true,
+					validation: undefined,
+				},
+			},
+		},
 	},
 	{
 		name: "major_sku_type",
 		optionName: "Major Sku Type",
 		keys: ["name", "status", "photo", "remarks"],
-		optional_keys: ["remarks"],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			photo: {
+				style: "input-file",
+				file_type: "photo",
+				require: false,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+		},
 	},
 	{
 		name: "major_sku",
 		optionName: "Major Sku",
-		keys: ["name", "status", "photo", "major_sku_type", "owner", "documents"],
-		optional_keys: ["remarks"],
+		keys: [
+			"name",
+			"status",
+			"photo",
+			"major_sku_type",
+			"owner",
+			"documents",
+			"remarks",
+		],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			photo: {
+				style: "input-file",
+				file_type: "photo",
+				require: false,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+			major_sku_type: {
+				style: "select",
+				options: "major_sku_type",
+				require: true,
+				validation: undefined,
+			},
+			owner: {
+				style: "multi-select",
+				options: "owner",
+				require: true,
+				validation: undefined,
+			},
+			documents: {
+				style: "multi-select",
+				options: "document",
+				require: true,
+				validation: undefined,
+			},
+		},
 	},
 	{
 		name: "document_type",
 		optionName: "Document Type",
 		keys: ["name", "status", "remarks"],
-		optional_keys: ["remarks"],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+		},
 	},
 	{
 		name: "document",
 		optionName: "Document",
 		keys: [
 			"name",
-			"document_name",
+			"file_name",
+			"nickname",
 			"status",
 			"download_path_s",
 			"download_path_g",
@@ -139,9 +580,74 @@ export const databaseList = [
 			"remarks",
 			"version",
 			"owner",
-			"resources_action",
+			"resources_default_action",
 		],
-		optional_keys: ["remarks", "download_path_g", "download_path_b"],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			file_name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			nickname: {
+				style: "input",
+				require: false,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			remarks: {
+				style: "multi-input",
+				require: false,
+				validation: undefined,
+			},
+			download_path_s: {
+				style: "input-file",
+				file_type: "tool",
+				require: true,
+				validation: undefined,
+			},
+			owner: {
+				style: "multi-select",
+				options: "owner",
+				require: true,
+				validation: undefined,
+			},
+			resources_default_action: {
+				style: "select",
+				options: "resources_default_action",
+				require: true,
+				validation: undefined,
+			},
+		},
+		special_type: {
+			version: {
+				ver: {
+					style: "input",
+					require: true,
+					validation: undefined,
+				},
+				language_ver: {
+					style: "input",
+					require: true,
+					validation: undefined,
+				},
+				document_language: {
+					style: "select",
+					options: "document_language",
+					require: true,
+					validation: undefined,
+				},
+			},
+		},
 	},
 	{
 		name: "partner_level",
@@ -154,18 +660,121 @@ export const databaseList = [
 			"special_software",
 			"owner",
 		],
-		optional_keys: [],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			owner: {
+				style: "multi-select",
+				options: "owner",
+				require: true,
+				validation: undefined,
+			},
+		},
+		special_type: {
+			special_documents: {
+				resources_default_action: {
+					style: "select",
+					options: "resources_default_action",
+					require: true,
+					validation: undefined,
+				},
+				target: {
+					style: "select",
+					options: "document",
+					require: true,
+					validation: undefined,
+				},
+			},
+			special_software: {
+				resources_default_action: {
+					style: "select",
+					options: "resources_default_action",
+					require: true,
+					validation: undefined,
+				},
+				target: {
+					style: "select",
+					options: "software",
+					require: true,
+					validation: undefined,
+				},
+			},
+			special_firmware: {
+				resources_default_action: {
+					style: "select",
+					options: "resources_default_action",
+					require: true,
+					validation: undefined,
+				},
+				target: {
+					style: "select",
+					options: "firmware",
+					require: true,
+					validation: undefined,
+				},
+			},
+		},
 	},
 	{
 		name: "router_security",
 		optionName: "Router Security",
 		keys: ["name", "status", "router_ctrl"],
-		optional_keys: [],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+		},
+		special_type: {
+			router_ctrl: {
+				router_path: {
+					style: "select",
+					options: "router_options",
+					require: true,
+					validation: undefined,
+				},
+				database_function_control: {
+					style: "select",
+					options: "database_function_control",
+					require: true,
+					validation: undefined,
+				},
+			},
+		},
 	},
 	{
 		name: "database_security",
 		optionName: "Database Security",
 		keys: ["name", "status", "db_ctrl"],
-		optional_keys: [],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+		},
+		special_component: ["db_ctrl"],
 	},
 ];
