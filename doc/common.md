@@ -200,6 +200,7 @@ encrypt string 為 AES(JSON string).toString()
 9. partner_level
 10. router_scy
 11. db_scy
+12. db_ctrl
 
 \*動態資料庫需透過向後端請求後提供
 
@@ -280,3 +281,5 @@ encrypt string 為 AES(JSON string).toString()
 | 2   | 大於等於 |
 | 3   | 小於     |
 | 4   | 小於等於 |
+| 5   | 包含     |
+| 6   | 不包含   |

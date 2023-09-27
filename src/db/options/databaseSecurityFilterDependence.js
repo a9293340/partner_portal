@@ -1,4 +1,4 @@
-export const owner = [
+export const database_Security_Filter_Dependence = [
 	{
 		val: 0,
 		opt: "equal",
@@ -18,5 +18,13 @@ export const owner = [
 	{
 		val: 4,
 		opt: "less than or equal",
+	},
+	{
+		val: 5,
+		opt: "include",
+	},
+	{
+		val: 6,
+		opt: "not included",
 	},
 ];

@@ -388,14 +388,20 @@ export const databaseList = [
 				require: true,
 				validation: undefined,
 			},
-		},
-		special_type: {
 			version: {
-				ver: {
-					style: "input",
-					require: true,
-					validation: undefined,
-				},
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			uploader: {
+				style: "now-user",
+				require: true,
+				validation: undefined,
+			},
+			upload_date: {
+				style: "now-date",
+				require: true,
+				validation: undefined,
 			},
 		},
 	},
@@ -448,14 +454,20 @@ export const databaseList = [
 				require: true,
 				validation: undefined,
 			},
-		},
-		special_type: {
 			version: {
-				ver: {
-					style: "input",
-					require: true,
-					validation: undefined,
-				},
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			uploader: {
+				style: "now-user",
+				require: true,
+				validation: undefined,
+			},
+			upload_date: {
+				style: "now-date",
+				require: true,
+				validation: undefined,
 			},
 		},
 	},
@@ -627,25 +639,31 @@ export const databaseList = [
 				require: true,
 				validation: undefined,
 			},
-		},
-		special_type: {
 			version: {
-				ver: {
-					style: "input",
-					require: true,
-					validation: undefined,
-				},
-				language_ver: {
-					style: "input",
-					require: true,
-					validation: undefined,
-				},
-				document_language: {
-					style: "select",
-					options: "document_language",
-					require: true,
-					validation: undefined,
-				},
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			uploader: {
+				style: "now-user",
+				require: true,
+				validation: undefined,
+			},
+			upload_date: {
+				style: "now-date",
+				require: true,
+				validation: undefined,
+			},
+			language_ver: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			document_language: {
+				style: "select",
+				options: "document_language",
+				require: true,
+				validation: undefined,
 			},
 		},
 	},
@@ -681,45 +699,54 @@ export const databaseList = [
 		},
 		special_type: {
 			special_documents: {
-				resources_default_action: {
-					style: "select",
-					options: "resources_default_action",
-					require: true,
-					validation: undefined,
-				},
-				target: {
-					style: "select",
-					options: "document",
-					require: true,
-					validation: undefined,
+				require: false,
+				form: {
+					resources_default_action: {
+						style: "select",
+						options: "resources_default_action",
+						require: true,
+						validation: undefined,
+					},
+					target: {
+						style: "select",
+						options: "document",
+						require: true,
+						validation: undefined,
+					},
 				},
 			},
 			special_software: {
-				resources_default_action: {
-					style: "select",
-					options: "resources_default_action",
-					require: true,
-					validation: undefined,
-				},
-				target: {
-					style: "select",
-					options: "software",
-					require: true,
-					validation: undefined,
+				require: false,
+				form: {
+					resources_default_action: {
+						style: "select",
+						options: "resources_default_action",
+						require: true,
+						validation: undefined,
+					},
+					target: {
+						style: "select",
+						options: "document",
+						require: true,
+						validation: undefined,
+					},
 				},
 			},
 			special_firmware: {
-				resources_default_action: {
-					style: "select",
-					options: "resources_default_action",
-					require: true,
-					validation: undefined,
-				},
-				target: {
-					style: "select",
-					options: "firmware",
-					require: true,
-					validation: undefined,
+				require: false,
+				form: {
+					resources_default_action: {
+						style: "select",
+						options: "resources_default_action",
+						require: true,
+						validation: undefined,
+					},
+					target: {
+						style: "select",
+						options: "document",
+						require: true,
+						validation: undefined,
+					},
 				},
 			},
 		},
@@ -743,17 +770,20 @@ export const databaseList = [
 		},
 		special_type: {
 			router_ctrl: {
-				router_path: {
-					style: "select",
-					options: "router_options",
-					require: true,
-					validation: undefined,
-				},
-				database_function_control: {
-					style: "select",
-					options: "database_function_control",
-					require: true,
-					validation: undefined,
+				require: false,
+				form: {
+					router_path: {
+						style: "select",
+						options: "router_options",
+						require: true,
+						validation: undefined,
+					},
+					database_function_control: {
+						style: "multi-select",
+						options: "database_function_control",
+						require: true,
+						validation: undefined,
+					},
 				},
 			},
 		},
@@ -774,7 +804,53 @@ export const databaseList = [
 				require: true,
 				validation: undefined,
 			},
+			db_ctrl: {
+				style: "select",
+				options: "db_ctrl",
+				require: true,
+				validation: undefined,
+			},
 		},
-		special_component: ["db_ctrl"],
+	},
+	{
+		name: "db_ctrl",
+		optionName: "DataBase Sensitive Control",
+		keys: [
+			"filter_dependence",
+			"filter_target",
+			"status",
+			"db_path",
+			"sensitive_field",
+		],
+		type: {
+			name: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+			status: {
+				style: "select",
+				options: "status",
+				require: true,
+				validation: undefined,
+			},
+			filter_dependence: {
+				style: "select",
+				options: "database_Security_Filter_Dependence",
+				require: true,
+				validation: undefined,
+			},
+			db_path: {
+				style: "select",
+				options: "database_options",
+				require: true,
+				validation: undefined,
+			},
+			filter_target: {
+				style: "input",
+				require: true,
+				validation: undefined,
+			},
+		},
 	},
 ];

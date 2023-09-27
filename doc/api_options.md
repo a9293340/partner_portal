@@ -23,6 +23,7 @@
 | [/options/partner_level](#optionspartner_level)   | partner_level options  |
 | [/options/router_scy](#optionsrouter_scy)         | router_scy options     |
 | [/options/db_scy](#optionsdb_scy)                 | db_scy options         |
+| [/options/db_ctrl](#optionsdb_ctrl)               | db_ctrl options        |
 
 ## all
 
@@ -106,6 +107,12 @@ response:
 			{
 				"val": "ObjectId",
 				"opt": "string"
+			}
+		],
+		"db_ctrl": [
+			{
+				"val": "ObjectId",
+				"opt": "${db_path}-${sensitive_field}(${filter_target}/${filter_dependence})"
 			}
 		]
 	}
@@ -428,5 +435,34 @@ response:
 
 	"_comment_val": "db_scy _id",
 	"_comment_val": "db_scy name"
+}
+```
+
+## db_ctrl
+
+### /options/db_ctrl
+
+request:
+
+```json
+{
+	"*token": "string",
+	"*tokenReq": "string"
+}
+```
+
+response:
+
+```json
+{
+	"list": [
+		{
+			"val": "ObjectId",
+			"opt": "${db_path}-${sensitive_field}(${filter_target}/${filter_dependence})"
+		}
+	],
+
+	"_comment_val": "db_scy _id",
+	"_comment_val": "形式: 資料庫名稱-敏感資料(目標/判斷)"
 }
 ```

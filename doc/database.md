@@ -139,7 +139,7 @@
 	"_comment_nickname": "群組簡稱",
 	"_comment_established_date": "建立時間 YYYY-MM-DD",
 	"_comment_partner_group_id": "夥伴群組編號",
-	"_comment_staff_names": "partner _id"
+	"_comment_partner_names": "partner _id"
 }
 ```
 
@@ -164,18 +164,15 @@
 {
 	"_id": "ObjectId",
 	"*name": "string",
+	"*file_name": "string",
 	"*status": 0,
 	"*download_path_s": "string",
 	"download_path_g": "string",
 	"download_path_b": "string",
 	"remarks": ["string"],
-	"*version": [
-		{
-			"ver": "string",
-			"uploader": "ObjectId",
-			"upload_date": "Date"
-		}
-	],
+	"*version": "string",
+	"*uploader": "ObjectId",
+	"*upload_date": "Date",
 	"*major_sku": "ObjectId",
 	"*resources_default_action": 0,
 
@@ -183,7 +180,9 @@
 	"_comment_status": "0=enable, 1=disable",
 	"_comment_major_sku": "major_sku _id",
 	"_comment_resources_default_action": "0=Normal 1=Must apply for download 2=Invisible",
-	"_comment_version": "version : 版號 ; uploader : staff _id ; upload_date: YYYY-MM-DD;",
+	"_comment_version": "版號 ",
+	"_comment_uploader": "staff _id",
+	"_comment_upload_date": "YYYY-MM-DD",
 	"_comment_download_path_s": "公司server 的download path",
 	"_comment_download_path_g": "google server 的download path",
 	"_comment_download_path_b": "baidu server 的download path"
@@ -196,26 +195,25 @@
 {
 	"_id": "ObjectId",
 	"*name": "string",
+	"*file_name": "string",
 	"*status": 0,
 	"download_path_s": "string",
 	"*download_path_g": "string",
 	"download_path_b": "string",
 	"remarks": ["string"],
-	"*version": [
-		{
-			"ver": "string",
-			"uploader": "ObjectId",
-			"upload_date": "Date"
-		}
-	],
+	"*version": "string",
+	"*uploader": "ObjectId",
+	"*upload_date": "Date",
 	"*resources_default_action": 0,
 	"*owner": [0],
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
-	"_comment_version": "version : 版號 ; uploader : staff _id ; upload_date: YYYY-MM-DD;",
+	"_comment_version": "版號 ",
+	"_comment_uploader": "staff _id",
+	"_comment_upload_date": "YYYY-MM-DD",
 	"_comment_resources_default_action": "0=Normal 1=Must apply for download 2=Invisible",
-	"_comment_owner": "0=ODM 1=SICK",
+	"_comment_owner": "0=Non-ODM 1=SICK",
 	"_comment_download_path_s": "公司server 的download path",
 	"_comment_download_path_g": "google server 的download path",
 	"_comment_download_path_b": "baidu server 的download path"
@@ -256,7 +254,7 @@
 	"_comment_photo": "base64格式",
 	"_comment_documents": "documents _id",
 	"_comment_major_sku_type": "major_sku_type _id",
-	"_comment_owner": "0=ODM 1=SICK"
+	"_comment_owner": "0=Non-ODM 1=SICK"
 }
 ```
 
@@ -287,15 +285,11 @@
 	"download_path_g": "string",
 	"download_path_b": "string",
 	"remarks": ["string"],
-	"*version": [
-		{
-			"ver": "string",
-			"uploader": "ObjectId",
-			"upload_date": "Date",
-			"language_ver": "string",
-			"document_language": 0
-		}
-	],
+	"*version": "string",
+	"*uploader": "ObjectId",
+	"*upload_date": "Date",
+	"*language_ver": "string",
+	"*document_language": 0,
 	"*resources_default_action": 0,
 	"*owner": [0],
 
@@ -304,11 +298,15 @@
 	"_comment_name": "文件名稱",
 	"_comment_status": "0=enable, 1=disable",
 	"_comment_resources_default_action": "0=Normal 1=Must apply for download 2=Invisible",
-	"_comment_owner": "0=ODM 1=SICK",
+	"_comment_owner": "0=Non-ODM 1=SICK",
 	"_comment_download_path_s": "公司server 的download path",
 	"_comment_download_path_g": "google server 的download path",
 	"_comment_download_path_b": "baidu server 的download path",
-	"_comment_version": "ver : 版號 ;document_language: 參考language options; uploader : staff _id ; upload_date: YYYY-MM-DD; language_ver: 語言版號"
+	"_comment_version": "版號 ",
+	"_comment_document_language": "參考language options",
+	"_comment_uploader": "staff _id",
+	"_comment_upload_date": "YYYY-MM-DD",
+	"_comment_language_ver": "語言版號"
 }
 ```
 
@@ -319,22 +317,22 @@
 	"_id": "ObjectId",
 	"*name": "string",
 	"*status": 0,
-	"*special_documents": [
+	"special_documents": [
 		{
-			"target": "ObjectId",
-			"resources_default_action": 0
+			"*target": "ObjectId",
+			"*resources_default_action": 0
 		}
 	],
-	"*special_firmware": [
+	"special_firmware": [
 		{
-			"target": "ObjectId",
-			"resources_default_action": 0
+			"*target": "ObjectId",
+			"*resources_default_action": 0
 		}
 	],
-	"*special_software": [
+	"special_software": [
 		{
-			"target": "ObjectId",
-			"resources_default_action": 0
+			"*target": "ObjectId",
+			"*resources_default_action": 0
 		}
 	],
 	"*owner": [0],
@@ -344,51 +342,61 @@
 	"_comment_special_documents": "target= document _id resources_default_action : 0=normal 1=must apply for download 2=invisible",
 	"_comment_special_firmware": "target= firmware _id resources_default_action : 0=normal 1=must apply for download 2=invisible",
 	"_comment_special_software": "target= software _id resources_default_action : 0=normal 1=must apply for download 2=invisible",
-	"_comment_owner": "0= CINO , 1=SICK , 2=AIDA"
+	"_comment_owner": "0=Non-CINO , 1=SICK"
 }
 ```
 
 ### 路徑安全管理 (router_security)
 
 ```json
+{
 	"_id": "ObjectId",
 	"*name": "string",
 	"*status": 0,
-	"*router_ctrl": [
+	"router_ctrl": [
 		{
 			"router_path": "string",
-			"database_function_control" : [0]
+			"database_function_control": [0]
 		}
 	],
-
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
 	"_comment_router_control": "router_path : 各資料庫設定路徑(from json); database_function_control: 0=edit,1=create,2=import,3=export"
-
+}
 ```
 
 ### 資料庫安全管理 (database_security)
 
 ```json
+{
 	"_id": "ObjectId",
 	"*name": "string",
 	"*status": 0,
-	"*db_ctrl": [
-		{
-			"*db_path" : "string",
-			"sensitive_field": : ["string"],
-			"filters": [
-				{
-					"field": "string",
-					"filter_dependence": "int",
-					"filter_target": "string"
-				}
-			]
-		}
-	]
+	"db_ctrl": ["ObjectId"],
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
-	"_comment_db_ctrl": "db_path: 資料庫; sensitive_field: 無法看到的field; filters-field: 特定資料篩選field; filters-filter_dependence: 0=等於 1=大於 2=大於等於 3=小於 4=小於等於; filters-filter_target: 判斷依據",
+	"_comment_db_ctrl": "sensitive_database _id"
+}
+```
+
+### 敏感資料設定 (db_ctrl)
+
+```json
+{
+	"_id": "ObjectId",
+	"*filter_dependence": 0,
+	"*filter_target": "string",
+	"*status": 0,
+	"*db_path": "string",
+	"*sensitive_field": ["string"],
+
+	"_comment__id": "database 自動生成",
+	"_comment_status": "0=enable, 1=disable",
+	"_comment_db_path": "資料庫",
+	"_comment_sensitive_field": "敏感 field",
+	"_comment_filter_target": "判斷依據",
+	"_comment_filter_dependence": "0=等於 1=大於 2=大於等於 3=小於 4=小於等於 5=包含 6=不包含"
+}
 ```
