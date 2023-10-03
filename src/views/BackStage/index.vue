@@ -13,7 +13,7 @@ const setXY = reactive({
 const isShow = ref(false);
 const initMap = async () => {
 	const loader = new Loader({
-		apiKey: "AIzaSyBkLH4Vi7pEy6uyu5HI2F5w7ZaM5eFPC3E",
+		apiKey: "API-KEY",
 		version: "weekly",
 		libraries: ["places"],
 		language: "zh-TW",
