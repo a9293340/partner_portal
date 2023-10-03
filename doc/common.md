@@ -221,6 +221,7 @@ encrypt string 為 AES(JSON string).toString()
 | 1   | Create |
 | 2   | Import |
 | 3   | Export |
+| 4   | Read   |
 
 #### database list 資料庫列表
 
@@ -274,12 +275,19 @@ encrypt string 為 AES(JSON string).toString()
 
 #### database security filter dependence 資料庫安全管理敏感性資料判斷依據
 
-| val | opt      |
-| --- | -------- |
-| 0   | 等於     |
-| 1   | 大於     |
-| 2   | 大於等於 |
-| 3   | 小於     |
-| 4   | 小於等於 |
-| 5   | 包含     |
-| 6   | 不包含   |
+| val | opt                         |
+| --- | --------------------------- |
+| 0   | equal (number)              |
+| 1   | greater than (number)       |
+| 2   | greater or equal (number)   |
+| 3   | less than (number)          |
+| 4   | less than or equal (number) |
+| 5   | include (text)              |
+| 6   | not included (text)         |
+| 7   | between (number)            |
+| 8   | not between (number)        |
+| 9   | include (data)              |
+| 10  | not included (data)         |
+| 11  | equal (date)                |
+| 12  | greater than (date)         |
+| 13  | less than (date)            |

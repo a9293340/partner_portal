@@ -3,7 +3,7 @@ import { status } from "./options/status";
 import { database_function_control } from "./options/databaseFunctionControl";
 import {
 	database_options_partner_portal,
-	database_keys_options_partner_portal,
+	database_keys_options_fnc,
 } from "./options/databaseOptions";
 import { router_options_partner_portal } from "./options/routerOptions";
 import { document_language } from "./options/documentLanguage";
@@ -31,7 +31,7 @@ export const options = {
 	owner,
 	action_log_type,
 	resources_default_action,
-	database_keys_options_partner_portal,
+	database_keys_options_fnc,
 	database_Security_Filter_Dependence,
 };
 

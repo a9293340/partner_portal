@@ -6,7 +6,7 @@ export const database_options_partner_portal = databaseList.map((el) => ({
 	field: el.keys,
 }));
 
-export const database_keys_options_partner_portal = (db) =>
+export const database_keys_options_fnc = (db) =>
 	databaseList
 		.find((el) => el.name === db)
 		.keys.map((el) => ({

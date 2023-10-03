@@ -39,6 +39,10 @@ response:
 ```json
 {
 	"token": "string",
+	"company": {},
+	"partner_level": {},
+	"router_scy": {},
+	"db_scy": {},
 
 	"_comment_token": "為加密之登入時間，用以每次api請求時核對使用"
 }

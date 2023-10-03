@@ -823,8 +823,9 @@ export const databaseList = [
 			"sensitive_field",
 		],
 		type: {
-			name: {
-				style: "input",
+			sensitive_field: {
+				style: "select",
+				options: "keys",
 				require: true,
 				validation: undefined,
 			},
@@ -846,8 +847,9 @@ export const databaseList = [
 				require: true,
 				validation: undefined,
 			},
+			// 0~4 input-number 5~6 input 7~8 input-between 9~10 input 11~13 date
 			filter_target: {
-				style: "input",
+				style: "up-to-filter_dependence",
 				require: true,
 				validation: undefined,
 			},

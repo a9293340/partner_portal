@@ -94,13 +94,15 @@ request:
 		"name_en": "string",
 		"name_tc": "string",
 		"status": 0,
-		"on_board_time": "Date",
+		"begin_date": "Date",
+		"end_date": "Date",
 		"division": "ObjectId"
 	},
 
 	"_comment_name_en": "英文名",
 	"_comment_name_tc": "中文名",
-	"_comment_on_board_time": "到職日 YYYY-MM-DD",
+	"_comment_begin_date": "到職日查詢起始 YYYY-MM-DD",
+	"_comment_end_date": "到職日查詢結束 YYYY-MM-DD",
 	"_comment_division": "division _id",
 	"_comment_status": "0=enable, 1=disable"
 }

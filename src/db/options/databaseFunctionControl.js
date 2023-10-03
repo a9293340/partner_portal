@@ -15,4 +15,8 @@ export const database_function_control = [
 		val: 3,
 		opt: "Export",
 	},
+	{
+		val: 4,
+		opt: "Read",
+	},
 ];

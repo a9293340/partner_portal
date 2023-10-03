@@ -51,10 +51,10 @@ const checkToken = async (req, res, next) => {
 };
 
 const decryptRes = (tar) => {
-	const val = CryptoJS.AES.decrypt(tar, process.env.ENCODE_KEY).toString(
-		CryptoJS.enc.Utf8
-	);
 	try {
+		const val = CryptoJS.AES.decrypt(tar, process.env.ENCODE_KEY).toString(
+			CryptoJS.enc.Utf8
+		);
 		return JSON.parse(val);
 	} catch (e) {
 		return false;

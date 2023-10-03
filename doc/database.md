@@ -391,12 +391,13 @@
 	"*status": 0,
 	"*db_path": "string",
 	"*sensitive_field": ["string"],
+	"*name": "string",
 
 	"_comment__id": "database 自動生成",
 	"_comment_status": "0=enable, 1=disable",
 	"_comment_db_path": "資料庫",
 	"_comment_sensitive_field": "敏感 field",
 	"_comment_filter_target": "判斷依據",
-	"_comment_filter_dependence": "0=等於 1=大於 2=大於等於 3=小於 4=小於等於 5=包含 6=不包含"
+	"_comment_filter_dependence": "參考 database_Security_Filter_Dependence"
 }
 ```
