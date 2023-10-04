@@ -3,6 +3,7 @@ node_modules
 server/uploadFiles/*
 dist
 bak
+yarn.lock
 
 # local env files
 */.env
