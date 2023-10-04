@@ -32,8 +32,169 @@ const latlng = ref([
 	},
 ]);
 
-const isShow = ref(false);
+// 封裝API
+const nearbySearch_async = async (obj) => {
+	try {
+		return await new Promise((resolve, reject) => {
+			states.service.nearbySearch(obj, (results, status) => {
+				if (status === google.maps.places.PlacesServiceStatus.OK) {
+					resolve(results[0]);
+				} else {
+					reject(false);
+				}
+			});
+		});
+	} catch (error) {
+		return false;
+	}
+};
+
+const getPlaceInfo = async (placeId) => {
+	try {
+		return await new Promise((resolve, reject) => {
+			states.service.getDetails({ placeId }, (place, status) => {
+				if (status === "OK") {
+					resolve(place);
+				} else {
+					reject(false);
+				}
+			});
+		});
+	} catch (error) {
+		return false;
+	}
+};
+
+const setPanorama = (lat, lng, heading) => {
+	states.panorama = new google.maps.StreetViewPanorama(
+		document.getElementById("pano"),
+		{
+			position: {
+				lat,
+				lng,
+			},
+			pov: {
+				heading,
+				pitch: 10,
+			},
+		}
+	);
+	states.map.setStreetView(states.panorama);
+};
+
+const setRoutes = async (obj) => {
+	try {
+		return await new Promise((resolve, reject) => {
+			states.directionsService.route(obj, (results, status) => {
+				if (status === google.maps.places.PlacesServiceStatus.OK) {
+					resolve(results);
+				} else {
+					reject(false);
+				}
+			});
+		});
+	} catch (error) {
+		return false;
+	}
+};
+
+const removeDirections = () => {
+	if (states.directionsRender)
+		states.directionsRender.setDirections({ routes: [] });
+	if (states.infoWindow) states.infoWindow.close();
+};
+
+// Init
 const initMap = async () => {
+	// Build Markers
+	latlng.value.forEach((ll, i) => {
+		latlng.value[i].marker = new states.google.maps.Marker({
+			position: { lat: ll.lat, lng: ll.lng },
+			map: states.map,
+			title: ll.title,
+		});
+	});
+
+	// Build Markers click listener
+	latlng.value.forEach((ll) => {
+		const { marker, ...other } = ll;
+		marker.addListener("click", async () => {
+			const markerLL = new states.google.maps.LatLng(other.lat, other.lng);
+			const station = await nearbySearch_async({
+				location: markerLL,
+				keyword: marker.title,
+				radius: 20,
+			});
+			if (station) {
+				setPanorama(other.lat, other.lng, other.heading);
+				const placeInfo = await getPlaceInfo(station.place_id);
+
+				if (!states.directionsRender)
+					states.directionsRender = new states.google.maps.DirectionsRenderer({
+						map: states.map,
+					});
+
+				states.directionsRender.setDirections({ routes: [] });
+
+				const rout = await setRoutes({
+					origin: new states.google.maps.LatLng(
+						currentLatLng.lat,
+						currentLatLng.lng
+					),
+					destination: {
+						placeId: station.place_id,
+					},
+					travelMode: states.google.maps.TravelMode["DRIVING"],
+				});
+
+				if (rout) {
+					states.directionsRender.setDirections(rout);
+					let weekly = "";
+					placeInfo.current_opening_hours.weekday_text.forEach((week) => {
+						weekly += `<div>${week}</div>`;
+					});
+					states.infoWindow.setContent(
+						`
+										<h3>店名 :${station.name}</h3>
+										<div>地址 :${placeInfo.adr_address}</div>
+										<div>電話 :${placeInfo.formatted_phone_number}</div>
+										<div>目前是否營業 :${
+											placeInfo.current_opening_hours.open_now
+												? "OPEN"
+												: "CLOSE"
+										}</div>
+										<div>與當前預估時間 :${rout.routes[0].legs[0].duration.text}</div>
+										<div>營業時間 :</div>
+										${weekly}
+										`
+					);
+					states.infoWindow.open({
+						anchor: marker,
+						map: states.map,
+					});
+				}
+			}
+		});
+	});
+
+	//! event
+	states.map.addListener("zoom_changed", (event) => {});
+	states.map.addListener("click", (event) => {
+		setPanorama(event.latLng.lat(), event.latLng.lng(), 34);
+	});
+
+	states.map.addListener("drag", () => {});
+
+	states.panorama.addListener("position_changed", (event) => {
+		states.map.setStreetView(states.panorama);
+	});
+
+	states.infoWindow.addListener("closeclick", () => {
+		removeDirections();
+	});
+};
+
+onBeforeMount(async () => {
 	navigator.geolocation.getCurrentPosition((position) => {
 		currentLatLng.lat = position.coords.latitude;
 		currentLatLng.lng = position.coords.longitude;
@@ -49,130 +210,16 @@ const initMap = async () => {
 
 	states.map = new states.google.maps.Map(document.getElementById("map"), {
 		center: { lat: currentLatLng.lat, lng: currentLatLng.lng },
-		zoom: 11,
+		zoom: 12,
 		mapTypeControl: false,
 		fullscreenControl: false,
 		minZoom: 10,
 		maxZoom: 15,
 	});
-	states.panorama = new states.google.maps.StreetViewPanorama(
-		document.getElementById("pano"),
-		{
-			position: { lat: currentLatLng.lat, lng: currentLatLng.lng },
-			pov: {
-				heading: 34,
-				pitch: 10,
-			},
-		}
-	);
+	setPanorama(currentLatLng.lat, currentLatLng.lng, 34);
 	states.service = new states.google.maps.places.PlacesService(states.map);
 	states.directionsService = new states.google.maps.DirectionsService();
 	states.infoWindow = new states.google.maps.InfoWindow();
-
-	latlng.value.forEach((ll, i) => {
-		latlng.value[i].marker = new states.google.maps.Marker({
-			position: { lat: ll.lat, lng: ll.lng },
-			map: states.map,
-			title: ll.title,
-		});
-	});
-
-	latlng.value.forEach((ll) => {
-		const { marker, ...other } = ll;
-		marker.addListener("click", (event) => {
-			const markerLL = new states.google.maps.LatLng(other.lat, other.lng);
-			states.service.nearbySearch(
-				{ location: markerLL, keyword: marker.title, radius: 20 },
-				(res, status) => {
-					if (status === "OK" && res.length === 1) {
-						const station = res[0];
-						console.log(station);
-						states.panorama = new google.maps.StreetViewPanorama(
-							document.getElementById("pano"),
-							{
-								position: {
-									lat: other.lat,
-									lng: other.lng,
-								},
-								pov: {
-									heading: other.heading,
-									pitch: 10,
-								},
-							}
-						);
-
-						if (!states.directionsRender)
-							states.directionsRender =
-								new states.google.maps.DirectionsRenderer({
-									map: states.map,
-								});
-
-						states.directionsRender.set("directions", null);
-
-						states.directionsService.route(
-							{
-								origin: new states.google.maps.LatLng(
-									currentLatLng.lat,
-									currentLatLng.lng
-								),
-								destination: {
-									placeId: station.place_id,
-								},
-								travelMode: states.google.maps.TravelMode["TRANSIT"],
-							},
-							(rout, status) => {
-								console.log(rout, status);
-								if (status === "OK") {
-									states.directionsRender.setDirections(rout);
-									states.infoWindow.setContent(
-										`
-										<h3>Name :${station.name}</h3>
-										<div>Address :${station.vicinity}</div>
-										<div>Open Now :${station.opening_hours.isOpen() ? "OPEN" : "CLOSE"}</div>
-										<div>Directions :${rout.routes[0].legs[0].duration.text}</div>
-										`
-									);
-									states.infoWindow.open({
-										anchor: marker,
-										map: states.map,
-									});
-								}
-							}
-						);
-					}
-				}
-			);
-		});
-	});
-
-	states.map.setStreetView(states.panorama);
-	// event
-	states.map.addListener("zoom_changed", (event) => {
-		isShow.value = false;
-	});
-	states.map.addListener("click", (event) => {
-		states.panorama.setPosition(
-			new google.maps.LatLng({
-				lat: event.latLng.lat(),
-				lng: event.latLng.lng(),
-			})
-		);
-	});
-
-	states.map.addListener("drag", () => {});
-
-	states.panorama.addListener("position_changed", () => {
-		states.map.setCenter({
-			lat: states.panorama.getPosition().lat(),
-			lng: states.panorama.getPosition().lng(),
-		});
-	});
-	states.panorama.addListener("drag", (event) => {
-		console.log(event);
-	});
-};
-
-onBeforeMount(async () => {
 	await initMap();
 });
 </script>
