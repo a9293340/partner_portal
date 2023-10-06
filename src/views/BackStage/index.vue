@@ -1,7 +1,8 @@
 <script setup>
 import { Loader } from "@googlemaps/js-api-loader";
-import { reactive, onBeforeMount, ref, onMounted } from "vue";
+import { watch, reactive, onBeforeMount, ref, onMounted } from "vue";
 import topbar_bg from "@/assets/img/png/info-content-bg.png";
+import TinycmeEditor from "@/components/Tinymce/index.vue";
 
 const states = reactive({
 	google: null,
@@ -26,7 +27,66 @@ const cardShopsInfo = ref([
 		title: "新航",
 		heading: 240,
 		marker: null,
-		info: [],
+		info: {
+			content: "",
+			actions: [
+				{
+					action_type: "game",
+					action_time: "2023-10-02 14:00:00",
+					action_title: "10月積分賽",
+					action_prize: [
+						"第一名 : 積分包 4包",
+						"第二名 : 積分包 2包",
+						"第三名 : 積分包 1包",
+						"參賽獎 : 50卡包一包",
+					],
+					action_detail: "現場再抽三位各得一包積分包",
+					action_cost: 300,
+				},
+				{
+					action_type: "game",
+					action_time: "2023-11-01 14:00:00",
+					action_title: "小小杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "僅能使用攻擊力小於1000的卡，並且不能放燒血效果卡",
+					action_cost: 300,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-10-28 00:00:00",
+					action_title: "1203發售",
+					action_prize: [],
+					action_detail: "買兩盒送一張特卡，三盒送兩張",
+					action_cost: 1450,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-11-13 00:00:00",
+					action_title: "SD47發售",
+					action_prize: [],
+					action_detail: "預購少50",
+					action_cost: 400,
+				},
+				{
+					action_type: "game",
+					action_time: "2023-11-03 14:00:00",
+					action_title: "大大杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "不能使用效果怪獸",
+					action_cost: 300,
+				},
+			],
+		},
 	},
 	{
 		lat: 25.0316026,
@@ -34,7 +94,53 @@ const cardShopsInfo = ref([
 		title: "Card Master",
 		heading: 60,
 		marker: null,
-		info: [],
+		info: {
+			content: "",
+			actions: [
+				{
+					action_type: "game",
+					action_time: "2023-11-01 14:00:00",
+					action_title: "小小杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "僅能使用攻擊力小於1000的卡，並且不能放燒血效果卡",
+					action_cost: 300,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-10-28 00:00:00",
+					action_title: "1203發售",
+					action_prize: [],
+					action_detail: "買兩盒送一張特卡，三盒送兩張",
+					action_cost: 1450,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-11-13 00:00:00",
+					action_title: "SD47發售",
+					action_prize: [],
+					action_detail: "預購少50",
+					action_cost: 400,
+				},
+				{
+					action_type: "game",
+					action_time: "2023-11-03 14:00:00",
+					action_title: "大大杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "不能使用效果怪獸",
+					action_cost: 300,
+				},
+			],
+		},
 	},
 	{
 		lat: 25.0046266,
@@ -42,7 +148,53 @@ const cardShopsInfo = ref([
 		title: "板橋桌遊侍",
 		heading: 330,
 		marker: null,
-		info: [],
+		info: {
+			content: "",
+			actions: [
+				{
+					action_type: "game",
+					action_time: "2023-11-01 14:00:00",
+					action_title: "小小杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "僅能使用攻擊力小於1000的卡，並且不能放燒血效果卡",
+					action_cost: 300,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-10-28 00:00:00",
+					action_title: "1203發售",
+					action_prize: [],
+					action_detail: "買兩盒送一張特卡，三盒送兩張",
+					action_cost: 1450,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-11-13 00:00:00",
+					action_title: "SD47發售",
+					action_prize: [],
+					action_detail: "預購少50",
+					action_cost: 400,
+				},
+				{
+					action_type: "game",
+					action_time: "2023-11-03 14:00:00",
+					action_title: "大大杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "不能使用效果怪獸",
+					action_cost: 300,
+				},
+			],
+		},
 	},
 	{
 		lat: 25.0782329,
@@ -50,7 +202,53 @@ const cardShopsInfo = ref([
 		title: "美樂地",
 		heading: 244,
 		marker: null,
-		info: [],
+		info: {
+			content: "",
+			actions: [
+				{
+					action_type: "game",
+					action_time: "2023-11-01 14:00:00",
+					action_title: "小小杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "僅能使用攻擊力小於1000的卡，並且不能放燒血效果卡",
+					action_cost: 300,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-10-28 00:00:00",
+					action_title: "1203發售",
+					action_prize: [],
+					action_detail: "買兩盒送一張特卡，三盒送兩張",
+					action_cost: 1450,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-11-13 00:00:00",
+					action_title: "SD47發售",
+					action_prize: [],
+					action_detail: "預購少50",
+					action_cost: 400,
+				},
+				{
+					action_type: "game",
+					action_time: "2023-11-03 14:00:00",
+					action_title: "大大杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "不能使用效果怪獸",
+					action_cost: 300,
+				},
+			],
+		},
 	},
 	{
 		lat: 25.0608707,
@@ -58,15 +256,64 @@ const cardShopsInfo = ref([
 		title: "桌上旅程",
 		heading: 349,
 		marker: null,
-		info: [],
+		info: {
+			content: "",
+			actions: [
+				{
+					action_type: "game",
+					action_time: "2023-11-01 14:00:00",
+					action_title: "小小杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "僅能使用攻擊力小於1000的卡，並且不能放燒血效果卡",
+					action_cost: 300,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-10-28 00:00:00",
+					action_title: "1203發售",
+					action_prize: [],
+					action_detail: "買兩盒送一張特卡，三盒送兩張",
+					action_cost: 1450,
+				},
+				{
+					action_type: "product",
+					action_time: "2023-11-13 00:00:00",
+					action_title: "SD47發售",
+					action_prize: [],
+					action_detail: "預購少50",
+					action_cost: 400,
+				},
+				{
+					action_type: "game",
+					action_time: "2023-11-03 14:00:00",
+					action_title: "大大杯大賽",
+					action_prize: [
+						"第一名 : 1203一盒",
+						"第二名 : 1203 8包",
+						"第三名 : 1203 4包",
+						"參賽獎 : 1203 1包",
+					],
+					action_detail: "不能使用效果怪獸",
+					action_cost: 300,
+				},
+			],
+		},
 	},
 ]);
 
 const show_place_detail = reactive({
 	placeInfo: null,
 	expand: false,
-	showInfo: null,
+	reduce: false,
+	nowCardsPick: null,
 });
+
+const editorData = ref("<p>Content of the editor.</p>");
 
 // 封裝API
 const nearbySearch_async = async (obj) => {
@@ -182,8 +429,7 @@ const removeDirections = () => {
 		states.directionsRender.setDirections({ routes: [] });
 	if (states.infoWindow) states.infoWindow.close();
 	show_place_detail.placeInfo = null;
-	show_place_detail.placeInfo = false;
-	show_place_detail.showInfo = null;
+	show_place_detail.nowCardsPick = null;
 	states.map.setStreetView(null);
 };
 
@@ -214,9 +460,11 @@ const initMap = async () => {
 
 	// Build Markers click listener
 	cardShopsInfo.value.forEach((ll) => {
-		const { marker, info: markerInfo, ...other } = ll;
+		const { marker, ...other } = ll;
 		marker.addListener("click", async () => {
-			show_place_detail.showInfo = markerInfo;
+			show_place_detail.nowCardsPick = cardShopsInfo.value.find(
+				(el) => el.title === other.title
+			);
 			const markerLL = new states.google.maps.LatLng(other.lat, other.lng);
 			const station = await nearbySearch_async({
 				location: markerLL,
@@ -227,7 +475,7 @@ const initMap = async () => {
 				await setPanorama(other.lat, other.lng, other.heading);
 				show_place_detail.placeInfo = await getPlaceInfo(station.place_id);
 				show_place_detail.expand = true;
-
+				// console.log(show_place_detail.placeInfo);
 				if (!states.directionsRender)
 					states.directionsRender = new states.google.maps.DirectionsRenderer({
 						map: states.map,
@@ -330,14 +578,25 @@ const initGoogle = async () => {
 	);
 };
 
-const expandHandler = () => {
-	show_place_detail.expand = !show_place_detail.expand;
+const expandHandler = () =>
+	(show_place_detail.expand = !show_place_detail.expand);
+
+const resizeHandler = () =>
+	(show_place_detail.reduce = !show_place_detail.reduce);
+
+const saveContent = () => {
+	const idx = cardShopsInfo.value.findIndex(
+		(el) => el.title === show_place_detail.nowCardsPick.title
+	);
+	cardShopsInfo.value[idx].info.content = editorData.value;
 };
 
 onBeforeMount(async () => {
 	await initGoogle();
 	await initMap();
 });
+
+onMounted(() => {});
 </script>
 
 <template>
@@ -347,23 +606,64 @@ onBeforeMount(async () => {
 			<div id="pano"></div>
 		</div>
 		<div
+			v-show="show_place_detail.nowCardsPick"
 			:class="[
 				'info-bar',
 				{
 					'info-bar-show':
-						show_place_detail.placeInfo && show_place_detail.expand,
-					'info-bar-show-small':
-						show_place_detail.placeInfo && !show_place_detail.expand,
+						show_place_detail.expand && !show_place_detail.reduce,
+					'info-bar-show-screen-small':
+						show_place_detail.reduce && show_place_detail.expand,
+					'info-bar-show-small': !show_place_detail.expand,
 				},
 			]"
 			:style="`background-image: url(${topbar_bg})`"
 		>
 			<header>
+				<el-icon @click="resizeHandler" v-if="show_place_detail.expand">
+					<i-akar-icons-reduce v-if="!show_place_detail.reduce" />
+					<i-akar-icons-enlarge v-else />
+				</el-icon>
 				<el-icon @click="expandHandler">
 					<i-lucide-expand v-if="!show_place_detail.expand" />
 					<i-bx-collapse v-else />
 				</el-icon>
 			</header>
+			<main>
+				<h2 class="title" v-if="show_place_detail.placeInfo">
+					{{ show_place_detail.placeInfo.name }}
+				</h2>
+				<!-- <tinycme-editor v-model="editorData"></tinycme-editor>
+				<el-button @click="saveContent" type="success">Save Content</el-button> -->
+				<div
+					class="main-list x-main-list"
+					v-if="show_place_detail.nowCardsPick"
+				>
+					<div
+						v-for="action in show_place_detail.nowCardsPick.info.actions
+							.filter((el) => new Date(el.action_time) - new Date() >= 0)
+							.sort(
+								(a, b) => new Date(a.action_time) - new Date(b.action_time)
+							)"
+						:class="[
+							'action',
+							{ 'action-green': action.action_type === 'product' },
+						]"
+					>
+						<p>活動時間 : {{ action.action_time }}</p>
+						<p>活動內容 : {{ action.action_title }}</p>
+						<div v-if="action.action_prize.length">
+							<p>活動獎勵 :</p>
+							<p v-for="price in action.action_prize">{{ price }}</p>
+						</div>
+						<p>活動詳情: {{ action.action_detail }}</p>
+						<p>
+							{{ action.action_type === "product" ? "價格" : "報名費" }}:
+							{{ action.action_cost }}
+						</p>
+					</div>
+				</div>
+			</main>
 		</div>
 	</div>
 </template>
@@ -375,7 +675,7 @@ onBeforeMount(async () => {
 		@apply w-full h-full relative;
 	}
 	.pano {
-		@apply w-80 h-80 block absolute left-0 top-0 z-20 resize bg-white overflow-auto;
+		@apply xl:w-80 xl:h-80 w-40 h-40 block absolute left-0 top-0 z-20 resize bg-white overflow-auto;
 		#pano {
 			@apply w-full h-full;
 		}
@@ -384,24 +684,60 @@ onBeforeMount(async () => {
 		@apply hidden;
 	}
 	.info-bar {
-		@apply w-0 h-0 absolute top-10 right-2 z-20 bg-white rounded-3xl duration-500 overflow-hidden bg-no-repeat bg-cover;
+		@apply w-0 h-0 absolute xl:top-10 xl:right-2 bottom-0 z-20 bg-white xl:rounded-3xl rounded-t-3xl duration-500 overflow-hidden bg-no-repeat bg-cover;
 		header {
-			@apply w-full flex flex-row justify-end p-3 overflow-hidden;
+			@apply w-full h-10 flex flex-row justify-end p-3 overflow-hidden;
 			.el-icon {
-				@apply mt-1 mr-1 cursor-pointer;
+				@apply mt-1 mr-1 ml-1 cursor-pointer;
+			}
+		}
+		main {
+			@apply p-3 pt-0 w-full h-[calc(100%-2.5rem)];
+			.title {
+				@apply h-3 text-base text-blue-700 font-bold mb-6;
+			}
+			.main-list {
+				@apply flex flex-row w-auto h-[calc(100%-0.75rem)] flex-wrap overflow-auto scrollbar-none;
+				.action {
+					@apply bg-slate-100 rounded-md mr-4 mb-4 p-3;
+					p {
+						@apply text-orange-600 mb-1;
+					}
+				}
+				.action-green {
+					p {
+						@apply text-green-600;
+					}
+				}
+			}
+			.x-main-list {
+				@apply xl:flex-col xl:w-full xl:flex-nowrap;
+				.action {
+					@apply xl:mr-0;
+				}
 			}
 		}
 	}
 	.info-bar-show-small {
-		@apply h-10 w-10 right-2;
+		@apply h-10 w-10 right-2 top-10;
 		header {
 			.el-icon {
 				@apply mt-0 mr-0;
 			}
 		}
 	}
+
+	.info-bar-show-screen-small {
+		@apply xl:h-112 xl:w-112 xl:right-2 h-10 w-full;
+		header {
+			.el-icon {
+				@apply xl:mt-0 xl:mr-0;
+			}
+		}
+	}
+
 	.info-bar-show {
-		@apply h-96 w-144;
+		@apply xl:h-144 xl:w-144 w-full h-144;
 	}
 }
 </style>
